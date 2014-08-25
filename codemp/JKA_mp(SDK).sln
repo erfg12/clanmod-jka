@@ -1,0 +1,51 @@
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual C++ Express 2010
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "JK2cgame", "cgame\JK2_cgame.vcxproj", "{CD2D198E-DD3B-0C13-A332-691829DF17FB}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "JK2game", "game\JK2_game.vcxproj", "{24BC7898-957E-1E45-C0C5-715523C3E058}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "botlib", "botlib\botlib.vcxproj", "{ACECED7E-B90D-D658-85CF-E1E865F9000B}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ui", "ui\ui.vcxproj", "{9B2C477C-698A-ED72-CE38-B3D1835A1C2F}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{E1444467-A94B-4F0B-B543-49A8758B9E49}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug(SH)|Win32 = Debug(SH)|Win32
+		Debug|Win32 = Debug|Win32
+		Final|Win32 = Final|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{CD2D198E-DD3B-0C13-A332-691829DF17FB}.Debug(SH)|Win32.ActiveCfg = Debug(SH)|Win32
+		{CD2D198E-DD3B-0C13-A332-691829DF17FB}.Debug(SH)|Win32.Build.0 = Debug(SH)|Win32
+		{CD2D198E-DD3B-0C13-A332-691829DF17FB}.Debug|Win32.ActiveCfg = Debug|Win32
+		{CD2D198E-DD3B-0C13-A332-691829DF17FB}.Final|Win32.ActiveCfg = Final|Win32
+		{CD2D198E-DD3B-0C13-A332-691829DF17FB}.Release|Win32.ActiveCfg = Release|Win32
+		{24BC7898-957E-1E45-C0C5-715523C3E058}.Debug(SH)|Win32.ActiveCfg = Debug(SH)|Win32
+		{24BC7898-957E-1E45-C0C5-715523C3E058}.Debug(SH)|Win32.Build.0 = Debug(SH)|Win32
+		{24BC7898-957E-1E45-C0C5-715523C3E058}.Debug|Win32.ActiveCfg = Debug|Win32
+		{24BC7898-957E-1E45-C0C5-715523C3E058}.Final|Win32.ActiveCfg = Final|Win32
+		{24BC7898-957E-1E45-C0C5-715523C3E058}.Release|Win32.ActiveCfg = Release|Win32
+		{ACECED7E-B90D-D658-85CF-E1E865F9000B}.Debug(SH)|Win32.ActiveCfg = Debug(SH)|Win32
+		{ACECED7E-B90D-D658-85CF-E1E865F9000B}.Debug(SH)|Win32.Build.0 = Debug(SH)|Win32
+		{ACECED7E-B90D-D658-85CF-E1E865F9000B}.Debug|Win32.ActiveCfg = Debug|Win32
+		{ACECED7E-B90D-D658-85CF-E1E865F9000B}.Final|Win32.ActiveCfg = Final|Win32
+		{ACECED7E-B90D-D658-85CF-E1E865F9000B}.Release|Win32.ActiveCfg = Release|Win32
+		{9B2C477C-698A-ED72-CE38-B3D1835A1C2F}.Debug(SH)|Win32.ActiveCfg = Debug(SH)|Win32
+		{9B2C477C-698A-ED72-CE38-B3D1835A1C2F}.Debug(SH)|Win32.Build.0 = Debug(SH)|Win32
+		{9B2C477C-698A-ED72-CE38-B3D1835A1C2F}.Debug|Win32.ActiveCfg = Debug|Win32
+		{9B2C477C-698A-ED72-CE38-B3D1835A1C2F}.Final|Win32.ActiveCfg = Final|Win32
+		{9B2C477C-698A-ED72-CE38-B3D1835A1C2F}.Release|Win32.ActiveCfg = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(DevPartner Solution Properties) = postSolution
+	EndGlobalSection
+	GlobalSection(DevPartner) = postSolution
+	EndGlobalSection
+	GlobalSection(DevPartner) = postSolution
+	EndGlobalSection
+EndGlobal

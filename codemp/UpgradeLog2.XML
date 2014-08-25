@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?><?xml-stylesheet type='text/xsl' href='_UpgradeReport_Files/UpgradeReport.xslt'?><UpgradeLog>
+<Properties><Property Name="Solution" Value="JKA_mp(SDK)">
+</Property><Property Name="Solution File" Value="E:\Projects\ClanMod\codemp\JKA_mp(SDK).sln">
+</Property><Property Name="User Options File" Value="E:\Projects\ClanMod\codemp\JKA_mp(SDK).suo">
+</Property><Property Name="Date" Value="Saturday, June 13, 2009">
+</Property><Property Name="Time" Value="19:50 PM">
+</Property><Property Name="Log Number" Value="2">
+</Property></Properties><Event ErrorLevel="0" Project="" Source="JKA_mp(SDK).sln" Description="File successfully backed up as E:\Projects\ClanMod\codemp\JKA_mp(SDK).sln.old">
+</Event><Event ErrorLevel="0" Project="" Source="JKA_mp(SDK).suo" Description="File successfully backed up as E:\Projects\ClanMod\codemp\JKA_mp(SDK).suo.old">
+</Event><Event ErrorLevel="0" Project="JK2_cgame" Source="cgame\JK2_cgame.vcproj" Description="Converting project file 'E:\Projects\ClanMod\codemp\cgame\JK2_cgame.vcproj'.">
+</Event><Event ErrorLevel="1" Project="JK2_cgame" Source="cgame\JK2_cgame.vcproj" Description="The C/C++ compiler switch /Og has been deprecated and has been removed from your project settings. It is recommended that you use /O1 or /O2 instead.">
+</Event><Event ErrorLevel="1" Project="JK2_cgame" Source="cgame\JK2_cgame.vcproj" Description="VCConvertEngine could not convert attribute GlobalOptimizations = TRUE under Tool VCCLCompilerTool.">
+</Event><Event ErrorLevel="1" Project="JK2_cgame" Source="cgame\JK2_cgame.vcproj" Description="VCConvertEngine could not convert attribute ImproveFloatingPointConsistency = TRUE under Tool VCCLCompilerTool.">
+</Event><Event ErrorLevel="1" Project="JK2_cgame" Source="cgame\JK2_cgame.vcproj" Description="VCConvertEngine could not convert attribute OptimizeForProcessor = 2 under Tool VCCLCompilerTool.">
+</Event><Event ErrorLevel="1" Project="JK2_cgame" Source="cgame\JK2_cgame.vcproj" Description="VCConvertEngine could not convert attribute OptimizeForWindowsApplication = TRUE under Tool VCCLCompilerTool.">
+</Event><Event ErrorLevel="0" Project="JK2_cgame" Source="cgame\JK2_cgame.vcproj" Description="The single-threaded run-time library switches (/MLd, /ML) have been removed from the C++ compiler.  The project has been automatically converted to use the corresponding multi-threaded run-time library switches (/MTd, /MT).">
+</Event><Event ErrorLevel="1" Project="JK2_cgame" Source="cgame\JK2_cgame.vcproj" Description="The C/C++ compiler switch /YX is lo longer supported. /YX has been removed from your project settings.">
+</Event><Event ErrorLevel="1" Project="JK2_cgame" Source="cgame\JK2_cgame.vcproj" Description="VCWebServiceProxyGeneratorTool is no longer supported. The tool has been removed from your project settings.">
+</Event><Event ErrorLevel="0" Project="JK2_cgame" Source="cgame\JK2_cgame.vcproj" Description="Web deployment to the local IIS server is no longer supported. The Web Deployment build tool has been removed from your project settings.">
+</Event><Event ErrorLevel="1" Project="JK2_cgame" Source="cgame\JK2_cgame.vcproj" Description="VCConvertEngine could not convert attribute GlobalOptimizations = TRUE under Tool VCCLCompilerTool.">
+</Event><Event ErrorLevel="1" Project="JK2_cgame" Source="cgame\JK2_cgame.vcproj" Description="VCConvertEngine could not convert attribute ImproveFloatingPointConsistency = TRUE under Tool VCCLCompilerTool.">
+</Event><Event ErrorLevel="1" Project="JK2_cgame" Source="cgame\JK2_cgame.vcproj" Description="VCConvertEngine could not convert attribute OptimizeForProcessor = 2 under Tool VCCLCompilerTool.">
+</Event><Event ErrorLevel="1" Project="JK2_cgame" Source="cgame\JK2_cgame.vcproj" Description="VCConvertEngine could not convert attribute OptimizeForWindowsApplication = TRUE under Tool VCCLCompilerTool.">
+</Event><Event ErrorLevel="1" Project="JK2_cgame" Source="cgame\JK2_cgame.vcproj" Description="VCConvertEngine could not convert attribute OptimizeForProcessor = 2 under Tool VCCLCompilerTool.">
+</Event><Event ErrorLevel="1" Project="JK2_cgame" Source="cgame\JK2_cgame.vcproj" Description="VCConvertEngine could not convert attribute OptimizeForProcessor = 2 under Tool VCCLCompilerTool.">
+</Event><Event ErrorLevel="0" Project="JK2_cgame" Source="cgame\JK2_cgame.vcproj" Description="Done converting to new project file 'E:\Projects\ClanMod\codemp\cgame\JK2_cgame.vcxproj'.">
+</Event><Event ErrorLevel="3" Project="JK2_cgame" Source="cgame\JK2_cgame.vcproj" Description="Converted">
+</Event><Event ErrorLevel="0" Project="JK2_game" Source="game\JK2_game.vcproj" Description="Converting project file 'E:\Projects\ClanMod\codemp\game\JK2_game.vcproj'.">
+</Event><Event ErrorLevel="1" Project="JK2_game" Source="game\JK2_game.vcproj" Description="VCConvertEngine could not convert attribute ImproveFloatingPointConsistency = TRUE under Tool VCCLCompilerTool.">
+</Event><Event ErrorLevel="1" Project="JK2_game" Source="game\JK2_game.vcproj" Description="VCConvertEngine could not convert attribute OptimizeForProcessor = 2 under Tool VCCLCompilerTool.">
+</Event><Event ErrorLevel="1" Project="JK2_game" Source="game\JK2_game.vcproj" Description="VCConvertEngine could not convert attribute OptimizeForWindowsApplication = TRUE under Tool VCCLCompilerTool.">
+</Event><Event ErrorLevel="0" Project="JK2_game" Source="game\JK2_game.vcproj" Description="The single-threaded run-time library switches (/MLd, /ML) have been removed from the C++ compiler.  The project has been automatically converted to use the corresponding multi-threaded run-time library switches (/MTd, /MT).">
+</Event><Event ErrorLevel="1" Project="JK2_game" Source="game\JK2_game.vcproj" Description="The C/C++ compiler switch /YX is lo longer supported. /YX has been removed from your project settings.">
+</Event><Event ErrorLevel="1" Project="JK2_game" Source="game\JK2_game.vcproj" Description="VCWebServiceProxyGeneratorTool is no longer supported. The tool has been removed from your project settings.">
+</Event><Event ErrorLevel="0" Project="JK2_game" Source="game\JK2_game.vcproj" Description="Web deployment to the local IIS server is no longer supported. The Web Deployment build tool has been removed from your project settings.">
+</Event><Event ErrorLevel="1" Project="JK2_game" Source="game\JK2_game.vcproj" Description="VCConvertEngine could not convert attribute ImproveFloatingPointConsistency = TRUE under Tool VCCLCompilerTool.">
+</Event><Event ErrorLevel="1" Project="JK2_game" Source="game\JK2_game.vcproj" Description="VCConvertEngine could not convert attribute OptimizeForProcessor = 2 under Tool VCCLCompilerTool.">
+</Event><Event ErrorLevel="1" Project="JK2_game" Source="game\JK2_game.vcproj" Description="VCConvertEngine could not convert attribute OptimizeForWindowsApplication = TRUE under Tool VCCLCompilerTool.">
+</Event><Event ErrorLevel="1" Project="JK2_game" Source="game\JK2_game.vcproj" Description="VCConvertEngine could not convert attribute MapLines = TRUE under Tool VCLinkerTool.">
+</Event><Event ErrorLevel="1" Project="JK2_game" Source="game\JK2_game.vcproj" Description="VCConvertEngine could not convert attribute OptimizeForProcessor = 2 under Tool VCCLCompilerTool.">
+</Event><Event ErrorLevel="1" Project="JK2_game" Source="game\JK2_game.vcproj" Description="VCConvertEngine could not convert attribute OptimizeForProcessor = 2 under Tool VCCLCompilerTool.">
+</Event><Event ErrorLevel="0" Project="JK2_game" Source="game\JK2_game.vcproj" Description="Done converting to new project file 'E:\Projects\ClanMod\codemp\game\JK2_game.vcxproj'.">
+</Event><Event ErrorLevel="3" Project="JK2_game" Source="game\JK2_game.vcproj" Description="Converted">
+</Event><Event ErrorLevel="0" Project="botlib" Source="botlib\botlib.vcproj" Description="Converting project file 'E:\Projects\ClanMod\codemp\botlib\botlib.vcproj'.">
+</Event><Event ErrorLevel="1" Project="botlib" Source="botlib\botlib.vcproj" Description="VCConvertEngine could not convert attribute OptimizeForProcessor = 2 under Tool VCCLCompilerTool.">
+</Event><Event ErrorLevel="0" Project="botlib" Source="botlib\botlib.vcproj" Description="The single-threaded run-time library switches (/MLd, /ML) have been removed from the C++ compiler.  The project has been automatically converted to use the corresponding multi-threaded run-time library switches (/MTd, /MT).">
+</Event><Event ErrorLevel="1" Project="botlib" Source="botlib\botlib.vcproj" Description="VCWebServiceProxyGeneratorTool is no longer supported. The tool has been removed from your project settings.">
+</Event><Event ErrorLevel="1" Project="botlib" Source="botlib\botlib.vcproj" Description="VCConvertEngine could not convert attribute OptimizeForProcessor = 2 under Tool VCCLCompilerTool.">
+</Event><Event ErrorLevel="1" Project="botlib" Source="botlib\botlib.vcproj" Description="The C/C++ compiler switch /YX is lo longer supported. /YX has been removed from your project settings.">
+</Event><Event ErrorLevel="1" Project="botlib" Source="botlib\botlib.vcproj" Description="VCConvertEngine could not convert attribute OptimizeForProcessor = 2 under Tool VCCLCompilerTool.">
+</Event><Event ErrorLevel="1" Project="botlib" Source="botlib\botlib.vcproj" Description="VCConvertEngine could not convert attribute OptimizeForProcessor = 2 under Tool VCCLCompilerTool.">
+</Event><Event ErrorLevel="0" Project="botlib" Source="botlib\botlib.vcproj" Description="Done converting to new project file 'E:\Projects\ClanMod\codemp\botlib\botlib.vcxproj'.">
+</Event><Event ErrorLevel="3" Project="botlib" Source="botlib\botlib.vcproj" Description="Converted">
+</Event><Event ErrorLevel="0" Project="ui" Source="ui\ui.vcproj" Description="Converting project file 'E:\Projects\ClanMod\codemp\ui\ui.vcproj'.">
+</Event><Event ErrorLevel="1" Project="ui" Source="ui\ui.vcproj" Description="The C/C++ compiler switch /Og has been deprecated and has been removed from your project settings. It is recommended that you use /O1 or /O2 instead.">
+</Event><Event ErrorLevel="1" Project="ui" Source="ui\ui.vcproj" Description="VCConvertEngine could not convert attribute GlobalOptimizations = TRUE under Tool VCCLCompilerTool.">
+</Event><Event ErrorLevel="1" Project="ui" Source="ui\ui.vcproj" Description="VCConvertEngine could not convert attribute ImproveFloatingPointConsistency = TRUE under Tool VCCLCompilerTool.">
+</Event><Event ErrorLevel="1" Project="ui" Source="ui\ui.vcproj" Description="VCConvertEngine could not convert attribute OptimizeForProcessor = 2 under Tool VCCLCompilerTool.">
+</Event><Event ErrorLevel="1" Project="ui" Source="ui\ui.vcproj" Description="VCConvertEngine could not convert attribute OptimizeForWindowsApplication = TRUE under Tool VCCLCompilerTool.">
+</Event><Event ErrorLevel="0" Project="ui" Source="ui\ui.vcproj" Description="The single-threaded run-time library switches (/MLd, /ML) have been removed from the C++ compiler.  The project has been automatically converted to use the corresponding multi-threaded run-time library switches (/MTd, /MT).">
+</Event><Event ErrorLevel="1" Project="ui" Source="ui\ui.vcproj" Description="The C/C++ compiler switch /YX is lo longer supported. /YX has been removed from your project settings.">
+</Event><Event ErrorLevel="1" Project="ui" Source="ui\ui.vcproj" Description="VCWebServiceProxyGeneratorTool is no longer supported. The tool has been removed from your project settings.">
+</Event><Event ErrorLevel="0" Project="ui" Source="ui\ui.vcproj" Description="Web deployment to the local IIS server is no longer supported. The Web Deployment build tool has been removed from your project settings.">
+</Event><Event ErrorLevel="1" Project="ui" Source="ui\ui.vcproj" Description="VCConvertEngine could not convert attribute OptimizeForProcessor = 2 under Tool VCCLCompilerTool.">
+</Event><Event ErrorLevel="1" Project="ui" Source="ui\ui.vcproj" Description="VCConvertEngine could not convert attribute GlobalOptimizations = TRUE under Tool VCCLCompilerTool.">
+</Event><Event ErrorLevel="1" Project="ui" Source="ui\ui.vcproj" Description="VCConvertEngine could not convert attribute ImproveFloatingPointConsistency = TRUE under Tool VCCLCompilerTool.">
+</Event><Event ErrorLevel="1" Project="ui" Source="ui\ui.vcproj" Description="VCConvertEngine could not convert attribute OptimizeForProcessor = 2 under Tool VCCLCompilerTool.">
+</Event><Event ErrorLevel="1" Project="ui" Source="ui\ui.vcproj" Description="VCConvertEngine could not convert attribute OptimizeForWindowsApplication = TRUE under Tool VCCLCompilerTool.">
+</Event><Event ErrorLevel="1" Project="ui" Source="ui\ui.vcproj" Description="VCConvertEngine could not convert attribute OptimizeForProcessor = 2 under Tool VCCLCompilerTool.">
+</Event><Event ErrorLevel="0" Project="ui" Source="ui\ui.vcproj" Description="Done converting to new project file 'E:\Projects\ClanMod\codemp\ui\ui.vcxproj'.">
+</Event><Event ErrorLevel="3" Project="ui" Source="ui\ui.vcproj" Description="Converted">
+</Event><Event ErrorLevel="0" Project="" Source="JKA_mp(SDK).sln" Description="Solution converted successfully">
+</Event><Event ErrorLevel="3" Project="" Source="JKA_mp(SDK).sln" Description="Converted">
+</Event></UpgradeLog>

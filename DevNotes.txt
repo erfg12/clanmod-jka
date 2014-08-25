@@ -1,0 +1,36 @@
+DEVELOPING NOTES...
+
+-------------------------------------
+| Fix searching in VS 2003 on Vista |
+-------------------------------------
+Go to the VS 2003 directory, right click on the binary .exe and click Properties.
+Then click on the Compatability tab, and check Disable visual themes, 
+Disable desktop composition, and Disable display scaling on high DPI settings.
+
+
+--------------------
+| Build in VS 2008 |
+--------------------
+On the JK2cgame project, right click on it, click Properties, click on C/C++,
+click on Preprocessor. On Preprocessor Definitions on the end, add...
+";_CRT_SECURE_NO_WARNINGS;_CRT_NONSTDC_NO_DEPRECATE"
+
+
+------------------
+| Debug Clan Mod |
+------------------
+1. Open JKA_mp(SDK).sln
+2. Select the JK2Game item underJKA_mp(SDK) and right click Project->Properties
+3. Select Debugging under Configuration Properties: 
+   -set the "Command" to your jaMP.exe (e.g. C:\Program Files (x86)\LucasArts\Star Wars Jedi Knight Jedi Academy\GameData\jamp.exe)
+
+   -set the "Command arguments" to:  +set fs_cdpath "C:\Program Files (x86)\LucasArts\Star Wars Jedi Knight Jedi Academy\GameData" +set fs_dirbeforepak 1 +set sv_pure 0 +set r_fullscreen 0 +set viewlog 1 +set fs_game clanmod
+
+   -set the "Working Directory" to your code path.  e.g. "I:\Projects\ClanMod\codemp\Debug"
+4. hit f5 to launch the game.
+
+-------------------
+| Building on ICC |
+-------------------
+You must install version 9.0.32. You cant use anything newer or older. Youll either get build errors or when you use the binary
+it wont work properly and ask you for other dependencies.

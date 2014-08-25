@@ -1,0 +1,154 @@
+==============================================================================================================
+Enable DMFlags
+
+dmflags
+
+No Falling Damage - 8
+Fixed FOV - 16
+No Footsteps - 32
+JK2 Yellow DFA - 64
+Easy Start Rolling - 512
+JK2 Style Roll - 1024
+No Slide on Head - 2048
+Enable Macro Scanning - 4096
+
+==============================================================================================================
+Enable Admin Powers
+ 
+cm_adminControl1, cm_adminControl2, cm_adminControl3, cm_adminControl4, cm_adminControl5
+
+AdminTele - 1
+Freeze - 2
+Silence - 4
+Protect - 8
+amBan - 16
+amKick - 32
+NPC - 64
+InsultSilence - 128
+Terminator - 256
+DemiGod - 512
+AdminBan - 1024
+Scale - 2048
+Splat - 4096
+Slay - 8192
+GrantAdmin - 16384
+ChangeMap - 32768
+Empower - 65536
+Rename - 131072
+LockName - 262144
+CSPrint - 524288
+ForceTeam - 1048576
+ChangeMode - 2097152
+Monk - 4194304
+Weather - 8388608
+AddEffect - 16777216
+Punish - 33554432
+Sleep - 67108864
+Slap - 134217728
+LockTeam - 268435456
+AddModel - 536870912
+Who IP - 1073741824
+AmVSTR - 2147483648
+
+==============================================================================================================
+Enable Emotes
+ 
+cm_emoteControl
+
+MyHead - 1
+Cower - 2
+Smack - 4
+Enraged - 8
+Victory - 16
+Victory2 - 32
+Victory3 - 64
+Swirl - 128
+Dance - 256
+Dance2 - 512
+Dance3 - 1024
+Punch - 2048
+Intimidate - 4096
+Slash - 8192
+Sit - 16384
+Sit2 - 32768
+Point - 65536
+Kneel2 - 131072
+Kneel - 262144
+LayDown - 524288
+BreakDance - 1048576
+Cheer - 2097152
+Surrender - 4194304
+HeadShake - 8388608
+HeadNod - 16777216
+aTease - 33554432
+ComeOn - 67108864
+Kiss - 134217728
+Hug - 268435456
+
+===============================================================================================================
+Force Power Disabling
+
+g_forcePowerDisable
+
+FP_HEAL 1
+FP_JUMP 2
+FP_SPEED 4
+FP_PUSH 8
+FP_PULL 16
+FP_MINDTRICK 32
+FP_GRIP 64
+FP_LIGHTNING 128
+FP_RAGE 256
+FP_PROTECT 512
+FP_ABSORB 1024
+FP_TEAM_HEAL 2048
+FP_TEAM_FORCE 4096
+FP_DRAIN 8192
+FP_SEE 16384
+FP_SABER_OFFENSE 32768
+FP_SABER_DEFENSE 65536
+FP_SABERTHROW 131072
+
+=================================================================================================================
+Weapon Disabling
+
+g_weaponDisable
+
+WP_STUN_BATON 2
+WP_MELEE 4
+WP_SABER 8
+WP_BRYAR_PISTOL 16
+WP_BLASTER 32
+WP_DISRUPTOR 64
+WP_BOWCASTER 128
+WP_REPEATER 256
+WP_DEMP2 512
+WP_FLECHETTE 1024
+WP_ROCKET_LAUNCHER 2048
+WP_THERMAL 4096
+WP_TRIP_MINE 8192
+WP_DET_PACK 16384
+WP_CONCUSSION 32768
+WP_BRYAR_OLD 65536
+WP_EMPLACED_GUN 131072
+WP_TURRET 262144
+
+=================================================================================================================
+Vote Disabling
+
+cm_restrictvote
+
+MAP_RESTART 1
+NEXTMAP 2
+MAP 4
+G_GAMETYPE 8
+KICK 16
+CLIENTKICK 32
+G_DOWARMUP 64
+TIMELIMIT 128
+FRAGLIMIT 256
+MODCONTROL 512
+SLEEP 1024
+SILENCE 2048
+
+=================================================================================================================

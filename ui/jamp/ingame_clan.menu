@@ -1,0 +1,146 @@
+//----------------------------------------------------------------------------------------------
+// INGAME CLAN BOX - NEWAGE
+//----------------------------------------------------------------------------------------------
+{
+	menuDef  
+	{
+		name					"ingame_clan"
+		visible					0
+		fullscreen				0
+		outOfBoundsClick							// this closes the window if it gets a click out of the rectangle
+		rect					10 40 380 280
+		focusColor				1 .75 0 1
+		style					1
+		border					1
+
+
+		// Overall window backdrop
+		itemDef 
+		{
+			name				background_pic
+			group				none
+			style				WINDOW_STYLE_SHADER
+			rect				0 0 500 240
+			background			"gfx/menus/menu_box_ingame"
+			forecolor			1 1 1 1
+			visible				1
+			decoration
+		}
+
+		itemDef 
+		{
+			name				claninfo
+			rect				10 20 360 20
+			style				0	
+			type				4
+			text				@MENUS_CLAN_INITIALS
+			cvar				"ui_clan_initials" 
+			maxPaintChars		24
+			textalign			ITEM_ALIGN_RIGHT		
+			textalignx			150
+			textaligny			-3    
+			forecolor			1 .682 0 1
+			font				2
+			textscale			1
+			visible				1
+			decoration
+		}
+
+		itemDef 
+		{
+			name				claninfo
+			rect				10 40 360 20
+			style				0	
+			type				4
+			text				@MENUS_CLAN_FULLNAME
+			cvar				"ui_clan_fullname" 
+			maxPaintChars		24
+			textalign			ITEM_ALIGN_RIGHT		
+			textalignx			150
+			textaligny			-3    
+			forecolor			1 .682 0 1
+			font				2
+			textscale			1
+			visible				1
+			decoration
+		}
+
+		itemDef 
+		{
+			name				claninfo
+			rect				10 60 360 20
+			type				4
+			style				0	
+			text				@MENUS_CLAN_WEBSITE
+			cvar				"ui_clan_website"
+			maxPaintChars		50
+			textalign			ITEM_ALIGN_RIGHT		
+			textalignx			150
+			textaligny			-3   
+			font				2
+			textscale			1
+			forecolor			1 .682 0 1
+			visible				1
+			decoration
+		}
+
+		itemDef 
+		{
+			name				claninfo
+			rect				10 80 360 20
+			type				4
+			style				0	
+			text				@MENUS_CLAN_RECRUITING
+			cvar				"ui_clan_recruiting"
+			maxPaintChars			20
+			textalign			ITEM_ALIGN_RIGHT		
+			textalignx			150
+			textaligny			-3   
+			font				2
+			textscale			1
+			forecolor			1 .682 0 1
+			visible				1
+			decoration
+		}
+
+		itemDef 
+		{
+			name				claninfo
+			rect				10 100 360 20
+			type				4
+			style				0	
+			text				@MENUS_CLAN_LAMING
+			cvar				"ui_clan_laming"
+			maxPaintChars			20
+			textalign			ITEM_ALIGN_RIGHT		
+			textalignx			150
+			textaligny			-3   
+			font				2
+			textscale			1
+			forecolor			1 .682 0 1
+			visible				1
+			decoration
+		}
+
+		itemDef 
+		{
+			name				claninfo
+			rect				10 120 360 20
+			type				4
+			style				0	
+			text				@MENUS_CLAN_MOREINFO
+			cvar				"ui_clan_moreinfo"
+			maxPaintChars			20
+			textalign			ITEM_ALIGN_RIGHT		
+			textalignx			150
+			textaligny			-3   
+			font				2
+			textscale			1
+			forecolor			1 .682 0 1
+			visible				1
+			decoration
+		}
+
+	}
+}
+

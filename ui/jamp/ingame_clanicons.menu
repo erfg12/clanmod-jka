@@ -1,0 +1,916 @@
+//----------------------------------------------------------------------------------------------
+// INGAME CLAN BOX - NEWAGE
+//----------------------------------------------------------------------------------------------
+{
+	menuDef  
+	{
+		name					"ingame_clanicons"
+		visible					0
+		fullscreen				0
+		rect					10 40 600 280
+		focusColor				1 .75 0 1
+		style					1
+		border					1
+		onClose 
+		{ 
+			uiScript				update "ui_SetClanIcon"
+			uiScript				update "ui_SetClanIcon2"
+		}
+
+
+		// Overall window backdrop
+		itemDef 
+		{
+			name				background_pic
+			group				none
+			style				WINDOW_STYLE_SHADER
+			rect				0 0 600 240
+			background			"gfx/menus/menu_box_ingame"
+			forecolor			1 1 1 1
+			visible				1
+			decoration
+		}
+
+		itemDef 
+		{
+			name				layertitle
+			style				WINDOW_STYLE_SHADER
+			background			"gfx/menus/menu_blendbox"
+			text				"Layer 1"
+			rect				0 5 360 28
+			textalign			ITEM_ALIGN_CENTER		
+			textalignx			180
+			textaligny			2
+			outlinecolor		1 .5 .5 .5
+			backcolor			0 0 0 0
+			font				3
+			textscale			0.9
+			forecolor			.549 .854 1 1
+			border			0
+			bordercolor			0 0 0 0
+			visible			1 
+		}
+
+		itemDef 
+		{
+			name				layertitle2
+			style				WINDOW_STYLE_SHADER
+			background			"gfx/menus/menu_blendbox"
+			text				"Layer 2"
+			rect				250 5 360 28
+			textalign			ITEM_ALIGN_CENTER		
+			textalignx			180
+			textaligny			2
+			outlinecolor		1 .5 .5 .5
+			backcolor			0 0 0 0
+			font				3
+			textscale			0.9
+			forecolor			.549 .854 1 1
+			border			0
+			bordercolor			0 0 0 0
+			visible			1 
+		}
+
+		itemDef 
+		{
+			name				layer1
+			text				"blood"
+			type 				1
+			style				2	
+			rect				2 24 124 15 
+			textalign			ITEM_ALIGN_CENTER
+			textalignx			62
+			textaligny			0     
+			font				2
+			textscale			1
+			forecolor			0.2 0.2 1 1
+			cvar				"ui_clanicon"
+			visible			1 
+			action 
+			{
+				play			"sound/interface/button1.wav" ;
+				setcvar		ui_clanicon  "blood"
+			}
+		}
+
+		itemDef 
+		{
+			name				layer1
+			text				"bomb"
+			type 				1
+			style				2	
+			rect				2 44 124 15 
+			textalign			ITEM_ALIGN_CENTER
+			textalignx			62
+			textaligny			0     
+			font				2
+			textscale			1
+			forecolor			0.2 0.2 1 1
+			cvar				"ui_clanicon"
+			visible			1 
+			action 
+			{
+				play			"sound/interface/button1.wav" ;
+				setcvar		ui_clanicon  "bomb"
+			}
+		}
+
+		itemDef 
+		{
+			name				layer1
+			text				"cross"
+			type 				1
+			style				2	
+			rect				2 64 124 15 
+			textalign			ITEM_ALIGN_CENTER
+			textalignx			62
+			textaligny			0     
+			font				2
+			textscale			1
+			forecolor			0.2 0.2 1 1
+			cvar				"ui_clanicon"
+			visible			1 
+			action 
+			{
+				play			"sound/interface/button1.wav" ;
+				setcvar		ui_clanicon  "cross"
+			}
+		}
+
+		itemDef 
+		{
+			name				layer1
+			text				"flower"
+			type 				1
+			style				2	
+			rect				2 84 124 15 
+			textalign			ITEM_ALIGN_CENTER
+			textalignx			62
+			textaligny			0     
+			font				2
+			textscale			1
+			forecolor			0.2 0.2 1 1
+			cvar				"ui_clanicon"
+			visible			1 
+			action 
+			{
+				play			"sound/interface/button1.wav" ;
+				setcvar		ui_clanicon  "flower"
+			}
+		}
+
+		itemDef 
+		{
+			name				layer1
+			text				"happy"
+			type 				1
+			style				2	
+			rect				2 104 124 15 
+			textalign			ITEM_ALIGN_CENTER
+			textalignx			62
+			textaligny			0     
+			font				2
+			textscale			1
+			forecolor			0.2 0.2 1 1
+			cvar				"ui_clanicon"
+			visible			1 
+			action 
+			{
+				play			"sound/interface/button1.wav" ;
+				setcvar		ui_clanicon  "happy"
+			}
+		}
+
+		itemDef 
+		{
+			name				layer1
+			text				"imperial"
+			type 				1
+			style				2	
+			rect				2 124 124 15 
+			textalign			ITEM_ALIGN_CENTER
+			textalignx			62
+			textaligny			0     
+			font				2
+			textscale			1
+			forecolor			0.2 0.2 1 1
+			cvar				"ui_clanicon"
+			visible			1 
+			action 
+			{
+				play			"sound/interface/button1.wav" ;
+				setcvar		ui_clanicon  "imperial"
+			}
+		}
+
+		itemDef 
+		{
+			name				layer1
+			text				"japanese"
+			type 				1
+			style				2	
+			rect				2 144 124 15 
+			textalign			ITEM_ALIGN_CENTER
+			textalignx			62
+			textaligny			0     
+			font				2
+			textscale			1
+			forecolor			0.2 0.2 1 1
+			cvar				"ui_clanicon"
+			visible			1 
+			action 
+			{
+				play			"sound/interface/button1.wav" ;
+				setcvar		ui_clanicon  "japanese"
+			}
+		}
+
+		itemDef 
+		{
+			name				layer1
+			text				"loser"
+			type 				1
+			style				2
+			rect				2 164 124 15 
+			textalign			ITEM_ALIGN_CENTER
+			textalignx			62
+			textaligny			0     
+			font				2
+			textscale			1
+			forecolor			0.2 0.2 1 1
+			cvar				"ui_clanicon"
+			visible			1 
+			action 
+			{
+				play			"sound/interface/button1.wav" ;
+				setcvar		ui_clanicon  "lost"
+			}
+		}
+		
+		itemDef 
+		{
+			name				layer1
+			text				"mandalorian"
+			type 				1
+			style				2
+			rect				2 184 124 15 
+			textalign			ITEM_ALIGN_CENTER
+			textalignx			62
+			textaligny			0     
+			font				2
+			textscale			1
+			forecolor			0.2 0.2 1 1
+			cvar				"ui_clanicon"
+			visible			1 
+			action 
+			{
+				play			"sound/interface/button1.wav" ;
+				setcvar		ui_clanicon  "mandalorian"
+			}
+		}
+
+		itemDef 
+		{
+			name				layer1
+			text				"nuklear"
+			type 				1
+			style				2
+			rect				100 24 124 15 
+			textalign			ITEM_ALIGN_CENTER
+			textalignx			62
+			textaligny			0     
+			font				2
+			textscale			1
+			forecolor			0.2 0.2 1 1
+			cvar				"ui_clanicon"
+			visible			1 
+			action 
+			{
+				play			"sound/interface/button1.wav" ;
+				setcvar		ui_clanicon  "nuklear"
+			}
+		}
+
+		itemDef 
+		{
+			name				layer1
+			text				"number1"
+			type 				1
+			style				2
+			rect				100 44 124 15 
+			textalign			ITEM_ALIGN_CENTER
+			textalignx			62
+			textaligny			0     
+			font				2
+			textscale			1
+			forecolor			0.2 0.2 1 1
+			cvar				"ui_clanicon"
+			visible			1 
+			action 
+			{
+				play			"sound/interface/button1.wav" ;
+				setcvar		ui_clanicon  "numba1"
+			}
+		}
+
+		itemDef 
+		{
+			name				layer1
+			text				"peace"
+			type 				1
+			style				2
+			rect				100 64 124 15 
+			textalign			ITEM_ALIGN_CENTER
+			textalignx			62
+			textaligny			0     
+			font				2
+			textscale			1
+			forecolor			0.2 0.2 1 1
+			cvar				"ui_clanicon"
+			visible			1 
+			action 
+			{
+				play			"sound/interface/button1.wav" ;
+				setcvar		ui_clanicon  "peace"
+			}
+		}
+
+		itemDef 
+		{
+			name				layer1
+			text				"rebel"
+			type 				1
+			style				2
+			rect				100 84 124 15 
+			textalign			ITEM_ALIGN_CENTER
+			textalignx			62
+			textaligny			0     
+			font				2
+			textscale			1
+			forecolor			0.2 0.2 1 1
+			cvar				"ui_clanicon"
+			visible			1 
+			action 
+			{
+				play			"sound/interface/button1.wav" ;
+				setcvar		ui_clanicon  "rebel"
+			}
+		}
+		
+		itemDef 
+		{
+			name				layer1
+			text				"roar"
+			type 				1
+			style				2
+			rect				100 104 124 15 
+			textalign			ITEM_ALIGN_CENTER
+			textalignx			62
+			textaligny			0     
+			font				2
+			textscale			1
+			forecolor			0.2 0.2 1 1
+			cvar				"ui_clanicon"
+			visible			1 
+			action 
+			{
+				play			"sound/interface/button1.wav" ;
+				setcvar		ui_clanicon  "roar"
+			}
+		}
+
+		itemDef 
+		{
+			name				layer1
+			text				"sith"
+			type 				1
+			style				2
+			rect				100 124 124 15 
+			textalign			ITEM_ALIGN_CENTER
+			textalignx			62
+			textaligny			0     
+			font				2
+			textscale			1
+			forecolor			0.2 0.2 1 1
+			cvar				"ui_clanicon"
+			visible			1 
+			action 
+			{
+				play			"sound/interface/button1.wav" ;
+				setcvar		ui_clanicon  "sith"
+			}
+		}
+
+		itemDef 
+		{
+			name				layer1
+			text				"skull"
+			type 				1
+			style				2
+			rect				100 144 124 15 
+			textalign			ITEM_ALIGN_CENTER
+			textalignx			62
+			textaligny			0     
+			font				2
+			textscale			1
+			forecolor			0.2 0.2 1 1
+			cvar				"ui_clanicon"
+			visible				1 
+			action 
+			{
+				play			"sound/interface/button1.wav" ;
+				setcvar		ui_clanicon  "skull"
+			}
+		}
+
+		itemDef 
+		{
+			name				layer1
+			text				"tie"
+			type 				1
+			style				2
+			rect				100 164 124 15 
+			textalign			ITEM_ALIGN_CENTER
+			textalignx			62
+			textaligny			0     
+			font				2
+			textscale			1
+			forecolor			0.2 0.2 1 1
+			cvar				"ui_clanicon"
+			visible				1 
+			action 
+			{
+				play			"sound/interface/button1.wav" ;
+				setcvar		ui_clanicon  "tie"
+			}
+		}
+
+		itemDef 
+		{
+			name				layer1
+			text				"unhappy"
+			type 				1
+			style				2
+			rect				100 184 124 15 
+			textalign			ITEM_ALIGN_CENTER
+			textalignx			62
+			textaligny			0     
+			font				2
+			textscale			1
+			forecolor			0.2 0.2 1 1
+			cvar				"ui_clanicon"
+			visible				1 
+			action 
+			{
+				play			"sound/interface/button1.wav" ;
+				setcvar		ui_clanicon  "unhappy"
+			}
+		}
+
+		itemDef 
+		{
+			name				layer1
+			text				"unknown"
+			type 				1
+			style				2
+			rect				200 24 124 15 
+			textalign			ITEM_ALIGN_CENTER
+			textalignx			62
+			textaligny			0     
+			font				2
+			textscale			1
+			forecolor			0.2 0.2 1 1
+			cvar				"ui_clanicon"
+			visible				1 
+			action 
+			{
+				play			"sound/interface/button1.wav" ;
+				setcvar		ui_clanicon  "unknown"
+			}
+		}
+
+		itemDef 
+		{
+			name				layer1
+			text				"xwing"
+			type 				1
+			style				2
+			rect				200 44 124 15 
+			textalign			ITEM_ALIGN_CENTER
+			textalignx			62
+			textaligny			0     
+			font				2
+			textscale			1
+			forecolor			0.2 0.2 1 1
+			cvar				"ui_clanicon"
+			visible				1 
+			action 
+			{
+				play			"sound/interface/button1.wav" ;
+				setcvar		ui_clanicon  "xwing"
+			}
+		}
+
+		itemDef 
+		{
+			name				layer1
+			text				"yinyang"
+			type 				1
+			style				2
+			rect				200 64 124 15 
+			textalign			ITEM_ALIGN_CENTER
+			textalignx			62
+			textaligny			0     
+			font				2
+			textscale			1
+			forecolor			0.2 0.2 1 1
+			cvar				"ui_clanicon"
+			visible				1 
+			action 
+			{
+				play			"sound/interface/button1.wav" ;
+				setcvar		ui_clanicon  "yinyang"
+			}
+		}
+
+		itemDef 
+		{
+			name				layer1
+			text				"yoda"
+			type 				1
+			style				2
+			rect				200 84 124 15 
+			textalign			ITEM_ALIGN_CENTER
+			textalignx			62
+			textaligny			0     
+			font				2
+			textscale			1
+			forecolor			0.2 0.2 1 1
+			cvar				"ui_clanicon"
+			visible				1 
+			action 
+			{
+				play			"sound/interface/button1.wav" ;
+				setcvar		ui_clanicon  "yoda"
+			}
+		}
+
+		itemDef 
+		{
+			name				layer2
+			text				"7corners(red)"
+			type 				1
+			style				2
+			rect				350 24 124 15 
+			textalign			ITEM_ALIGN_CENTER
+			textalignx			62
+			textaligny			0     
+			font				2
+			textscale			1
+			forecolor			0.2 0.2 1 1
+			cvar				"ui_clanicon2"
+			visible				1 
+			action 
+			{
+				play			"sound/interface/button1.wav" ;
+				setcvar		ui_clanicon2  "7corners_red"
+			}
+		}
+
+		itemDef 
+		{
+			name				layer2
+			text				"7corners(green)"
+			type 				1
+			style				2
+			rect				350 44 124 15 
+			textalign			ITEM_ALIGN_CENTER
+			textalignx			62
+			textaligny			0     
+			font				2
+			textscale			1
+			forecolor			0.2 0.2 1 1
+			cvar				"ui_clanicon2"
+			visible				1 
+			action 
+			{
+				play			"sound/interface/button1.wav" ;
+				setcvar		ui_clanicon2  "7corners_green"
+			}
+		}
+
+		itemDef 
+		{
+			name				layer2
+			text				"7corners(blue)"
+			type 				1
+			style				2
+			rect				350 64 124 15 
+			textalign			ITEM_ALIGN_CENTER
+			textalignx			62
+			textaligny			0     
+			font				2
+			textscale			1
+			forecolor			0.2 0.2 1 1
+			cvar				"ui_clanicon2"
+			visible				1 
+			action 
+			{
+				play			"sound/interface/button1.wav" ;
+				setcvar		ui_clanicon2  "7corners_blue"
+			}
+		}
+
+		itemDef 
+		{
+			name				layer2
+			text				"donut(red)"
+			type 				1
+			style				2
+			rect				350 84 124 15 
+			textalign			ITEM_ALIGN_CENTER
+			textalignx			62
+			textaligny			0     
+			font				2
+			textscale			1
+			forecolor			0.2 0.2 1 1
+			cvar				"ui_clanicon2"
+			visible				1 
+			action 
+			{
+				play			"sound/interface/button1.wav" ;
+				setcvar		ui_clanicon2  "donuts_red"
+			}
+		}
+
+		itemDef 
+		{
+			name				layer2
+			text				"donut(green)"
+			type 				1
+			style				2
+			rect				350 104 124 15 
+			textalign			ITEM_ALIGN_CENTER
+			textalignx			62
+			textaligny			0     
+			font				2
+			textscale			1
+			forecolor			0.2 0.2 1 1
+			cvar				"ui_clanicon2"
+			visible				1 
+			action 
+			{
+				play			"sound/interface/button1.wav" ;
+				setcvar		ui_clanicon2  "donuts_green"
+			}
+		}
+
+		itemDef 
+		{
+			name				layer2
+			text				"donut(blue)"
+			type 				1
+			style				2
+			rect				350 124 124 15 
+			textalign			ITEM_ALIGN_CENTER
+			textalignx			62
+			textaligny			0     
+			font				2
+			textscale			1
+			forecolor			0.2 0.2 1 1
+			cvar				"ui_clanicon2"
+			visible				1 
+			action 
+			{
+				play			"sound/interface/button1.wav" ;
+				setcvar		ui_clanicon2  "donuts_blue"
+			}
+		}
+
+		itemDef 
+		{
+			name				layer2
+			text				"spark(red)"
+			type 				1
+			style				2
+			rect				350 144 124 15 
+			textalign			ITEM_ALIGN_CENTER
+			textalignx			62
+			textaligny			0     
+			font				2
+			textscale			1
+			forecolor			0.2 0.2 1 1
+			cvar				"ui_clanicon2"
+			visible				1 
+			action 
+			{
+				play			"sound/interface/button1.wav" ;
+				setcvar		ui_clanicon2  "spark_red"
+			}
+		}
+		
+		itemDef 
+		{
+			name				layer2
+			text				"spark(green)"
+			type 				1
+			style				2
+			rect				350 164 124 15 
+			textalign			ITEM_ALIGN_CENTER
+			textalignx			62
+			textaligny			0     
+			font				2
+			textscale			1
+			forecolor			0.2 0.2 1 1
+			cvar				"ui_clanicon2"
+			visible				1 
+			action 
+			{
+				play			"sound/interface/button1.wav" ;
+				setcvar		ui_clanicon2  "spark_green"
+			}
+		}
+
+		itemDef 
+		{
+			name				layer2
+			text				"spark(blue)"
+			type 				1
+			style				2
+			rect				350 184 124 15 
+			textalign			ITEM_ALIGN_CENTER
+			textalignx			62
+			textaligny			0     
+			font				2
+			textscale			1
+			forecolor			0.2 0.2 1 1
+			cvar				"ui_clanicon2"
+			visible				1 
+			action 
+			{
+				play			"sound/interface/button1.wav" ;
+				setcvar		ui_clanicon2  "spark_blue"
+			}
+		}
+
+		itemDef 
+		{
+			name				layer2
+			text				"spark(black)"
+			type 				1
+			style				2
+			rect				480 24 124 15 
+			textalign			ITEM_ALIGN_CENTER
+			textalignx			62
+			textaligny			0     
+			font				2
+			textscale			1
+			forecolor			0.2 0.2 1 1
+			cvar				"ui_clanicon2"
+			visible				1 
+			action 
+			{
+				play			"sound/interface/button1.wav" ;
+				setcvar		ui_clanicon2  "spark_black"
+			}
+		}
+
+		itemDef 
+		{
+			name				layer2
+			text				"star(red)"
+			type 				1
+			style				2
+			rect				480 44 124 15 
+			textalign			ITEM_ALIGN_CENTER
+			textalignx			62
+			textaligny			0     
+			font				2
+			textscale			1
+			forecolor			0.2 0.2 1 1
+			cvar				"ui_clanicon2"
+			visible				1 
+			action 
+			{
+				play			"sound/interface/button1.wav" ;
+				setcvar		ui_clanicon2  "star_red"
+			}
+		}
+
+		itemDef 
+		{
+			name				layer2
+			text				"star(green)"
+			type 				1
+			style				2
+			rect				480 64 124 15 
+			textalign			ITEM_ALIGN_CENTER
+			textalignx			62
+			textaligny			0     
+			font				2
+			textscale			1
+			forecolor			0.2 0.2 1 1
+			cvar				"ui_clanicon2"
+			visible				1 
+			action 
+			{
+				play			"sound/interface/button1.wav" ;
+				setcvar		ui_clanicon2  "star_green"
+			}
+		}
+
+		itemDef 
+		{
+			name				layer2
+			text				"star(blue)"
+			type 				1
+			style				2
+			rect				480 84 124 15 
+			textalign			ITEM_ALIGN_CENTER
+			textalignx			62
+			textaligny			0     
+			font				2
+			textscale			1
+			forecolor			0.2 0.2 1 1
+			cvar				"ui_clanicon2"
+			visible				1 
+			action 
+			{
+				play			"sound/interface/button1.wav" ;
+				setcvar		ui_clanicon2  "star_blue"
+			}
+		}
+
+		itemDef 
+		{
+			name				layer2
+			text				"star(black)"
+			type 				1
+			style				2
+			rect				480 104 124 15 
+			textalign			ITEM_ALIGN_CENTER
+			textalignx			62
+			textaligny			0     
+			font				2
+			textscale			1
+			forecolor			0.2 0.2 1 1
+			cvar				"ui_clanicon2"
+			visible				1 
+			action 
+			{
+				play			"sound/interface/button1.wav" ;
+				setcvar		ui_clanicon2  "star_black"
+			}
+		}
+
+
+		itemDef 
+		{
+			name				applycloseButton
+			group				highlights 
+			style				WINDOW_STYLE_SHADER
+			rect				5 212 105 32
+			background			"gfx/menus/menu_buttonback"			// Frame around button
+			forecolor			1 1 1 1
+			decoration
+			visible			0
+			appearance_slot		3
+		}
+
+		itemDef 
+		{
+			name				applycurrent
+			group				"playerapply"
+			text				"Close"
+			type				1
+			style				WINDOW_STYLE_EMPTY
+			rect				5 212 105 32
+			textalign			ITEM_ALIGN_CENTER
+			textalignx			52
+			textaligny			2
+			font				2
+			textscale			1
+			forecolor			1 .682 0 1
+			descText			"Apply"
+			visible			1
+			action 
+			{ 
+				play			"sound/interface/button1"
+				hide			highlights
+				uiScript		closeingame
+			}
+			mouseEnter 
+			{ 
+				show			applycloseButton
+			}
+			mouseExit 
+			{ 
+				hide			applycloseButton
+			}
+		}
+
+
+
+	}
+}
+
