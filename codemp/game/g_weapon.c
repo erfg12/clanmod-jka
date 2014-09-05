@@ -6,7 +6,7 @@
 #include "g_local.h"
 #include "be_aas.h"
 #include "bg_saga.h"
-#include "../ghoul2/G2.h"
+#include "../ghoul2/g2.h"
 #include "q_shared.h"
 
 static	float	s_quadFactor;

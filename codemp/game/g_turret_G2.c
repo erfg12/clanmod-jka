@@ -1,5 +1,5 @@
 #include "g_local.h"
-#include "../ghoul2/G2.h"
+#include "../ghoul2/g2.h"
 #include "q_shared.h"
 
 void G_SetEnemy( gentity_t *self, gentity_t *enemy );

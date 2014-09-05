@@ -1,17 +1,17 @@
 #
 # Linux Makefile for the Jedi Academy Clan Mod
-# Version: 1.1
+# Version: 1.2
 # Created: November 4, 2005
-# Updated: March 25, 2006
-# Compiler: Intel C++ Compiler for Linux 9.0
+# Updated: Sept. 5, 2014
+# Compiler: Intel C++ Compiler for Linux 2015
 #
 
 SHELL = /bin/sh
 CC = icc
-CFLAGS = -fpic -DFINAL_BUILD -DMISSIONPACK -DQAGAME -D_JK2 -D__linux__ -O2 -Ob2 -Os -mp1 -tpp6
-LDFLAGS = -static -shared -static-libcxa -Bstatic -limf
+CFLAGS = -fpic -DFINAL_BUILD -DMISSIONPACK -DQAGAME -D_JK2 -D__linux__ -O2 -Ob2 -Os -mp1
+LDFLAGS = -static -shared -Bstatic -limf
 BINARY = jampgamei386.so
-INSTALLDIR = /usr/local/games/ja/clan
+INSTALLDIR = /home
 
 OFILES = ai_main.o ai_util.o ai_wpnav.o AnimalNPC.o bg_g2_utils.o bg_misc.o bg_panimate.o \
 	   bg_pmove.o bg_saber.o bg_saberLoad.o bg_saga.o bg_slidemove.o bg_vehicleLoad.o bg_weapons.o \
@@ -19,7 +19,7 @@ OFILES = ai_main.o ai_util.o ai_wpnav.o AnimalNPC.o bg_g2_utils.o bg_misc.o bg_p
 	   g_combat.o g_exphysics.o g_ICARUScb.o g_items.o g_log.o g_main.o g_mem.o g_misc.o \
          g_missile.o g_mover.o g_nav.o g_navnew.o g_object.o g_saga.o g_session.o g_spawn.o g_strap.o \
          g_svcmds.o g_syscalls.o g_target.o g_team.o g_timer.o g_trigger.o g_turret.o g_turret_G2.o \
-         g_utils.o g_vehicles.o g_vehicleTurret.o g_weapon.o NPC.o NPC_AI_Atst.o NPC_AI_Default.o \
+         g_utils.o g_vehicles.o g_vehicleTurret.o g_weapon.o npc.o NPC_AI_Atst.o NPC_AI_Default.o \
          NPC_AI_Droid.o NPC_AI_GalakMech.o NPC_AI_Grenadier.o NPC_AI_Howler.o NPC_AI_ImperialProbe.o \
          NPC_AI_Interrogator.o NPC_AI_Jedi.o NPC_AI_Mark1.o NPC_AI_Mark2.o NPC_AI_MineMonster.o \
          NPC_AI_Rancor.o NPC_AI_Remote.o NPC_AI_Seeker.o NPC_AI_Sentry.o NPC_AI_Sniper.o  NPC_AI_Stormtrooper.o \

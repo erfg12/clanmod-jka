@@ -2127,9 +2127,10 @@ if (!strncmp((char *)0x4A88AC, "(internal)JAmp:", 15)) {
 G_ShutdownGame
 =================
 */
-#if !(MAC_PORT)
+#ifdef _WIN32
 void JKG_UnpatchEngine();
 #endif
+
 void G_ShutdownGame( int restart ) {
 	int i = 0;
 	gentity_t *ent;
@@ -2140,10 +2141,6 @@ if (!strncmp((char *)0x4A88AC, "(internal)JAmp:", 15)) {
     // If we get here, its jamp.exe and not jampded
 	JKG_UnpatchEngine();
 }
-#else
-	#if (!MAC_PORT)
-		JKG_UnpatchEngine();
-	#endif
 #endif
 
 //	G_Printf ("==== ShutdownGame ====\n");

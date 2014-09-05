@@ -489,5 +489,4 @@ void JKG_PatchEngine() {
 
 void JKG_UnpatchEngine() {
 	JKG_RemovePatch(&pDHFIX);
-
 }
