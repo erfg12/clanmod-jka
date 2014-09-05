@@ -2,12 +2,12 @@
 
 #Built for the Clan Mod, by NeWaGe
 #---------------------------------
-#|     www.theroarclan.com       |
+#|     newagesoldier.com/clanmod       |
 #---------------------------------
 
 #PRE-DEFINE STUFF!
 ICC_base="/opt/intel/cc/9.0/bin/iccvars.sh"
-SOURCE_base="/media/USB20FD/\"Clan Mod source v1.08\"/\"MP Mod\"/codemp/game"
+SOURCE_base="/media/USB20FD/\"Clan Mod source compile\"/\"MP Mod\"/codemp/game"
 
 read -p "Would you like to build the Clan Mod source? (yes/no): " UserResponse
 
@@ -21,8 +21,7 @@ elif echo $UserResponse | grep -q -s -i ^no$; then
 echo "Stoping build..."
 echo ""
 echo "Thanks for downloading the Clan Mod source."
-echo "Visit our forums for support! -> http://forums.theroarclan.com"
-echo "or our website for more information -> www.theroarclan.com"
+echo "Visit our site for support! -> http://newagesoldier.com/clanmod"
 echo ""
 echo "Type in exit if you wish to leave now."
 read -p "Would you like to exit? (exit): " UserResponse2

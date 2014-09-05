@@ -1842,24 +1842,19 @@ extern void SP_info_jedimaster_start(gentity_t *ent);
 //[BugFix44]
 extern void G_LoadArenas(void);
 //[/BugFix44]
-#if !(MAC_PORT)
+#ifdef _WIN32
 void JKG_PatchEngine();
 #endif
 void G_InitGame( int levelTime, int randomSeed, int restart ) {
-	int					i;
+	int			i;
 	vmCvar_t	mapname;
 	vmCvar_t	ckSum;
 
 //BobaFett's download hack fix
 #ifdef _WIN32
 if (!strncmp((char *)0x4A88AC, "(internal)JAmp:", 15)) {
-    // If we get here, its jamp.exe and not jampded
 	JKG_PatchEngine();
 }
-#else
-	#if !(MAC_PORT)
-		JKG_PatchEngine();
-	#endif
 #endif
 
 	//Init RMG to 0, it will be autoset to 1 if there is terrain on the level.

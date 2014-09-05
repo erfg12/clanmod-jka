@@ -1,8 +1,8 @@
 DEVELOPING NOTES...
 
--------------------------------------
-| Fix searching in VS 2003 on Vista |
--------------------------------------
+-------------------------------------------------
+| Fix searching in VS 2003 on Win Vista, 7 or 8 |
+-------------------------------------------------
 Go to the VS 2003 directory, right click on the binary .exe and click Properties.
 Then click on the Compatability tab, and check Disable visual themes, 
 Disable desktop composition, and Disable display scaling on high DPI settings.
