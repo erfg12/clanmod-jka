@@ -29,8 +29,17 @@ click on Preprocessor. On Preprocessor Definitions on the end, add...
    -set the "Working Directory" to your code path.  e.g. "I:\Projects\ClanMod\codemp\Debug"
 4. hit f5 to launch the game.
 
--------------------
-| Building on ICC |
--------------------
-You must install version 9.0.32. You cant use anything newer or older. Youll either get build errors or when you use the binary
-it wont work properly and ask you for other dependencies.
+
+------------------------------
+| Building on Linux with ICC |
+------------------------------
+I have not had any success with GCC. RavenSoft has compiled their source with ICC, so that's what I'm going to use.
+
+Version 9.0.32
+-------------
+This is what I used to use. You can still use this version, but you might want to remove the current Makefile 
+and replace it with the Makefile_9 file and use the game/build_9.sh file.
+
+Version 2015 - https://software.intel.com/en-us/intel-parallel-studio-xe
+-------------
+All files provided are ready for building. Just use the game/build_2015.sh file.

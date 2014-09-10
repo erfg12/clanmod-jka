@@ -2544,9 +2544,9 @@ void ClientThink_real( gentity_t *ent ) {
 					g_entities[i].client->ps.userInt3 = 1;
 					g_entities[i].client->ps.weapon = WP_MELEE;
 					g_entities[i].client->jetPackOn = qfalse;
-						if ( g_entities[i].client->ps.saberHolstered < 2 ){
-							g_entities[i].client->ps.saberHolstered = 2;
-						}
+					if ( g_entities[i].client->ps.saberHolstered < 2 ){
+						g_entities[i].client->ps.saberHolstered = 2;
+					}
 				}
 			}
 			if (client->pers.amterminator)
@@ -2578,29 +2578,25 @@ void ClientThink_real( gentity_t *ent ) {
 						client->ps.ammo[i] = num;
 					}
 				}
-			client->ps.persistant[PERS_MONK] = 1;
-			}
+				client->ps.persistant[PERS_MONK] = 1;
+				}
 			}
 
 			if (client->pers.amhuman){
-			if (!client->ps.duelInProgress){
-		if (!BG_SaberInSpecialAttack(ent->client->ps.torsoAnim)
-		&& !BG_SaberInAttack(ent->client->ps.saberMove)
-		&& !BG_SaberInKata(ent->client->ps.saberMove)
-		&& !BG_InKataAnim(ent->client->ps.legsAnim)
-		&& !BG_InKataAnim(ent->client->ps.torsoAnim))
-		{
-			client->ps.stats[STAT_WEAPONS] &= ~(1 << WP_SABER) & ~(1 << WP_BRYAR_PISTOL);
-			client->ps.stats[STAT_WEAPONS] |= (1 << WP_MELEE);
-			client->ps.weapon = WP_MELEE;
-			client->ps.eFlags &= ~EF_SEEKERDRONE;
-			client->ps.stats[STAT_HOLDABLE_ITEMS] &= ~(1 << HI_SEEKER) & ~(1 << HI_BINOCULARS) & ~(1 << HI_SENTRY_GUN) & ~(1 << HI_EWEB) & ~(1 << HI_CLOAK);
-			client->ps.stats[STAT_WEAPONS] &= ~(1 << WP_STUN_BATON) & ~(1 << WP_BLASTER) & ~(1 << WP_DISRUPTOR) & ~(1 << WP_BOWCASTER)
-			& ~(1 << WP_REPEATER) & ~(1 << WP_DEMP2) & ~(1 << WP_FLECHETTE) & ~(1 << WP_ROCKET_LAUNCHER) & ~(1 << WP_THERMAL) & ~(1 << WP_DET_PACK)
-			& ~(1 << WP_BRYAR_OLD) & ~(1 << WP_CONCUSSION) & ~(1 << WP_TRIP_MINE);
-		}
-				client->ps.persistant[PERS_MONK] = 1;
-			}
+				if (!client->ps.duelInProgress){
+					if (!BG_SaberInSpecialAttack(ent->client->ps.torsoAnim) && !BG_SaberInAttack(ent->client->ps.saberMove) && !BG_SaberInKata(ent->client->ps.saberMove) && !BG_InKataAnim(ent->client->ps.legsAnim) && !BG_InKataAnim(ent->client->ps.torsoAnim))
+					{
+						client->ps.stats[STAT_WEAPONS] &= ~(1 << WP_SABER) & ~(1 << WP_BRYAR_PISTOL);
+						client->ps.stats[STAT_WEAPONS] |= (1 << WP_MELEE);
+						client->ps.weapon = WP_MELEE;
+						client->ps.eFlags &= ~EF_SEEKERDRONE;
+						client->ps.stats[STAT_HOLDABLE_ITEMS] &= ~(1 << HI_SEEKER) & ~(1 << HI_BINOCULARS) & ~(1 << HI_SENTRY_GUN) & ~(1 << HI_EWEB) & ~(1 << HI_CLOAK);
+						client->ps.stats[STAT_WEAPONS] &= ~(1 << WP_STUN_BATON) & ~(1 << WP_BLASTER) & ~(1 << WP_DISRUPTOR) & ~(1 << WP_BOWCASTER)
+						& ~(1 << WP_REPEATER) & ~(1 << WP_DEMP2) & ~(1 << WP_FLECHETTE) & ~(1 << WP_ROCKET_LAUNCHER) & ~(1 << WP_THERMAL) & ~(1 << WP_DET_PACK)
+						& ~(1 << WP_BRYAR_OLD) & ~(1 << WP_CONCUSSION) & ~(1 << WP_TRIP_MINE);
+					}
+					client->ps.persistant[PERS_MONK] = 1;
+				}
 			}
 
 			if (level.modeMeeting == qtrue || level.modeClanMatch == qtrue){

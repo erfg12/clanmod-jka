@@ -4869,49 +4869,51 @@ void ClientCommand( int clientNum ) {
 		trap_Argv( 1, password, sizeof( password ) ); // password
 
 		if (strcmp(password, cm_adminPassword1.string) == 0){
-		ent->client->pers.bitvalue = cm_adminControl1.integer;
-		strcpy(ent->client->pers.login, cm_adminlogin1_saying.string);
-		strcpy(ent->client->pers.logout, cm_adminlogout1_saying.string);
-		ent->client->pers.iamanadmin = 1;
-		ent->r.svFlags |= SVF_ADMIN;
-		G_LogPrintf("%s %s\n", ent->client->pers.netname, ent->client->pers.login);
-		trap_SendServerCommand( -1, va("print \"%s ^7%s\n\"", ent->client->pers.netname, ent->client->pers.login ));
+			ent->client->pers.bitvalue = cm_adminControl1.integer;
+			strcpy(ent->client->pers.login, cm_adminlogin1_saying.string);
+			strcpy(ent->client->pers.logout, cm_adminlogout1_saying.string);
+			ent->client->pers.iamanadmin = 1;
+			ent->r.svFlags |= SVF_ADMIN;
+			G_LogPrintf("%s %s\n", ent->client->pers.netname, ent->client->pers.login);
+			trap_SendServerCommand( -1, va("print \"%s ^7%s\n\"", ent->client->pers.netname, ent->client->pers.login ));
 		} else if (strcmp(password, cm_adminPassword2.string) == 0){
-		ent->client->pers.bitvalue = cm_adminControl2.integer;
-		strcpy(ent->client->pers.login, cm_adminlogin2_saying.string);
-		strcpy(ent->client->pers.logout, cm_adminlogout2_saying.string);
-		ent->client->pers.iamanadmin = 2;
-		ent->r.svFlags |= SVF_ADMIN;
-		G_LogPrintf("%s %s\n", ent->client->pers.netname, ent->client->pers.login);
-		trap_SendServerCommand( -1, va("print \"%s ^7%s\n\"", ent->client->pers.netname, ent->client->pers.login ));
+			ent->client->pers.bitvalue = cm_adminControl2.integer;
+			strcpy(ent->client->pers.login, cm_adminlogin2_saying.string);
+			strcpy(ent->client->pers.logout, cm_adminlogout2_saying.string);
+			ent->client->pers.iamanadmin = 2;
+			ent->r.svFlags |= SVF_ADMIN;
+			G_LogPrintf("%s %s\n", ent->client->pers.netname, ent->client->pers.login);
+			trap_SendServerCommand( -1, va("print \"%s ^7%s\n\"", ent->client->pers.netname, ent->client->pers.login ));
 		} else if (strcmp(password, cm_adminPassword3.string) == 0){
-		ent->client->pers.bitvalue = cm_adminControl3.integer;
-		strcpy(ent->client->pers.login, cm_adminlogin3_saying.string);
-		strcpy(ent->client->pers.logout, cm_adminlogout3_saying.string);
-		ent->client->pers.iamanadmin = 3;
-		ent->r.svFlags |= SVF_ADMIN;
-		G_LogPrintf("%s %s\n", ent->client->pers.netname, ent->client->pers.login);
-		trap_SendServerCommand( -1, va("print \"%s ^7%s\n\"", ent->client->pers.netname, ent->client->pers.login ));
+			ent->client->pers.bitvalue = cm_adminControl3.integer;
+			strcpy(ent->client->pers.login, cm_adminlogin3_saying.string);
+			strcpy(ent->client->pers.logout, cm_adminlogout3_saying.string);
+			ent->client->pers.iamanadmin = 3;
+			ent->r.svFlags |= SVF_ADMIN;
+			G_LogPrintf("%s %s\n", ent->client->pers.netname, ent->client->pers.login);
+			trap_SendServerCommand( -1, va("print \"%s ^7%s\n\"", ent->client->pers.netname, ent->client->pers.login ));
 		} else if (strcmp(password, cm_adminPassword4.string) == 0){
-		ent->client->pers.bitvalue = cm_adminControl4.integer;
-		strcpy(ent->client->pers.login, cm_adminlogin4_saying.string);
-		strcpy(ent->client->pers.logout, cm_adminlogout4_saying.string);
-		ent->client->pers.iamanadmin = 4;
-		ent->r.svFlags |= SVF_ADMIN;
-		G_LogPrintf("%s %s\n", ent->client->pers.netname, ent->client->pers.login);
-		trap_SendServerCommand( -1, va("print \"%s ^7%s\n\"", ent->client->pers.netname, ent->client->pers.login ));
+			ent->client->pers.bitvalue = cm_adminControl4.integer;
+			strcpy(ent->client->pers.login, cm_adminlogin4_saying.string);
+			strcpy(ent->client->pers.logout, cm_adminlogout4_saying.string);
+			ent->client->pers.iamanadmin = 4;
+			ent->r.svFlags |= SVF_ADMIN;
+			G_LogPrintf("%s %s\n", ent->client->pers.netname, ent->client->pers.login);
+			trap_SendServerCommand( -1, va("print \"%s ^7%s\n\"", ent->client->pers.netname, ent->client->pers.login ));
 		} else if (strcmp(password, cm_adminPassword5.string) == 0){
-		ent->client->pers.bitvalue = cm_adminControl5.integer;
-		strcpy(ent->client->pers.login, cm_adminlogin5_saying.string);
-		strcpy(ent->client->pers.logout, cm_adminlogout5_saying.string);
-		ent->client->pers.iamanadmin = 5;
-		ent->r.svFlags |= SVF_ADMIN;
-		G_LogPrintf("%s %s\n", ent->client->pers.netname, ent->client->pers.login);
+			ent->client->pers.bitvalue = cm_adminControl5.integer;
+			strcpy(ent->client->pers.login, cm_adminlogin5_saying.string);
+			strcpy(ent->client->pers.logout, cm_adminlogout5_saying.string);
+			ent->client->pers.iamanadmin = 5;
+			ent->r.svFlags |= SVF_ADMIN;
+			G_LogPrintf("%s %s\n", ent->client->pers.netname, ent->client->pers.login);
 		trap_SendServerCommand( -1, va("print \"%s ^7%s\n\"", ent->client->pers.netname, ent->client->pers.login ));
 		} else {
 			trap_SendServerCommand( ent-g_entities, va("print \"Incorrect password.\n\"" ));
 		}
+		if (ent->client->pers.plugindetect == qtrue) {
 			trap_SendServerCommand(ent-g_entities, va("cvar c_Adminpassword %s", password));
+		}
 	}
 
 		else if ((Q_stricmp(cmd, "telemark") == 0) || (Q_stricmp(cmd, "amtelemark") == 0))

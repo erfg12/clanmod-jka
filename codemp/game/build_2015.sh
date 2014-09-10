@@ -47,7 +47,7 @@ if echo $UserResponseCONTINUE | grep -q -s -i ^c$; then
 make
 echo "Done compiling the source!"
 echo "The jampgamei386.so file has been created."
-echo "Type in \"exit\" to leave now."
+echo "Type in \"x\" to leave now. Or, press CTRL+C."
 read -p ": " UserResponse2
 fi
 #----}

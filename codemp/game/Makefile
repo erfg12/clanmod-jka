@@ -9,7 +9,7 @@
 SHELL = /bin/sh
 CC = icc
 CFLAGS = -fpic -DFINAL_BUILD -DMISSIONPACK -DQAGAME -D_JK2 -D__linux__ -O2 -Ob2 -Os -mp1
-LDFLAGS = -static -shared -Bstatic -limf
+LDFLAGS = -static -shared -Bstatic -static-intel -limf
 BINARY = jampgamei386.so
 INSTALLDIR = /home
 
