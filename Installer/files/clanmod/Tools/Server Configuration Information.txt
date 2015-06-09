@@ -1,0 +1,349 @@
+Clan Mod specific server configurations provided in the server.cfg file. Edit with NOTEPAD.
+All weapon damages are customized in damages.cfg
+All customizable sayings for admin commands in sayings.cfg
+All bit values given in bitvalues.txt or use the corresponding calculator executable.
+
+Visit http://newagesoldier.com/clanmod for more information.
+
+
+-----------------------
+sv_maxConnections
+-----------------------
+Max connections per ip. This is to protect servers from fake clients flooding the server.
+
+
+-----------------------
+cm_console_motd
+-----------------------
+Message of the day in the console.
+
+
+-----------------------
+cm_motd_line
+-----------------------
+Center screen message of the day.
+
+
+-----------------------
+cm_motd_time
+-----------------------
+Time for the center screen message of the day to display for. Set in seconds.
+
+
+-----------------------
+cm_blackNames
+-----------------------
+1 = on, 0 = off. Allow or dissallow the color black in names (^0).
+
+
+-----------------------
+cm_duelStatus
+-----------------------
+1 = on, 0 = off. Show status at the end of a duel. (health/shield remaining and who won).
+
+
+-----------------------
+cm_duelRadius
+-----------------------
+1 = on, 0 = off. Restrict the amount of duel distance before breaking the duel.
+
+
+-----------------------
+cm_gripOpenSaver
+-----------------------
+1 = on, 0 = off. When being force gripped, your lightsaber shuts off.
+
+
+-----------------------
+cm_saberSwitching
+-----------------------
+1 = on, 0 = off. Can change fighting styles (dual wield, staff or single) without having to die or re-join.
+
+
+-----------------------
+cm_keepScore
+-----------------------
+1 = on, 0 = off. When you join spectators, and re-join the actual game you do not lose your score.
+
+
+-----------------------
+cm_AllowKnockDownPull
+-----------------------
+1 = on, 0 = off. Allow someone to force pull a player after they are lying on the ground.
+NOTE: There is a glitch where if someone stands on top of another player and force pulls you while
+the player is knocked down, they can die immediately.
+
+
+-----------------------
+cm_noSuddenDeath
+-----------------------
+1 = on, 0 = off. If the scores are tied, there will be a sudden death between winning tied players.
+NOTE: If 2 bots win and tie, these sudden death matches can go on FOREVER. This attempts to fix it.
+
+
+-----------------------
+cm_forcekickflip
+-----------------------
+1 = on, 0 = off. Allow the fighting move force kick flip.
+
+
+-----------------------
+cm_spillpassword
+-----------------------
+1 = on, 0 = off. Prevents people from accidently saying a clan or admin password in chat.
+
+
+-----------------------
+cm_DuelForceRegenTime
+-----------------------
+Set in milliseconds. Force duel force regen rate. Similar to g_forceRegenTime.
+
+
+-----------------------
+cm_emoteControl
+-----------------------
+Controls what emotes are allowed. Use Tools/Emote Calculator.exe to configure this number.
+
+
+-----------------------
+cm_allow_jetpack_command
+-----------------------
+1 = on, 0 = off. Allow the /jetpack command.
+
+
+-----------------------
+cm_allow_KnockMeDown_command
+-----------------------
+1 = on, 0 = off. Allow the /KnockMeDown command.
+
+
+-----------------------
+cm_allow_drop_command
+-----------------------
+1 = on, 0 = off. Allow the /drop command.
+
+
+-----------------------
+cm_allow_report_command
+-----------------------
+1 = on, 0 = off. Allow the /report command.
+
+
+-----------------------
+cm_starting_weapons
+-----------------------
+Configure what player starting weapons are. 0 = only saber, 1 = only melee, 2 = melee + saber.
+
+
+-----------------------
+cm_elevator
+-----------------------
+0 = instant kill, 1 = injure. Players under elevators. If set to 1, players can get stuck under elevators.
+
+
+-----------------------
+cm_enable_NormalDuel
+-----------------------
+1 = on, 0 = off. Allow normal lightsaber duels.
+
+
+-----------------------
+cm_enable_ForceDuel
+-----------------------
+1 = on, 0 = off. Allow force power duels.
+
+
+-----------------------
+cm_enable_TrainingDuel
+-----------------------
+1 = on, 0 = off. Allow training duels. (infinite HP)
+
+
+-----------------------
+cm_enable_MeleeDuel
+-----------------------
+1 = on, 0 = off. Allow melee only duels. (fists and kicks only)
+
+
+-----------------------
+cm_autobow
+-----------------------
+1 = on, 0 = off. Force players to automatically bow when a duel starts.
+
+
+-----------------------
+cm_duelshield
+-----------------------
+Duel shield start levels.
+
+
+-----------------------
+cm_saberChangeProtectTime
+-----------------------
+Set in milliseconds. Protects server from being flooded with saber style change commands.
+
+
+-----------------------
+cm_hookFloodTime
+-----------------------
+Set in milliseconds. Grappling hook shoot timeout. Time it takes from 1 shot to the next.
+
+
+-----------------------
+m_grapple_shootSpeed
+-----------------------
+Set in milliseconds. How fast the grappling hook goes after being shot.
+
+
+-----------------------
+m_enable_grapple
+-----------------------
+1 = on, 0 = off. Allow the use of a grappling hook.
+
+
+-----------------------
+cm_allow_chatColors
+-----------------------
+1 = on, 0 = off. Allow the use of the c_chatColor cvar.
+
+
+-----------------------
+cm_allow_samePlayerNames
+-----------------------
+1 = on, 0 = off. Allow players to have the same name.
+
+
+-----------------------
+cm_chat_protection
+-----------------------
+1 = on, 0 = off. Protect the server from a chat flood.
+
+
+-----------------------
+cm_AutoProtect_timer
+-----------------------
+Set in secconds. If a player is idle, protect them after this many seconds.
+0 = off. Does not work when in a duel, or in another zone.
+
+
+-----------------------
+cm_FPGRIPspeed
+-----------------------
+The speed of a force gripped player moves. BASEJKA = 0.4
+
+
+-----------------------
+g_NPCmaxFollowers
+-----------------------
+0 = no followers. Quantity of allowed NPC followers.
+
+
+-----------------------
+cm_noPadawanNames
+-----------------------
+1 = on, 0 = off. Disallow the use of Padawan as a player name. 
+Players have 30 seconds to change name or else it will be changed for them.
+
+
+-----------------------
+cm_newName
+-----------------------
+Players new name after being renamed by force from Padawan.
+
+
+-----------------------
+cm_clanTag
+-----------------------
+Servers protected clan tag(s). Requires clan login in 30 seconds or you will be renamed by force.
+
+
+-----------------------
+cm_clanPassword
+-----------------------
+Password to use the clan name tag. Also shows player as (clan) under the /who command.
+Can also use /clansay to speak with clan members.
+
+
+-----------------------
+cm_tagwarning
+-----------------------
+Quantity of warnings before name being locked. Helps to prevent people from changing it back to
+a protected tag after being renamed.
+
+
+-----------------------
+mod_pushall
+-----------------------
+Force push/pull items. 0 = disabled, 1 = push/pull healths & shields, 2 = push/pull healths, shields, & dropped flags
+
+
+-----------------------
+cm_news1_time
+cm_news2_time
+cm_news3_time
+cm_news1_content
+cm_news2_content
+cm_news3_content
+-----------------------
+Content and times for news tickers. Can be used to remind players of rules every so often, or remind them of upcoming events.
+Times are in seconds. News is shown in console, not center screen.
+
+
+-----------------------
+clan_website
+clan_initials
+clan_fullname
+clan_moreinfo
+-----------------------
+Server clan information. Shows in the clan information menu.
+
+
+-----------------------
+set cm_precoded_badwords "0"
+set cm_badword1 ""
+set cm_badword2 ""
+set cm_badword3 ""
+set cm_badword4 ""
+set cm_badword5 ""
+-----------------------
+bad word filter system. Pre-coded words are the typical US curse words.
+
+
+-----------------------
+cm_empower_infforce
+-----------------------
+1 = on, 0 = off. Empowered players have infinite force powers.
+
+
+-----------------------
+cm_terminator_infammo
+-----------------------
+1 = on, 0 = off. Terminator players have infinite ammo.
+
+
+-----------------------
+cm_adminPassword1
+cm_adminPassword2
+cm_adminPassword3
+cm_adminPassword4
+cm_adminPassword5
+
+cm_adminControl1
+cm_adminControl2
+cm_adminControl3
+cm_adminControl4
+cm_adminControl5
+-----------------------
+5 different levels of administration. Set individual passwords and controls for each. You do not need to set them all.
+
+
+-----------------------
+m_v1
+m_v2
+m_v3
+m_v4
+m_v5
+m_v6
+-----------------------
+Customizable vote options. EXAMPLE: Disable Auto Bow:cm_autobow 0 to vote on disallowing automatic bowing before each duel.
+

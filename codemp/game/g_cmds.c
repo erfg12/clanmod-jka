@@ -1762,33 +1762,33 @@ void G_Say( gentity_t *ent, gentity_t *target, int mode, const char *chatText ) 
 		G_LogPrintf( "say: %s: %s\n", ent->client->pers.netname, chatText );
 		Com_sprintf (name, sizeof(name), "%s%c%c"EC": ", ent->client->pers.netname, Q_COLOR_ESCAPE, COLOR_WHITE );
 		if (roar_allow_chatColors.integer == 1){
-		if (Q_stristr(ent->client->pers.chatcolor, "red")){
-		color = COLOR_RED;
-		}
-		else if (Q_stristr(ent->client->pers.chatcolor, "green")){
-		color = COLOR_GREEN;
-		}
-		else if (Q_stristr(ent->client->pers.chatcolor, "black")){
-		color = COLOR_BLACK;
-		}
-		else if (Q_stristr(ent->client->pers.chatcolor, "yellow")){
-		color = COLOR_YELLOW;
-		}
-		else if (Q_stristr(ent->client->pers.chatcolor, "blue")){
-		color = COLOR_BLUE;
-		}
-		else if (Q_stristr(ent->client->pers.chatcolor, "cyan")){
-		color = COLOR_CYAN;
-		}
-		else if (Q_stristr(ent->client->pers.chatcolor, "purple")){
-		color = COLOR_MAGENTA;
-		}
-		else if (Q_stristr(ent->client->pers.chatcolor, "white")){
-		color = COLOR_WHITE;
-		}
-		else {
-			color = COLOR_GREEN;
-		}
+			if (Q_stristr(ent->client->pers.chatcolor, "red")){
+				color = COLOR_RED;
+			}
+			else if (Q_stristr(ent->client->pers.chatcolor, "green")){
+				color = COLOR_GREEN;
+			}
+			else if (Q_stristr(ent->client->pers.chatcolor, "black")){
+				color = COLOR_BLACK;
+			}
+			else if (Q_stristr(ent->client->pers.chatcolor, "yellow")){
+				color = COLOR_YELLOW;
+			}
+			else if (Q_stristr(ent->client->pers.chatcolor, "blue")){
+				color = COLOR_BLUE;
+			}
+			else if (Q_stristr(ent->client->pers.chatcolor, "cyan")){
+				color = COLOR_CYAN;
+			}
+			else if (Q_stristr(ent->client->pers.chatcolor, "purple")){
+				color = COLOR_MAGENTA;
+			}
+			else if (Q_stristr(ent->client->pers.chatcolor, "white")){
+				color = COLOR_WHITE;
+			}
+			else {
+				color = COLOR_GREEN;
+			}
 		}
 		else {
 			color = COLOR_GREEN;
@@ -4494,7 +4494,7 @@ void ClientCommand( int clientNum ) {
 		trap_Argv( 1,  arg1, sizeof( arg1 ) );
 		//trap_SendServerCommand( ent-g_entities, "print \"^3===^1BLANK COMMAND^3===\n\n^1DESCRIPTION: ^3BLANK\n\n^5Commands\n\n\"" );
 		if(( Q_stricmp( arg1, "freeze" ) == 0 ) || (Q_stricmp( arg1, "amfreeze" ) == 0)){
-			trap_SendServerCommand( ent-g_entities, "print \"^3===^1FREEZE ADMIN COMMAND^3===\n\n^1DESCRIPTION: ^3This command freezes a player solid and holsters their server. Rendering them unable to move.\n\n^5/Freeze +all  <--- Freeze everyone on server\n/Freeze -all  <--- Unfreeze everyone on server\n/Freeze (client ID)  <--- Freeze a single person by their ID (type in /WHO to see everyones ID)\n/Freeze (client name)  <--- Freeze a single person by their name\n^1To unfreeze a client, you must type in the command again. It's toggled.\nYou can also use... /amfreeze\n\n\"" );
+			trap_SendServerCommand( ent-g_entities, "print \"^3===^1FREEZE ADMIN COMMAND^3===\n\n^1DESCRIPTION: ^3This command freezes a player solid and holsters their lightsaber. Rendering them unable to move.\n\n^5/Freeze +all  <--- Freeze everyone on server\n/Freeze -all  <--- Unfreeze everyone on server\n/Freeze (client ID)  <--- Freeze a single person by their ID (type in /WHO to see everyones ID)\n/Freeze (client name)  <--- Freeze a single person by their name\n^1To unfreeze a client, you must type in the command again. It's toggled.\nYou can also use... /amfreeze\n\n\"" );
 		}
 		if(( Q_stricmp( arg1, "whoip" ) == 0 ) || (Q_stricmp( arg1, "amwhoip" ) == 0)){
 			trap_SendServerCommand( ent-g_entities, "print \"^3===^1WHOIP ADMIN COMMAND^3===\n\n^1DESCRIPTION: ^3This command displays the IP address of a specific client.\n\n^5/whoip (name)  <--- Display IP address by a clients name\n/whoip (client ID)  <--- Display IP address by a clients ID\n\n\"" );
@@ -4503,7 +4503,7 @@ void ClientCommand( int clientNum ) {
 			trap_SendServerCommand( ent-g_entities, "print \"^3===^1TERMINATOR ADMIN COMMAND^3===\n\n^1DESCRIPTION: ^3This command makes a player have all weapons and infinite ammo. However, they cannot use force powers.\n\n^5/Terminator  <--- If command is typed in alone, it will perform Terminator on yourself\n/Terminator +all  <--- Terminator everyone on server\n/Terminator -all  <--- Unterminator everyone on server\n/Terminator (client ID)  <--- Terminator a single person by their ID (type in /WHO to see everyones ID)\n/Terminator (client name)  <--- Terminator a single person by their name\n^1To unterminator a client, you must type in the command again. It's toggled.\nYou can also use... /ammerc /amterminator\n\n\"" );
 		}
 		else if(( Q_stricmp( arg1, "empower" ) == 0 ) || (Q_stricmp(arg1, "amempower") == 0)){
-			trap_SendServerCommand( ent-g_entities, "print \"^3===^1EMPOWER ADMIN COMMAND^3===\n\n^1DESCRIPTION: ^3This command makes a player have all the force powers and infinite force. However, they cannot use weapons.\n\n^5/Empower  <--- If command is typed in alone, it will perform Empower on yourself\n/Empower +all  <--- Empower everyone on server\n/Empower -all  <--- UnEmpower everyone on server\n/Empower (client ID)  <--- Empower a single person by their ID (type in /WHO to see everyones ID)\n/Empower (client name)  <--- Empower a single person by their name\n^1To unempower a client, you must type in the command again. It's toggled.\nYou can also use... /amempower\n\n\"" );
+			trap_SendServerCommand( ent-g_entities, "print \"^3===^1EMPOWER ADMIN COMMAND^3===\n\n^1DESCRIPTION: ^3This command makes a player have all the force powers and infinite force. However, they cannot use guns.\n\n^5/Empower  <--- If command is typed in alone, it will perform Empower on yourself\n/Empower +all  <--- Empower everyone on server\n/Empower -all  <--- UnEmpower everyone on server\n/Empower (client ID)  <--- Empower a single person by their ID (type in /WHO to see everyones ID)\n/Empower (client name)  <--- Empower a single person by their name\n^1To unempower a client, you must type in the command again. It's toggled.\nYou can also use... /amempower\n\n\"" );
 		}
 		else if(( Q_stricmp( arg1, "origin" ) == 0 ) || (Q_stricmp(arg1, "amorigin") == 0)){
 			trap_SendServerCommand( ent-g_entities, "print \"^3===^1ORIGIN COMMAND^3===\n\n^1DESCRIPTION: ^3Type this in to find out your exact X Y and Z coordinates. An admin can teleport to these using the /teleport admin command.\n\n^5/Origin  <--- Find out your X Y and Z coordinates\n/Origin (client ID)  <--- Find out someone elses X Y and Z coordinates by their ID (type in /WHO to see everyones ID)\n/Origin (client name)  <--- Find out someone elses X Y and Z coordinates by their name\nYou can also use... /amorigin\n\n\"" );
@@ -4525,6 +4525,9 @@ void ClientCommand( int clientNum ) {
 		}
 		else if(( Q_stricmp( arg1, "sleep" ) == 0 ) || (Q_stricmp(arg1, "amsleep") == 0)){
 			trap_SendServerCommand( ent-g_entities, "print \"^3===^1SLEEP ADMIN COMMAND^3===\n\n^1DESCRIPTION: ^3Make a character fall on the ground, and unable to get up.\n\n^5/Sleep (client ID)  <--- Sleep a single person by their ID (type in /WHO to see everyones ID)\n/Sleep (client name)  <--- Sleep a single person by their name\nYou can also use... /amsleep\n\n\"" );
+		}
+		else if ((Q_stricmp(arg1, "slap") == 0) || (Q_stricmp(arg1, "amslap") == 0)){
+			trap_SendServerCommand(ent - g_entities, "print \"^3===^1SLAP ADMIN COMMAND^3===\n\n^1DESCRIPTION: ^3Slap a player in to the air.\n\n^5/Slap (client ID)  <--- Slap a single person by their ID (type in /WHO to see everyones ID)\n/Slap (client name)  <--- Slap a single person by their name\nYou can also use... /amslap\n\n\"");
 		}
 		else if(( Q_stricmp( arg1, "changemode" ) == 0 ) || (Q_stricmp(arg1, "amchangemode") == 0)){
 			trap_SendServerCommand( ent-g_entities, "print \"^3===^1CHANGEMODE ADMIN COMMAND^3===\n\n^1DESCRIPTION: ^3Change the mode in FFA gametypes.\n\n^2Usage: /ChangeMode (mode)\n^5MODES = ClanMatch, ClanMeeting, and Clear\nYou can also use... /amChangeMode\n\n\"" );
@@ -4630,7 +4633,7 @@ void ClientCommand( int clientNum ) {
 	}
 		else if (Q_stricmp (cmd, "commands") == 0)
 	{
-		trap_SendServerCommand( ent-g_entities, "print \"^3===^1COMMANDS^3===\n\n/jetpack <--- put on a jetpack\n/knockmedown <--- knock yourself down\n/drop <--- drop your saber or current weapon\n/showmotd <--- see the MOTD\n/freezemotd <--- shopw MOTD for infinite time\n/HideMOTD <--- hide the MOTD\n/engage_forceduel <--- duel with force powers\n/engage_meleeduel <--- duel with only melee moves (requires plugin)\n/engage_trainingduel <--- engage in a private training session\n/endduel <--- end training duel session\n/who <--- show all clients + their status\n/chatcolor <--- SAY_ALL in a different color\n/togglechat <--- toggle teamchat mode\n+button12 <--- grappling hook\n/ignore (client) <--- ignore a clients chat text\n/clansay <--- speak to clan members\n/adminsay <--- speak to admins\n/report <--- report something to an admin\n/refuseduels <--- toggle refusing duels on/off\n/telemark <--- mark your origin and yaw for /teleport\n/servertime <--- view the server's time\n/saber <--- change your saber(s)\n\n\"" );
+		trap_SendServerCommand( ent-g_entities, "print \"^3===^1COMMANDS^3===\n\n/jetpack <--- put on a jetpack\n/knockmedown <--- knock yourself down\n/drop <--- drop your saber or current weapon\n/showmotd <--- see the MOTD\n/freezemotd <--- show MOTD for infinite time\n/HideMOTD <--- hide the MOTD\n/engage_forceduel <--- duel with force powers\n/engage_meleeduel <--- duel with only melee moves (requires plugin)\n/engage_trainingduel <--- engage in a private training session\n/endduel <--- end training duel session\n/who <--- show all clients + their status\n/chatcolor <--- SAY_ALL in a different color\n/togglechat <--- toggle teamchat mode\n+button12 <--- grappling hook\n/ignore (client) <--- ignore a clients chat text\n/clansay <--- speak to clan members\n/adminsay <--- speak to admins\n/report <--- report something to an admin\n/refuseduels <--- toggle refusing duels on/off\n/telemark <--- mark your origin and yaw for /teleport\n/servertime <--- view the server's time\n/saber <--- change your saber(s)\n\n\"" );
 	}
 	//RoAR mod NOTE: Sorry RPG mode. You stunk.
 		/*else if (Q_stricmp (cmd, "RPGcommands") == 0)

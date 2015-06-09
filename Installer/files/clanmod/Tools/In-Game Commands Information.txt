@@ -1,0 +1,510 @@
+Visit http://newagesoldier.com/clanmod for more information.
+
+
+=====================
+EMOTES
+=====================
+All commands can have a /am prefix.
+
+/dance, /dance2, /dance3, /taunt, /cower, /smack, /swirl
+/kneel, /kneel2, /point, /breakdance, /laydown, /myhead, /cheer
+/sit, /sit2, /slash, /intimidate, /punch, /surrender, /enraged
+/victory, /victory2, /victory3, /headnod, /headshake, /comeon, /kiss
+/hug, /meditate
+
+
+=====================
+ADMIN COMMANDS
+===================== 
+
+--------- 
+/AdminTele
+---------
+Teleport a client to a certain place.
+/Teleport (X)(Y)(Z)  <---- Teleport yourself to a certain coordinate (type in /origin to see your current coordinates)
+/Teleport (ID or Name)  <--- Teleport you to a single person by their ID or Name (type in /WHO to see everyones ID)
+/Teleport (client1) (client2) <---- Teleport client1 to client2
+/Teleport (client ID or name) (X) (Y) (Z)  <--- Teleport a client to coordinates
+/teleport <--- Command by itself will teleport you to your telemark
+You can also use... /AmTele /AdminTele /Tele
+
+---------
+/Terminator
+---------
+This command makes a player have all weapons and infinite ammo. However, they cannot use force powers.
+/Terminator  <--- If command is typed in alone, it will perform Terminator on yourself
+/Terminator +all  <--- Terminator everyone on server
+/Terminator -all  <--- Unterminator everyone on server
+/Terminator (client ID)  <--- Terminator a single person by their ID (type in /WHO to see everyones ID)
+/Terminator (client name)  <--- Terminator a single person by their name
+To unterminator a client, you must type in the command again. It's toggled.
+You can also use... /ammerc /amterminator
+
+---------
+/Empower
+---------
+This command makes a player have all the force powers and infinite force. However, they cannot use guns.
+/Empower  <--- If command is typed in alone, it will perform Empower on yourself
+/Empower +all  <--- Empower everyone on server
+/Empower -all  <--- UnEmpower everyone on server
+/Empower (client ID)  <--- Empower a single person by their ID (type in /WHO to see everyones ID)
+/Empower (client name)  <--- Empower a single person by their name
+To unempower a client, you must type in the command again. It's toggled.
+You can also use... /amempower
+
+---------
+/Monk
+---------
+This command makes a player have only melee, but they regenerate +1HP every 1 second. However, they cannot use weapons, or force powers.
+/Monk  <--- If command is typed in alone, it will perform Monk on yourself
+/Monk +all  <--- Monk everyone on server
+/Monk -all  <--- UnMonk everyone on server
+/Monk (client ID)  <--- Monk a single person by their ID (type in /WHO to see everyones ID)
+/Monk (client name)  <--- Monk a single person by their name
+To unmonk a client, you must type in the command again. It's toggled.
+You can also use... /ammonk
+
+----------
+/DemiGod
+----------
+Turn the character into a demi-god (half god). You can fly through walls, and act as a spectator. You cannot be injured, and cannot attack other people.
+/DemiGod  <--- If command is typed in alone, it will perform DemiGod on yourself
+/DemiGod +all  <--- DemiGod everyone on server
+/DemiGod -all  <--- UnDemiGod everyone on server
+/DemiGod (client ID)  <--- DemiGod a single person by their ID (type in /WHO to see everyones ID)
+/DemiGod (client name)  <--- DemiGod a single person by their name
+To undemigod a client, you must type in the command again. It's toggled.
+You can also use... /amdemigod
+
+---------
+/Sleep
+---------
+Make a character fall on the ground, and unable to get up.
+/Sleep (client ID)  <--- Sleep a single person by their ID (type in /WHO to see everyones ID)
+/Sleep (client name)  <--- Sleep a single person by their name
+You can also use... /amsleep
+
+----------
+/Protect
+----------
+Protect a player on a server. If the player attacks, they will become unprotected. You cannot unprotect idle-protected people.
+/Protect  <--- If command is typed in alone, it will perform Protect on yourself
+/Protect +all  <--- Protect everyone on server
+/Protect -all  <--- Unprotect everyone on server
+/Protect (client ID)  <--- Protect a single person by their ID (type in /WHO to see everyones ID)
+/Protect (client name)  <--- Protect a single person by their name
+To unprotect a client, you must type in the command again. It's toggled.
+You can also use... /amprotect
+
+---------
+/Freeze
+---------
+This command freezes a player solid and holsters their lightsaber. Rendering them unable to move.
+/Freeze +all  <--- Freeze everyone on server
+/Freeze -all  <--- Unfreeze everyone on server
+/Freeze (client ID)  <--- Freeze a single person by their ID (type in /WHO to see everyones ID)
+/Freeze (client name)  <--- Freeze a single person by their name
+To unfreeze a client, you must type in the command again. It's toggled.
+You can also use... /amfreeze
+
+---------
+/Punish
+---------
+Silence a client, and make them unable to move.
+/Punish (client ID)  <--- Punish a single person by their ID (type in /WHO to see everyones ID)
+/Punish (client name)  <--- Punish a single person by their name
+You can also use... /ampunish
+
+----------
+/ChangeMode 
+----------
+Change the mode in FFA gametypes.
+Usage: /ChangeMode (mode)
+MODES = ClanMatch, ClanMeeting, and Clear
+You can also use... /amChangeMode
+
+---------
+/ForceTeam
+---------
+Force a client to a team.
+/ForceTeam (client ID or Name) (TEAM)
+TEAMS = free, spectator, blue, red
+You can also use... /amforceteam
+
+---------
+/origin
+---------
+Type this in to find out your exact X Y and Z coordinates. An admin can teleport to these using the /teleport admin command.
+/Origin  <--- Find out your X Y and Z coordinates
+/Origin (client ID)  <--- Find out someone elses X Y and Z coordinates by their ID (type in /WHO to see everyones ID)
+/Origin (client name)  <--- Find out someone elses X Y and Z coordinates by their name
+You can also use... /amorigin
+
+---------
+/Silence
+---------
+Silence a player on a server, making them silent till they leave the server.
+/Silence +all  <--- Silence everyone on server
+/Silence -all  <--- Unsilence everyone on server
+/Silence (client ID)  <--- Silence a single person by their ID (type in /WHO to see everyones ID)
+/Silence (client name)  <--- Silence a single person by their name
+To unsilence a client, you must type in the command again. It's toggled.
+You can also use... /amsilence
+
+----------
+/InsultSilence
+----------
+Silence a person in a different way. If they do speak, they will automatically say 1 of the 4 defined insults. You can define these in the server.cfg file
+/InsultSilence (client ID)  <--- InsultSilence a single person by their ID (type in /WHO to see everyones ID)
+/InsultSilence (client name)  <--- InsultSilence a single person by their name
+To uninstultsilence a client, you must type in the command again. It's toggled.
+You can also use... /aminsultsilence
+
+--------
+/Slay
+--------
+Force a player to kill themselves.
+/Slay (client ID)  <--- Slay a single person by their ID (type in /WHO to see everyones ID)
+/Slay (client name)  <--- Slay a single person by their name
+You can also use... /amslay
+
+--------
+/Splat
+--------
+Throw a player into the air, and let them fall to their death.
+/Splat (client ID)  <--- Splat a single person by their ID (type in /WHO to see everyones ID)
+/Splat (client name)  <--- Splat a single person by their name
+You can also use... /amsplat
+
+---------
+/LockTeam
+---------
+Lock a team so clients cant join it.
+/LockTeam (team)
+TEAMS = red, blue, spectator, join
+You can also use... /amLockTeam
+
+---------
+/LockName
+---------
+Stop a player from renaming by locking their name, clan, and rank.
+/LockName (client ID or Name)  <--- Lock a clients name.
+To unlock a client's name, you must type in the command again. It's toggled.
+You can also use... /amlockname 
+
+---------
+/NPC
+---------
+Spawn an NPC or kill one.
+/NPC Spawn (ID)
+/NPC Spawn Vehicle (ID)
+/NPC kill all
+
+---------
+/Rename
+---------
+Forcefully rename a player's name.
+/Rename (client) (new name)
+You can also use... /amrename
+
+---------
+/Scale
+---------
+Scale a players character model. MIN = 50, MAX = 200
+/Scale (client ID or Name) (scale)  <--- Scale a client by their name or ID, to a certain scale
+- or -
+/scale (scale)
+You can also use... /amscale
+
+---------
+/Slap
+---------
+Slap a player in to the air.
+/Slap (client ID)  <--- Slap a single person by their ID (type in /WHO to see everyones ID)
+/Slap (client name)  <--- Slap a single person by their name
+You can also use... /amslap
+
+---------
+/WhoIP
+---------
+This command displays the IP address of a specific client.
+/whoip (name)  <--- Display IP address by a clients name
+/whoip (client ID)  <--- Display IP address by a clients ID
+
+---------
+/CSPrint
+---------
+CSPrint stands for Center Screen Print. You can center screen print any message you want to any player you want.
+USAGE: /CSPrint (player) (message) <--- Sends a message to player.
+You can use all instead of a client's name to send a message to everyone
+You can also use... /amcsprint /ampsay
+
+---------
+/amBan
+---------
+Ban a client from the server.
+USAGE: /amBan (client ID or Name)
+/addip <--- Add an IP address manually
+/removeip <--- Remove an IP address
+
+---------
+/amKick
+---------
+Kick a client out of the server.
+USAGE: /amKick (client ID or Name)
+
+---------
+/AdminBan
+---------
+Ban a client from administration use.
+USAGE: /adminBan (client ID or Name)
+/addadminip <--- Add an IP address manually
+/removeadminip <--- Remove an IP address
+
+---------
+/AdminKick
+---------
+Kick a client from administration use.
+USAGE: /adminKick (client ID or Name)
+If you grant temporary administration to the client, you can use this to kick them out.
+
+---------
+/ChangeMap
+---------
+Change the map and gametype.
+USAGE: /ChangeMap (gametype) (map)
+You can also use... /amchangemap /ammap
+GAMETYPES
+0 = FFA
+1 = HOLOCRON
+2 = JEDIMASTER
+3 = DUEL
+4 = POWER DUEL
+6 = TEAM FFA
+7 = SIEGE
+8 = CTF
+9 = CTY
+
+---------
+/AddEffect
+---------
+Place an effect on a map perminantly.
+/AddEffect (fxFile)
+WARNING: Once the effect is placed, it requires map restart to stop it!
+EXAMPLE: /addeffect env/small_fire
+/ClearEffects <-- if you want to erase the effects you've added.
+/AddEffectTemp <-- if you want to add a temporary effect.
+To clear effects from the map, you must restart the map or server.
+
+----------
+/AddModel
+----------
+Place a model on a map.
+/AddModel (model)
+WARNING: Once the model is placed, it requires map restart to stop it!
+EXAMPLE: /addmodel models/map_objects/nar_shaddar/reelosdesk.md3
+/ClearModels <-- if you want to erase the models you've added.
+AddModelTemp <-- if you want to add a temporary effect.
+To clear models from the map, you must restart the map or server.
+
+----------
+/GrantAdmin 
+----------
+This command grants a client an administration level.
+/GrantAdmin (client) (password)
+Use /adminKick to kick the client out of administration.
+
+----------
+/MyAdminCommands
+----------
+Shows your admin commands available on your administration level
+
+----------
+/AmVSTR
+----------
+This command executes the vstr.cfg file via server, and executes a variable within it.
+/amvstr ffa <--- executes the variable ffa, etc.
+You can edit the vstr.cfg and add your own custom variables in the gamedata/clanmod folder (server only).
+
+
+=====================
+ADMIN GUN COMMANDS
+=====================
+Bind these commands to a key /BIND (key) (gun command). 
+Aim your cross hair at a client, and press the button. It will execute the corresponding admin command on that client.
+
+gun_freeze
+gun_kick
+gun_silence
+gun_insult
+gun_terminator
+gun_empower
+gun_splat
+gun_slay
+gun_monk
+gun_sleep
+gun_slap
+gun_punish
+
+
+=====================
+STANDARD COMMANDS
+=====================
+For help on a specific command type in /HELP (COMMAND) in the in-game console.
+
+/jetpack
+Put on or take off a jetpack.
+
+/knockmedown
+Knock yourself down.
+
+/drop
+Drop your saber or current weapon.
+
+/showmotd
+See the center screen and console MOTD.
+
+/freezemotd
+Show MOTD for infinite time.
+
+/HideMOTD
+Hide the center screen MOTD.
+
+/engage_forceduel
+Duel with force powers.
+
+/engage_meleeduel
+Duel with only melee moves. (requires client plugin)
+
+/engage_trainingduel
+Engage in a private training session.
+
+/endduel
+End training duel session.
+
+/who
+Show all clients + their status.
+
+/chatcolor
+SAY_ALL in a different color.
+COLORS = RED, GREEN, YELLOW, BLUE, CYAN, PURPLE, WHITE, and BLACK
+
+/togglechat
+Toggle teamchat mode. 
+
++button12
+Bind to key to shoot grappling hook.
+
+/ignore (client)
+Ignore a clients chat text.
+
+/clansay
+Speak to clan members.
+
+/adminsay
+Speak to admins.
+
+/report
+Report something to an admin.
+
+/refuseduels
+Toggle refusing duels on/off.
+
+/telemark
+Mark your origin and yaw for /teleport.
+
+/servertime
+View the server's time.
+
+/saber
+Change your saber(s).
+
+/help or /info or /aminfo or /amhelp
+View all commands or get help with a specific command.
+
+/AdminCommands
+see a list of admin commands
+
+/Commands
+see a list of commands
+
+/Emotes 
+see a list of emotes
+
+/Sayings
+list of sayings
+
+/AdminGuns
+list of administration guns
+
+/saberdamages
+show server saber damages
+
+/weapondamages
+show server weapon damages
+
+/weaponvelocities
+show server weapon velocities
+
+
+=====================
+UI COMMANDS
+=====================
+Requires clan mod plugin
+
+/manual
+Show manual.
+
+/AdminCP
+Show admin control panel.
+
+
+=====================
+SAYING COMMANDS
+=====================
+Just say these. No console required.
+
+!showmotd
+!hidemotd
+!freezemotd
+!slapme
+!jetpack
+!endduel
+
+
+=====================
+SERVER COMMANDS
+=====================
+
+addip
+removeip
+addadminip
+removeadminip
+listip
+listadminip
+punish
+sleep
+addeffect
+weather
+addmodel
+silence
+insultsilence
+grantadmin
+amvstr
+empower
+splat
+rename
+csprint
+kick
+freeze
+changemap
+lockteam
+slap
+ban
+protect
+demigod
+slay
+terminator
+monk
+adminban
+

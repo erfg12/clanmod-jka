@@ -1,0 +1,87 @@
+Visit http://newagesoldier.com/clanmod for more information.
+
+
+- clanmod folder
+--------------
+All mod files
+
+
+Credits
+--------------
+All credits received for the mod including permissions and help received.
+
+
+mp_effects
+--------------
+Saved effects given to a map from the /addeffect command.
+
+
+mp_models
+--------------
+Saved models given to a map from the /addmodel command.
+
+
+mp_weather
+--------------
+Saved weather changes given to a map from the /weather command.
+
+
+adminIP.txt
+--------------
+Banned ip addresses from becoming administrator.
+
+
+banIP.txt
+--------------
+Banned ip addresses from joining the server.
+
+
+bots.cfg
+--------------
+Custom bots added to the server upon startup. Edit with NOTEPAD.
+
+
+cm_plugin.pk3
+--------------
+Plugin file for clients needed to use clan mod menus, models, etc.
+
+
+damages.cfg
+--------------
+Custom weapon damages. Edit with NOTEPAD.
+
+
+description.txt
+--------------
+Mod name shown when trying to load mod from in-game menu.
+
+
+jampgamei386.so
+--------------
+Mod file for Linux servers.
+
+
+jampgamex86.dll
+--------------
+Mod file for windows servers.
+
+
+saber.cfg
+--------------
+For clients to change styles via bound key. Edit with NOTEPAD.
+
+
+sayings.cfg
+--------------
+Custom sayings for admin commands. Edit with NOTEPAD.
+
+
+server.cfg
+--------------
+Custom server configurations. Edit with NOTEPAD.
+
+
+vstr.cfg
+--------------
+Custom server cycle game change options. Edit with NOTEPAD.
+

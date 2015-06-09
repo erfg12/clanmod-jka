@@ -1527,11 +1527,11 @@ void G_CheckClientIdle( gentity_t *ent, usercmd_t *ucmd )
 			ent->client->ps.torsoAnim = TORSO_RAISEWEAP1;
 		}
 	}
-	else if ( ent->client->sess.sessionTeam != TEAM_SPECTATOR && ent->s.eType == ET_PLAYER && !ent->client->ps.duelInProgress && !ent->client->pers.tzone && level.time - ent->client->idleTime > roar_idle_AutoProtect_timer.integer * 1000 ){
+	else if (ent->client->sess.sessionTeam != TEAM_SPECTATOR && ent->s.eType == ET_PLAYER && !ent->client->ps.duelInProgress && !ent->client->pers.tzone && level.time - ent->client->idleTime > roar_idle_AutoProtect_timer.integer * 1000){
 		if (roar_idle_AutoProtect_timer.integer != 0){
-		ent->client->pers.autopro = 1;
+			ent->client->pers.autopro = 1;
 		}
-		}
+	}
 	else if ( level.time - ent->client->idleTime > 5000 && (roar_idle_AutoProtect_timer.integer == 0 || ent->client->pers.tzone || ent->client->pers.autopro) )
 	{//been idle for 5 seconds
 		int	idleAnim = -1;
@@ -2426,11 +2426,8 @@ void ClientThink_real( gentity_t *ent ) {
 		client->ps.pm_type = PM_NOCLIP;
 	} else if ( client->ps.stats[STAT_HEALTH] <= 0 ) {
 		client->ps.pm_type = PM_DEAD;
-		/*if (g_gametype.integer == GT_RPG){
-			ent->client->ps.fallingToDeath = qtrue;
-			trap_SendServerCommand( ent-g_entities, va("cp \"^1You are dead!\n\"") );
-		}*/
-	} else {
+	}
+	else {
 		if (client->ps.forceGripChangeMovetype)
 		{
 			client->ps.pm_type = client->ps.forceGripChangeMovetype;
@@ -2439,27 +2436,27 @@ void ClientThink_real( gentity_t *ent ) {
 		{
 			if (client->pers.amfreeze){
 				if (!client->ps.duelInProgress){
-			if (ent->client->jetPackOn)
-			{
-				Jetpack_Off(ent);
-			}
-			client->ps.pm_type = PM_FREEZE;
-			ent->flags |= FL_GODMODE;
-			client->ps.forceRestricted = qtrue;
-			if ( client->ps.saberHolstered < 2 ){
-		if (client->saber[0].soundOff){
-			G_Sound(ent, CHAN_AUTO, client->saber[0].soundOff);
-		}
-		if (client->saber[1].soundOff && client->saber[1].model[0]){
-			G_Sound(ent, CHAN_AUTO, client->saber[1].soundOff);
-		}
-		client->ps.saberHolstered = 2;
-			}
+					if (ent->client->jetPackOn)
+					{
+						Jetpack_Off(ent);
+					}
+					client->ps.pm_type = PM_FREEZE;
+					ent->flags |= FL_GODMODE;
+					client->ps.forceRestricted = qtrue;
+					if (client->ps.saberHolstered < 2){
+						if (client->saber[0].soundOff){
+							G_Sound(ent, CHAN_AUTO, client->saber[0].soundOff);
+						}
+						if (client->saber[1].soundOff && client->saber[1].model[0]){
+							G_Sound(ent, CHAN_AUTO, client->saber[1].soundOff);
+						}
+						client->ps.saberHolstered = 2;
+					}
 				}
 			}
 			else if (client->emote_freeze){
 				//being grabbed (trygrapple)
-				if ( ent->client->ps.torsoAnim == BOTH_PLAYER_PA_1 ||
+				if (ent->client->ps.torsoAnim == BOTH_PLAYER_PA_1 ||
 					ent->client->ps.torsoAnim == BOTH_PLAYER_PA_2 ||
 					ent->client->ps.torsoAnim == BOTH_PLAYER_PA_3 ||
 					ent->client->ps.torsoAnim == BOTH_PLAYER_PA_FLY ||
@@ -2467,19 +2464,19 @@ void ClientThink_real( gentity_t *ent ) {
 					return;
 				}
 				if (client->pers.cmd.forwardmove || client->pers.cmd.rightmove || client->pers.cmd.upmove || client->ps.eFlags2 == EF2_HELD_BY_MONSTER)
-					{ //Remove emote cause we moved
-						client->emote_freeze = 0;
-						ent->client->ps.forceDodgeAnim = 0;
-						ent->client->ps.forceHandExtendTime = 0;
-						client->ps.saberCanThrow = qtrue;
-						client->ps.forceRestricted = qfalse;
-					}
+				{ //Remove emote cause we moved
+					client->emote_freeze = 0;
+					ent->client->ps.forceDodgeAnim = 0;
+					ent->client->ps.forceHandExtendTime = 0;
+					client->ps.saberCanThrow = qtrue;
+					client->ps.forceRestricted = qfalse;
+				}
 				else { //applying the emote
 					client->ps.forceRestricted = qtrue;
-						if ( ent->client->ps.saberHolstered < 2 ){
-							ent->client->ps.saberHolstered = 2;
-						}
+					if (ent->client->ps.saberHolstered < 2){
+						ent->client->ps.saberHolstered = 2;
 					}
+				}
 			}
 			else if (client->jetPackOn)
 			{
@@ -2498,53 +2495,47 @@ void ClientThink_real( gentity_t *ent ) {
 					client->noclip = 0;
 				}
 				else {
-				client->ps.saberCanThrow = qfalse;
-				client->ps.forceRestricted = qtrue;
-				ent->takedamage = qfalse;
-				if (client->ps.weapon == WP_SABER)
+					client->ps.saberCanThrow = qfalse;
+					client->ps.forceRestricted = qtrue;
+					ent->takedamage = qfalse;
+					if (client->ps.weapon == WP_SABER)
 					{ //make sure their saber is shut off
-						if ( client->ps.saberHolstered < 2 ){
-		client->ps.saberHolstered = 2;
-		client->ps.weaponTime = 400;
+						if (client->ps.saberHolstered < 2){
+							client->ps.saberHolstered = 2;
+							client->ps.weaponTime = 400;
 						}
 					}
-					 if (!BG_SaberInKata(ent->client->ps.saberMove)
-		&& !BG_InKataAnim(ent->client->ps.legsAnim)
-		&& !BG_InKataAnim(ent->client->ps.torsoAnim)){
-			client->noclip = 1;
-		}
+					if (!BG_SaberInKata(ent->client->ps.saberMove)
+						&& !BG_InKataAnim(ent->client->ps.legsAnim)
+						&& !BG_InKataAnim(ent->client->ps.torsoAnim)){
+						client->noclip = 1;
+					}
 				}
 			}
 
 			if (level.modeClanMatch == qtrue){
-				//if (client->ojpClientPlugIn10 == qtrue){
-					client->ps.userInt1 = 1;
-				//}
+				client->ps.userInt1 = 1;
 			}
 
 			if (cm_forcekickflip.integer >= 1){
-				if (client->ps.userInt2 == 1){
-				} else {
+				if (client->ps.userInt2 != 1)
 					client->ps.userInt2 = 1;
-				}
 			}
 
 			//RoAR mod NOTE: Meeting mode, you cannot be hurt, nore can you have a weapon!
 			if (level.modeMeeting == qtrue)
 			{
-				int i;
-
-				for ( i = 0; i < level.numConnectedClients; i ++ )
+				for (int i = 0; i < level.numConnectedClients; i++)
 				{
 					g_entities[i].client->ps.eFlags &= ~EF_SEEKERDRONE;
 					g_entities[i].client->ps.stats[STAT_HOLDABLE_ITEMS] &= ~(1 << HI_SEEKER) & ~(1 << HI_CLOAK) & ~(1 << HI_EWEB) & ~(1 << HI_SENTRY_GUN) & ~(1 << HI_BINOCULARS) & ~(1 << HI_JETPACK);
 					g_entities[i].client->ps.stats[STAT_WEAPONS] &= ~(1 << WP_STUN_BATON) & ~(1 << WP_BLASTER) & ~(1 << WP_DISRUPTOR) & ~(1 << WP_BOWCASTER)
-					& ~(1 << WP_REPEATER) & ~(1 << WP_DEMP2) & ~(1 << WP_FLECHETTE) & ~(1 << WP_ROCKET_LAUNCHER) & ~(1 << WP_THERMAL) & ~(1 << WP_DET_PACK)
-					& ~(1 << WP_BRYAR_OLD) & ~(1 << WP_CONCUSSION) & ~(1 << WP_TRIP_MINE) & ~(1 << WP_BRYAR_PISTOL) & ~(1 << WP_SABER) & ~(1 << WP_MELEE);
+						& ~(1 << WP_REPEATER) & ~(1 << WP_DEMP2) & ~(1 << WP_FLECHETTE) & ~(1 << WP_ROCKET_LAUNCHER) & ~(1 << WP_THERMAL) & ~(1 << WP_DET_PACK)
+						& ~(1 << WP_BRYAR_OLD) & ~(1 << WP_CONCUSSION) & ~(1 << WP_TRIP_MINE) & ~(1 << WP_BRYAR_PISTOL) & ~(1 << WP_SABER) & ~(1 << WP_MELEE);
 					g_entities[i].client->ps.userInt3 = 1;
 					g_entities[i].client->ps.weapon = WP_MELEE;
 					g_entities[i].client->jetPackOn = qfalse;
-					if ( g_entities[i].client->ps.saberHolstered < 2 ){
+					if (g_entities[i].client->ps.saberHolstered < 2){
 						g_entities[i].client->ps.saberHolstered = 2;
 					}
 				}
@@ -2552,33 +2543,33 @@ void ClientThink_real( gentity_t *ent ) {
 			if (client->pers.amterminator)
 			{
 				if (client->ps.duelInProgress)
-		{
-			int	i;
-			int	num = 0;
-			for ( i = 0 ; i < MAX_WEAPONS ; i++ ) {
-			client->ps.ammo[i] = num;
-			}
-			if (dueltypes[ent->client->ps.clientNum] == 2)
-			{
-				client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_SABER) | ( 1 << WP_MELEE);
-			}
-			else if (dueltypes[ent->client->ps.clientNum] == 1 ||
-				dueltypes[ent->client->ps.clientNum] == 0){
-				client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_SABER);
-			}
-			else if (dueltypes[ent->client->ps.clientNum] == 3){
-				client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_MELEE);
-			}
-		}
-			else {
-				if (cm_terminator_infammo.integer == 1){
+				{
 					int	i;
-					int	num = 999;
-					for ( i = 0 ; i < MAX_WEAPONS ; i++ ) {
+					int	num = 0;
+					for (i = 0; i < MAX_WEAPONS; i++) {
 						client->ps.ammo[i] = num;
 					}
+					if (dueltypes[ent->client->ps.clientNum] == 2)
+					{
+						client->ps.stats[STAT_WEAPONS] |= (1 << WP_SABER) | (1 << WP_MELEE);
+					}
+					else if (dueltypes[ent->client->ps.clientNum] == 1 ||
+						dueltypes[ent->client->ps.clientNum] == 0){
+						client->ps.stats[STAT_WEAPONS] |= (1 << WP_SABER);
+					}
+					else if (dueltypes[ent->client->ps.clientNum] == 3){
+						client->ps.stats[STAT_WEAPONS] |= (1 << WP_MELEE);
+					}
 				}
-				client->ps.persistant[PERS_MONK] = 1;
+				else {
+					if (cm_terminator_infammo.integer == 1){
+						int	i;
+						int	num = 999;
+						for (i = 0; i < MAX_WEAPONS; i++) {
+							client->ps.ammo[i] = num;
+						}
+					}
+					client->ps.persistant[PERS_MONK] = 1;
 				}
 			}
 
@@ -2592,116 +2583,112 @@ void ClientThink_real( gentity_t *ent ) {
 						client->ps.eFlags &= ~EF_SEEKERDRONE;
 						client->ps.stats[STAT_HOLDABLE_ITEMS] &= ~(1 << HI_SEEKER) & ~(1 << HI_BINOCULARS) & ~(1 << HI_SENTRY_GUN) & ~(1 << HI_EWEB) & ~(1 << HI_CLOAK);
 						client->ps.stats[STAT_WEAPONS] &= ~(1 << WP_STUN_BATON) & ~(1 << WP_BLASTER) & ~(1 << WP_DISRUPTOR) & ~(1 << WP_BOWCASTER)
-						& ~(1 << WP_REPEATER) & ~(1 << WP_DEMP2) & ~(1 << WP_FLECHETTE) & ~(1 << WP_ROCKET_LAUNCHER) & ~(1 << WP_THERMAL) & ~(1 << WP_DET_PACK)
-						& ~(1 << WP_BRYAR_OLD) & ~(1 << WP_CONCUSSION) & ~(1 << WP_TRIP_MINE);
+							& ~(1 << WP_REPEATER) & ~(1 << WP_DEMP2) & ~(1 << WP_FLECHETTE) & ~(1 << WP_ROCKET_LAUNCHER) & ~(1 << WP_THERMAL) & ~(1 << WP_DET_PACK)
+							& ~(1 << WP_BRYAR_OLD) & ~(1 << WP_CONCUSSION) & ~(1 << WP_TRIP_MINE);
 					}
 					client->ps.persistant[PERS_MONK] = 1;
 				}
 			}
 
 			if (level.modeMeeting == qtrue || level.modeClanMatch == qtrue){
-			int i;
-			gentity_t * targetplayer;
-			for( i = 0; i < level.maxclients; i++ )
-			{
-				targetplayer = &g_entities[i];
-				if( targetplayer->client && targetplayer->client->pers.connected && targetplayer->r.svFlags & SVF_BOT ){
-					//targetplayer->client->ps.persistant[PERS_TEAM] = targetplayer->client->sess.sessionTeam;
-					if (targetplayer->client->sess.sessionTeam != TEAM_SPECTATOR){
-						SetTeam(targetplayer, "spectator" );
+				gentity_t * targetplayer;
+				for (int i = 0; i < level.maxclients; i++)
+				{
+					targetplayer = &g_entities[i];
+					if (targetplayer->client && targetplayer->client->pers.connected && targetplayer->r.svFlags & SVF_BOT){
+						//targetplayer->client->ps.persistant[PERS_TEAM] = targetplayer->client->sess.sessionTeam;
+						if (targetplayer->client->sess.sessionTeam != TEAM_SPECTATOR){
+							SetTeam(targetplayer, "spectator");
+						}
 					}
 				}
-			}
 			}
 
 			if (client->pers.amempower) //RoAR mod NOTE: All this shit caused bad glitches and crashes. Fixed in 1.06
 			{
-				int i;
 				if (client->ps.duelInProgress == 1)
-		{
-				for( i = 0; i < NUM_FORCE_POWERS; i ++ ){
-					client->ps.fd.forcePowerLevel[i] = client->pers.forcePowerLevelSaved[i];
+				{
+					for (int i = 0; i < NUM_FORCE_POWERS; i++){
+						client->ps.fd.forcePowerLevel[i] = client->pers.forcePowerLevelSaved[i];
+					}
+					client->ps.fd.forcePowersKnown = client->pers.forcePowersKnownSaved;
+					client->ps.eFlags &= ~EF_BODYPUSH;
+					if (dueltypes[ent->client->ps.clientNum] == 2)
+					{
+						client->ps.stats[STAT_WEAPONS] |= (1 << WP_SABER) | (1 << WP_MELEE);
+					}
+					else if (dueltypes[ent->client->ps.clientNum] == 1 ||
+						dueltypes[ent->client->ps.clientNum] == 0){
+						client->ps.stats[STAT_WEAPONS] |= (1 << WP_SABER);
+					}
+					else if (dueltypes[ent->client->ps.clientNum] == 3){
+						client->ps.stats[STAT_WEAPONS] |= (1 << WP_MELEE);
+					}
 				}
-				client->ps.fd.forcePowersKnown = client->pers.forcePowersKnownSaved;
-				client->ps.eFlags &= ~EF_BODYPUSH;
-				if (dueltypes[ent->client->ps.clientNum] == 2)
-			{
-				client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_SABER) | ( 1 << WP_MELEE);
-			}
-			else if (dueltypes[ent->client->ps.clientNum] == 1 ||
-				dueltypes[ent->client->ps.clientNum] == 0){
-				client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_SABER);
-			}
-			else if (dueltypes[ent->client->ps.clientNum] == 3){
-				client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_MELEE);
-			}
-		}
 				else {
-				if ( g_gametype.integer >= GT_TEAM) {
-					client->ps.fd.forcePowersKnown = ( 1 << FP_HEAL | 1 << FP_SPEED | 1 << FP_PUSH | 1 << FP_PULL | 
-																	 1 << FP_TELEPATHY | 1 << FP_GRIP | 1 << FP_LIGHTNING | 1 << FP_RAGE | 
-																	 1 << FP_PROTECT | 1 << FP_ABSORB | 1 << FP_TEAM_HEAL | 1 << FP_TEAM_FORCE | 
-																	 1 << FP_DRAIN | 1 << FP_SEE);
-				}
-				else{
-					client->ps.fd.forcePowersKnown = ( 1 << FP_HEAL | 1 << FP_SPEED | 1 << FP_PUSH | 1 << FP_PULL | 
-																 1 << FP_TELEPATHY | 1 << FP_GRIP | 1 << FP_LIGHTNING | 1 << FP_RAGE | 
-																 1 << FP_PROTECT | 1 << FP_ABSORB | 1 << FP_DRAIN | 1 << FP_SEE);
-				}
-				for( i = 0; i < NUM_FORCE_POWERS; i ++ ){
-					client->ps.fd.forcePowerLevel[i] = FORCE_LEVEL_3;
-				}
-				if (cm_empower_infforce.integer == 1){
-					client->ps.fd.forcePower = client->ps.fd.forcePowerMax;
-				}
-				client->ps.eFlags |= EF_BODYPUSH;
-				client->ps.stats[STAT_WEAPONS] &= ~(1 << WP_BRYAR_PISTOL);
-				client->ps.persistant[PERS_MONK] = 1;
+					if (g_gametype.integer >= GT_TEAM) {
+						client->ps.fd.forcePowersKnown = (1 << FP_HEAL | 1 << FP_SPEED | 1 << FP_PUSH | 1 << FP_PULL |
+							1 << FP_TELEPATHY | 1 << FP_GRIP | 1 << FP_LIGHTNING | 1 << FP_RAGE |
+							1 << FP_PROTECT | 1 << FP_ABSORB | 1 << FP_TEAM_HEAL | 1 << FP_TEAM_FORCE |
+							1 << FP_DRAIN | 1 << FP_SEE);
+					}
+					else{
+						client->ps.fd.forcePowersKnown = (1 << FP_HEAL | 1 << FP_SPEED | 1 << FP_PUSH | 1 << FP_PULL |
+							1 << FP_TELEPATHY | 1 << FP_GRIP | 1 << FP_LIGHTNING | 1 << FP_RAGE |
+							1 << FP_PROTECT | 1 << FP_ABSORB | 1 << FP_DRAIN | 1 << FP_SEE);
+					}
+					for (int i = 0; i < NUM_FORCE_POWERS; i++){
+						client->ps.fd.forcePowerLevel[i] = FORCE_LEVEL_3;
+					}
+					if (cm_empower_infforce.integer == 1){
+						client->ps.fd.forcePower = client->ps.fd.forcePowerMax;
+					}
+					client->ps.eFlags |= EF_BODYPUSH;
+					client->ps.stats[STAT_WEAPONS] &= ~(1 << WP_BRYAR_PISTOL);
+					client->ps.persistant[PERS_MONK] = 1;
 				}
 			}
 
 			if (client->pers.ampunish){
 				if (!client->ps.duelInProgress){
-			if (ent->client->jetPackOn)
-			{
-				Jetpack_Off(ent);
-			}
-			client->ps.pm_type = PM_FLOAT;
-			ent->flags |= FL_GODMODE;
-			client->ps.weaponTime = Q3_INFINITE;
-			if (!ent->client->pers.amhuman && !ent->client->pers.amfreeze
-					 && !ent->client->pers.amsleep && !ent->client->pers.amterminator
-					  && !ent->client->pers.amdemigod){
-			if ( client->ps.saberHolstered < 2 ){
-		if (client->saber[0].soundOff){
-			G_Sound(ent, CHAN_AUTO, client->saber[0].soundOff);
-		}
-		if (client->saber[1].soundOff && client->saber[1].model[0]){
-			G_Sound(ent, CHAN_AUTO, client->saber[1].soundOff);
-		}
-		client->ps.saberHolstered = 2;
-			}
-					  }
+					if (ent->client->jetPackOn)
+						Jetpack_Off(ent);
+					client->ps.pm_type = PM_FLOAT;
+					ent->flags |= FL_GODMODE;
+					client->ps.weaponTime = Q3_INFINITE;
+					if (!ent->client->pers.amhuman && !ent->client->pers.amfreeze
+						&& !ent->client->pers.amsleep && !ent->client->pers.amterminator
+						&& !ent->client->pers.amdemigod){
+						if (client->ps.saberHolstered < 2){
+							if (client->saber[0].soundOff){
+								G_Sound(ent, CHAN_AUTO, client->saber[0].soundOff);
+							}
+							if (client->saber[1].soundOff && client->saber[1].model[0]){
+								G_Sound(ent, CHAN_AUTO, client->saber[1].soundOff);
+							}
+							client->ps.saberHolstered = 2;
+						}
+					}
 				}
 			}
 
 			if (client->pers.autopro && !client->pers.tzone)
 			{
-				if (client->pers.cmd.forwardmove || 
-		client->pers.cmd.rightmove || 
-		client->pers.cmd.upmove || client->pers.cmd.buttons & BUTTON_ALT_ATTACK || client->pers.cmd.buttons & BUTTON_ATTACK || client->ps.eFlags2 == EF2_HELD_BY_MONSTER || client->ps.duelInProgress ||
+				if (client->pers.cmd.forwardmove ||
+					client->pers.cmd.rightmove ||
+					client->pers.cmd.upmove || client->pers.cmd.buttons & BUTTON_ALT_ATTACK || client->pers.cmd.buttons & BUTTON_ATTACK || client->ps.eFlags2 == EF2_HELD_BY_MONSTER || client->ps.duelInProgress ||
 					client->ps.fd.forcePowersActive & (1 << FP_RAGE) || client->ps.fd.forcePowersActive & (1 << FP_PULL) || client->ps.fd.forcePowersActive & (1 << FP_TELEPATHY)
-					 || client->ps.fd.forcePowersActive & (1 << FP_GRIP) || client->ps.fd.forcePowersActive & (1 << FP_LIGHTNING) || client->ps.fd.forcePowersActive & (1 << FP_PROTECT)
-					 || client->ps.fd.forcePowersActive & (1 << FP_TEAM_HEAL) || client->ps.fd.forcePowersActive & (1 << FP_TEAM_FORCE) || client->ps.fd.forcePowersActive & (1 << FP_DRAIN)
-					 || client->ps.fd.forcePowersActive & (1 << FP_SEE) || client->ps.fd.forcePowersActive & (1 << FP_SABERTHROW)){
-			ent->takedamage = qtrue;
-			client->ps.eFlags &= ~EF_INVULNERABLE;
-			client->pers.tzone = 0;
-			client->pers.autopro = 0;
+					|| client->ps.fd.forcePowersActive & (1 << FP_GRIP) || client->ps.fd.forcePowersActive & (1 << FP_LIGHTNING) || client->ps.fd.forcePowersActive & (1 << FP_PROTECT)
+					|| client->ps.fd.forcePowersActive & (1 << FP_TEAM_HEAL) || client->ps.fd.forcePowersActive & (1 << FP_TEAM_FORCE) || client->ps.fd.forcePowersActive & (1 << FP_DRAIN)
+					|| client->ps.fd.forcePowersActive & (1 << FP_SEE) || client->ps.fd.forcePowersActive & (1 << FP_SABERTHROW)){
+					ent->takedamage = qtrue;
+					client->ps.eFlags &= ~EF_INVULNERABLE;
+					client->pers.tzone = 0;
+					client->pers.autopro = 0;
 				}
 				else {
-			ent->takedamage = qfalse;
-			client->ps.eFlags |= EF_INVULNERABLE;
+					ent->takedamage = qfalse;
+					client->ps.eFlags |= EF_INVULNERABLE;
 				}
 			}
 
@@ -2712,14 +2699,14 @@ void ClientThink_real( gentity_t *ent ) {
 					{
 						Jetpack_Off(ent);
 					}
-					if (!(ent->flags & FL_GODMODE) ){
+					if (!(ent->flags & FL_GODMODE)){
 						ent->flags |= FL_GODMODE;
 					}
 					ent->takedamage = qfalse;
 					ent->client->ps.forceHandExtend = HANDEXTEND_KNOCKDOWN;
 					ent->client->ps.forceHandExtendTime = level.time + 100;
 					ent->client->ps.forceDodgeAnim = 0;
-					if ( client->ps.saberHolstered < 2 ){
+					if (client->ps.saberHolstered < 2){
 						if (client->saber[0].soundOff){
 							G_Sound(ent, CHAN_AUTO, client->saber[0].soundOff);
 						}
@@ -2736,39 +2723,39 @@ void ClientThink_real( gentity_t *ent ) {
 			{
 				if (client->pers.cmd.buttons & BUTTON_ALT_ATTACK || client->pers.cmd.buttons & BUTTON_ATTACK || client->ps.eFlags2 == EF2_HELD_BY_MONSTER || client->ps.duelInProgress ||
 					client->ps.fd.forcePowersActive & (1 << FP_RAGE) || client->ps.fd.forcePowersActive & (1 << FP_PULL) || client->ps.fd.forcePowersActive & (1 << FP_TELEPATHY)
-					 || client->ps.fd.forcePowersActive & (1 << FP_GRIP) || client->ps.fd.forcePowersActive & (1 << FP_LIGHTNING) || client->ps.fd.forcePowersActive & (1 << FP_PROTECT)
-					 || client->ps.fd.forcePowersActive & (1 << FP_TEAM_HEAL) || client->ps.fd.forcePowersActive & (1 << FP_TEAM_FORCE) || client->ps.fd.forcePowersActive & (1 << FP_DRAIN)
-					 || client->ps.fd.forcePowersActive & (1 << FP_SEE) || client->ps.fd.forcePowersActive & (1 << FP_SABERTHROW)){
-			ent->takedamage = qtrue;
-			client->ps.eFlags &= ~EF_INVULNERABLE;
-			client->pers.tzone = 0;
+					|| client->ps.fd.forcePowersActive & (1 << FP_GRIP) || client->ps.fd.forcePowersActive & (1 << FP_LIGHTNING) || client->ps.fd.forcePowersActive & (1 << FP_PROTECT)
+					|| client->ps.fd.forcePowersActive & (1 << FP_TEAM_HEAL) || client->ps.fd.forcePowersActive & (1 << FP_TEAM_FORCE) || client->ps.fd.forcePowersActive & (1 << FP_DRAIN)
+					|| client->ps.fd.forcePowersActive & (1 << FP_SEE) || client->ps.fd.forcePowersActive & (1 << FP_SABERTHROW)){
+					ent->takedamage = qtrue;
+					client->ps.eFlags &= ~EF_INVULNERABLE;
+					client->pers.tzone = 0;
 				}
 				else {
-			ent->takedamage = qfalse;
-			client->ps.eFlags |= EF_INVULNERABLE;
+					ent->takedamage = qfalse;
+					client->ps.eFlags |= EF_INVULNERABLE;
 				}
 			}
 
 			if (client->pers.amsplat)
 			{
-			if(!client->ps.duelInProgress){
-			ent->takedamage = qtrue;
-			client->damage_fromWorld = qtrue;
-			client->ps.forceRestricted = qtrue;
-			ent->flags &= ~FL_GODMODE;
-			if (!ent->client->pers.tzone || !ent->client->pers.autopro){
-				ent->client->ps.eFlags &= ~EF_INVULNERABLE;
-			}
-			if (client->jetPackOn)
-	{
-		Jetpack_Off(ent);
-	}
-			if (client->ps.groundEntityNum != ENTITYNUM_NONE && !(ent->client->ps.fd.forcePowersActive & (1<<FP_LEVITATION)))
-		 {
-		//We're not jumping, we're on the floor. SO SMACK THAT BITCH UP!
-		client->ps.velocity[2] += 1000;
-		 }
-			}
+				if (!client->ps.duelInProgress){
+					ent->takedamage = qtrue;
+					client->damage_fromWorld = qtrue;
+					client->ps.forceRestricted = qtrue;
+					ent->flags &= ~FL_GODMODE;
+					if (!ent->client->pers.tzone || !ent->client->pers.autopro){
+						ent->client->ps.eFlags &= ~EF_INVULNERABLE;
+					}
+					if (client->jetPackOn)
+					{
+						Jetpack_Off(ent);
+					}
+					if (client->ps.groundEntityNum != ENTITYNUM_NONE && !(ent->client->ps.fd.forcePowersActive & (1 << FP_LEVITATION)))
+					{
+						//We're not jumping, we're on the floor. SO SMACK THAT BITCH UP!
+						client->ps.velocity[2] += 1000;
+					}
+				}
 			}
 		}
 	}
@@ -2969,13 +2956,6 @@ void ClientThink_real( gentity_t *ent ) {
 
 		if (ucmd->buttons & BUTTON_WALKING)
 		{ //sort of a hack I guess since MP handles walking differently from SP (has some proxy cheat prevention methods)
-			/*
-			if (ent->client->ps.speed > 64)
-			{
-				ent->client->ps.speed = 64;
-			}
-			*/
-
 			if (ucmd->forwardmove > 64)
 			{
 				ucmd->forwardmove = 64;	
@@ -2993,16 +2973,13 @@ void ClientThink_real( gentity_t *ent ) {
 			{
 				ucmd->rightmove = -64;
 			}
-
-			//ent->client->ps.speed = ent->client->ps.basespeed = NPC_GetRunSpeed( ent );
 		}
 		client->ps.basespeed = client->ps.speed;
 	}
 	else if (!client->ps.m_iVehicleNum &&
 		(!ent->NPC || ent->s.NPC_class != CLASS_VEHICLE)) //if riding a vehicle it will manage our speed and such
 	{
-		// set speed
-		client->ps.speed = g_speed.value;
+		client->ps.speed = g_speed.value; // set speed
 
 		//Check for a siege class speed multiplier
 		if (g_gametype.integer == GT_SIEGE &&
