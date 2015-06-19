@@ -44,6 +44,7 @@ NOTE: ALL DIRECTORY NAMES ARE CASE SENSATIVE!
 5) Copy the files from the base directory of the retail CD into the base directory you just created. (assets0.pk3, assets1.pk3 and assets2.pk3) 
 6) Copy the libcxa.so.1 to your lib directory. Example: cp libcxa.so.1 /usr/lib 
 7) Copy the clanmod folder inside the zip file, and put it into the ja folder.
+8) Install C and i686 dependencies (yum install glibc.i686) (yum install libgcc_s.so.1)
 
 
 ///////////

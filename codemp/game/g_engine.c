@@ -385,7 +385,6 @@ static void JKG_RemovePatch(PatchData_t **patch) {
 // =================================================
 //
 
-
 #ifdef __linux__
 // Define linux symbols
 #define _DHFIX_PATCHPOS			0x804D723
@@ -393,7 +392,6 @@ static void JKG_RemovePatch(PatchData_t **patch) {
 #define _DHFIX_RETPOS2			0x804D751
 #define _DHFIX_CLREG			ebx
 #define _DHFIX_SVSCLIENTSPOS	0x83121EC
-
 
 #else
 // Define windows symbols
@@ -406,6 +404,7 @@ static void JKG_RemovePatch(PatchData_t **patch) {
 #endif
 
 static PatchData_t *pDHFIX;
+
 int JKG_CheckDownloadRequest(int clientNum, client_t *cl, const char *filename);
 
 static void *_Hook_DownloadHackFix()
@@ -473,18 +472,18 @@ static int JKG_CheckDownloadRequest(int clientNum, client_t *cl, const char *fil
 }
 
 void JKG_PatchEngine() {
-	Com_Printf(" ------- Installing Engine Patches -------- \n");
-	
+	//openJK crashes because of the printed messages
+	//G_Printf(" ------- Installing Engine Patches -------- \n");
 
 	///////////////////////////////
 	// Hook 7: Download Hack Fix
 	///////////////////////////////
 	pDHFIX = JKG_PlacePatch(PATCH_CALL, _DHFIX_PATCHPOS, (unsigned int)_Hook_DownloadHackFix()); // We'll be overwriting a call here
     if (!pDHFIX) {
-		Com_Printf("Warning: Failed to place hook 7: Download Hack Fix\n");
+		//G_Printf("Warning: Failed to place hook 7: Download Hack Fix\n");
     }
 
-	Com_Printf("Finished\n");
+	//G_Printf("Finished\n");
 }
 
 void JKG_UnpatchEngine() {

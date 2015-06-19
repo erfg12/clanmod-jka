@@ -479,7 +479,7 @@ vmCvar_t		cm_adminPassword4;
 vmCvar_t		cm_adminPassword5;
 vmCvar_t		cm_clanPassword;
 
-vmCvar_t	sv_maxConnections;
+vmCvar_t		sv_maxConnections;
 
 vmCvar_t		cm_adminlogin1_saying;
 vmCvar_t		cm_adminlogin2_saying;
