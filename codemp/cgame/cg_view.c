@@ -411,9 +411,9 @@ static void CG_ResetThirdPersonViewDamp(void)
 
 //[VS2005]
 #if defined(_WIN32) 
-#if(_MSC_VER < 1400)
-float powf ( float x, int y );
-#endif
+//#if(_MSC_VER < 1400)
+float FIXEDpowf(float x, int y);
+//#endif
 #endif
 //[/VS2005]
 //[/Test]
@@ -451,7 +451,7 @@ static void CG_UpdateThirdPersonTargetDamp(void)
 		// Note that since there are a finite number of "practical" delta millisecond values possible, 
 		// the ratio should be initialized into a chart ultimately.
 		// MJN - Linux
-		ratio = powf(dampfactor, dtime);
+		ratio = FIXEDpowf(dampfactor, dtime);
 		
 		// This value is how much distance is "left" from the ideal.
 		// MJN - Linux
@@ -540,7 +540,7 @@ static void CG_UpdateThirdPersonCameraDamp(void)
 		// Note that since there are a finite number of "practical" delta millisecond values possible, 
 		// the ratio should be initialized into a chart ultimately.
 		// MJN - Linux
-		ratio = powf(dampfactor, dtime);
+		ratio = FIXEDpowf(dampfactor, dtime);
 		
 		// This value is how much distance is "left" from the ideal.
 		// MJN - Linux

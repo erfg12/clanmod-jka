@@ -1263,14 +1263,14 @@ signed short ClampShort( int i );
 //[Linux]
 //[VS2005]
 #if defined(_WIN32) 
-#if(_MSC_VER < 1400)
+//#if(_MSC_VER < 1400)
 //#ifdef _WIN32
 //[/VS2005]
 //[Test]
 //#if !MAC_PORT //This should also work for the MAC port, so I'm commenting this out for now.
 //[/Test]
-float powf ( float x, int y );
-#endif
+float FIXEDpowf(float x, int y);
+//#endif
 #endif
 //[/Linux]
 

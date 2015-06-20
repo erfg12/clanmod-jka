@@ -1476,10 +1476,10 @@ int Q_irand(int value1, int value2)
 //[Linux]
 //[VS2005]
 #if defined(_WIN32)
-#if(_MSC_VER < 1400)
+//#if(_MSC_VER < 1400)
 //[/VS2005]
 //[/Linux]
-float powf ( float x, int y )
+float FIXEDpowf ( float x, int y )
 {
 	float r = x;
 	for ( y--; y>0; y-- )
@@ -1487,7 +1487,7 @@ float powf ( float x, int y )
 	return r;
 }
 //[Linux]
-#endif
+//#endif
 //[/Linux]
 #endif
 

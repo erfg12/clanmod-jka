@@ -1808,9 +1808,6 @@ extern	vmCvar_t		cg_thirdPersonTargetDamp;
 extern	vmCvar_t		cg_thirdPersonAlpha;
 extern	vmCvar_t		cg_thirdPersonHorzOffset;
 
-
-//extern	vmCvar_t		cg_clanrankview;
-
 extern	vmCvar_t		cg_stereoSeparation;
 extern	vmCvar_t		cg_lagometer;
 extern	vmCvar_t		cg_drawEnemyInfo;
