@@ -10,9 +10,9 @@
 	#include "cg_lights.h"
 #endif
 #if MAC_PORT
-#include "../ghoul2/g2.h"
+#include "../ghoul2/G2.h"
 #else
-#include "..\ghoul2\g2.h"
+#include "..\ghoul2\G2.h"
 #endif
 #include "../ui/ui_public.h"
 

@@ -3,9 +3,9 @@
 // cg_players.c -- handle the media and animation for player entities
 #include "cg_local.h"
 #if MAC_PORT
-#include "../ghoul2/g2.h"
+#include "../ghoul2/G2.h"
 #else
-#include "..\ghoul2\g2.h"
+#include "..\ghoul2\G2.h"
 #endif
 #include "bg_saga.h"
 

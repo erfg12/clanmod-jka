@@ -2525,7 +2525,8 @@ void ClientThink_real( gentity_t *ent ) {
 			//RoAR mod NOTE: Meeting mode, you cannot be hurt, nore can you have a weapon!
 			if (level.modeMeeting == qtrue)
 			{
-				for (int i = 0; i < level.numConnectedClients; i++)
+				int i;
+				for (i = 0; i < level.numConnectedClients; i++)
 				{
 					g_entities[i].client->ps.eFlags &= ~EF_SEEKERDRONE;
 					g_entities[i].client->ps.stats[STAT_HOLDABLE_ITEMS] &= ~(1 << HI_SEEKER) & ~(1 << HI_CLOAK) & ~(1 << HI_EWEB) & ~(1 << HI_SENTRY_GUN) & ~(1 << HI_BINOCULARS) & ~(1 << HI_JETPACK);
@@ -2592,7 +2593,8 @@ void ClientThink_real( gentity_t *ent ) {
 
 			if (level.modeMeeting == qtrue || level.modeClanMatch == qtrue){
 				gentity_t * targetplayer;
-				for (int i = 0; i < level.maxclients; i++)
+				int i;
+				for (i = 0; i < level.maxclients; i++)
 				{
 					targetplayer = &g_entities[i];
 					if (targetplayer->client && targetplayer->client->pers.connected && targetplayer->r.svFlags & SVF_BOT){
@@ -2608,7 +2610,8 @@ void ClientThink_real( gentity_t *ent ) {
 			{
 				if (client->ps.duelInProgress == 1)
 				{
-					for (int i = 0; i < NUM_FORCE_POWERS; i++){
+					int i;
+					for (i = 0; i < NUM_FORCE_POWERS; i++){
 						client->ps.fd.forcePowerLevel[i] = client->pers.forcePowerLevelSaved[i];
 					}
 					client->ps.fd.forcePowersKnown = client->pers.forcePowersKnownSaved;
@@ -2637,7 +2640,8 @@ void ClientThink_real( gentity_t *ent ) {
 							1 << FP_TELEPATHY | 1 << FP_GRIP | 1 << FP_LIGHTNING | 1 << FP_RAGE |
 							1 << FP_PROTECT | 1 << FP_ABSORB | 1 << FP_DRAIN | 1 << FP_SEE);
 					}
-					for (int i = 0; i < NUM_FORCE_POWERS; i++){
+					int i;
+					for (i = 0; i < NUM_FORCE_POWERS; i++){
 						client->ps.fd.forcePowerLevel[i] = FORCE_LEVEL_3;
 					}
 					if (cm_empower_infforce.integer == 1){

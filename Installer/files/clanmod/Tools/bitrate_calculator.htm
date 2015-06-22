@@ -1,0 +1,432 @@
+<HTML>
+<HEAD>
+<TITLE>Clan Mod Bit Calculator</TITLE>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+body,td,th {
+	font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
+	font-size: 12px;
+}
+p {  margin-top: 0.3em; margin-bottom: 0em; }
+</style>
+</HEAD>
+<BODY bgcolor="#000000" text="Gray">
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script language="JavaScript">
+// chmod calculator. Created by Peter Crouch.
+// This script was modified by Xanhorn.
+
+function calculator(user, number){
+	// Admin1
+	if (user == "Admin1") {
+		if (number == "1"){var box = eval("document.clanmod.Admin11")}
+		if (number == "2"){var box = eval("document.clanmod.Admin12")}
+		if (number == "4"){var box = eval("document.clanmod.Admin14")}
+		if (number == "8"){var box = eval("document.clanmod.Admin18")}
+		if (number == "16"){var box = eval("document.clanmod.Admin116")}
+		if (number == "32"){var box = eval("document.clanmod.Admin132")}
+		if (number == "64"){var box = eval("document.clanmod.Admin164")}
+		if (number == "128"){var box = eval("document.clanmod.Admin1128")}
+		if (number == "256"){var box = eval("document.clanmod.Admin1256")}
+		if (number == "512"){var box = eval("document.clanmod.Admin1512")}
+		if (number == "1024"){var box = eval("document.clanmod.Admin11024")}
+		if (number == "2048"){var box = eval("document.clanmod.Admin12048")}
+		if (number == "4096"){var box = eval("document.clanmod.Admin14096")}
+		if (number == "8192"){var box = eval("document.clanmod.Admin18192")}
+		if (number == "16384"){var box = eval("document.clanmod.Admin116384")}
+		if (number == "32768"){var box = eval("document.clanmod.Admin132768")}
+		if (number == "65536"){var box = eval("document.clanmod.Admin165536")}
+		if (number == "131072"){var box = eval("document.clanmod.Admin1131072")}
+		if (number == "262144"){var box = eval("document.clanmod.Admin1262144")}
+		if (number == "524288"){var box = eval("document.clanmod.Admin1524288")}
+		if (number == "1048576"){var box = eval("document.clanmod.Admin11048576")}
+		if (number == "2097152"){var box = eval("document.clanmod.Admin12097152")}
+		if (number == "4194304"){var box = eval("document.clanmod.Admin14194304")}
+		if (number == "8388608"){var box = eval("document.clanmod.Admin18388608")}
+		if (number == "16777216"){var box = eval("document.clanmod.Admin116777216")}
+		if (number == "33554432"){var box = eval("document.clanmod.Admin133554432")}
+		if (number == "67108864"){var box = eval("document.clanmod.Admin167108864")}
+		if (number == "134217728"){var box = eval("document.clanmod.Admin1134217728")}
+		if (number == "268435456"){var box = eval("document.clanmod.Admin1268435456")}
+		if (number == "536870912"){var box = eval("document.clanmod.Admin1536870912")}
+		if (number == "1073741824"){var box = eval("document.clanmod.Admin11073741824")}
+		if (number == "2147483648"){var box = eval("document.clanmod.Admin12147483648")}
+		if (box.checked == true){
+			document.clanmod.h_admin1.value += ("+number")
+			var a= (document.clanmod.h_admin1.value)
+			var b= eval(a)
+			document.clanmod.h_admin1.value=b
+			document.clanmod.t_admin1.value=b
+		}
+		if (box.checked == false){
+			if (document.clanmod.h_admin1.value != ""){
+				var a=(document.clanmod.h_admin1.value);
+				b=a-(number);
+				c=eval(b);
+				document.clanmod.h_admin1.value=c
+				document.clanmod.t_admin1.value=c
+			}
+		}
+	// Emote1
+	} else if (user == "Emote1") {
+		if (number == "1"){var box = eval("document.clanmod.Emote11")}
+		if (number == "2"){var box = eval("document.clanmod.Emote12")}
+		if (number == "4"){var box = eval("document.clanmod.Emote14")}
+		if (number == "8"){var box = eval("document.clanmod.Emote18")}
+		if (number == "16"){var box = eval("document.clanmod.Emote116")}
+		if (number == "32"){var box = eval("document.clanmod.Emote132")}
+		if (number == "64"){var box = eval("document.clanmod.Emote164")}
+		if (number == "128"){var box = eval("document.clanmod.Emote1128")}
+		if (number == "256"){var box = eval("document.clanmod.Emote1256")}
+		if (number == "512"){var box = eval("document.clanmod.Emote1512")}
+		if (number == "1024"){var box = eval("document.clanmod.Emote11024")}
+		if (number == "2048"){var box = eval("document.clanmod.Emote12048")}
+		if (number == "4096"){var box = eval("document.clanmod.Emote14096")}
+		if (number == "8192"){var box = eval("document.clanmod.Emote18192")}
+		if (number == "16384"){var box = eval("document.clanmod.Emote116384")}
+		if (number == "32768"){var box = eval("document.clanmod.Emote132768")}
+		if (number == "65536"){var box = eval("document.clanmod.Emote165536")}
+		if (number == "131072"){var box = eval("document.clanmod.Emote1131072")}
+		if (number == "262144"){var box = eval("document.clanmod.Emote1262144")}
+		if (number == "524288"){var box = eval("document.clanmod.Emote1524288")}
+		if (number == "1048576"){var box = eval("document.clanmod.Emote11048576")}
+		if (number == "2097152"){var box = eval("document.clanmod.Emote12097152")}
+		if (number == "4194304"){var box = eval("document.clanmod.Emote14194304")}
+		if (number == "8388608"){var box = eval("document.clanmod.Emote18388608")}
+		if (number == "16777216"){var box = eval("document.clanmod.Emote116777216")}
+		if (number == "33554432"){var box = eval("document.clanmod.Emote133554432")}
+		if (number == "67108864"){var box = eval("document.clanmod.Emote167108864")}
+		if (number == "134217728"){var box = eval("document.clanmod.Emote1134217728")}
+		if (number == "268435456"){var box = eval("document.clanmod.Emote1268435456")}
+		if (box.checked == true){
+			document.clanmod.h_emote1.value += ("+number")
+			var a= (document.clanmod.h_emote1.value)
+			var b= eval(a)
+			document.clanmod.h_emote1.value=b
+			document.clanmod.t_emote1.value=b
+		}
+		if (box.checked == false){
+			if (document.clanmod.h_emote1.value != ""){
+				var a=(document.clanmod.h_emote1.value);
+				b=a-(number);
+				c=eval(b);
+				document.clanmod.h_emote1.value=c
+				document.clanmod.t_emote1.value=c
+			}
+		}
+	// dmflags1
+	} else if (user == "dmflags1") {
+		if (number == "8"){var box = eval("document.clanmod.dmflags18")}
+		if (number == "16"){var box = eval("document.clanmod.dmflags116")}
+		if (number == "32"){var box = eval("document.clanmod.dmflags132")}
+		if (number == "64"){var box = eval("document.clanmod.dmflags164")}
+		if (number == "512"){var box = eval("document.clanmod.dmflags1512")}
+		if (number == "1024"){var box = eval("document.clanmod.dmflags11024")}
+		if (number == "2048"){var box = eval("document.clanmod.dmflags12048")}
+		if (number == "4096"){var box = eval("document.clanmod.dmflags14096")}
+		if (box.checked == true){
+			document.clanmod.h_dmflags1.value += ("+number")
+			var a= (document.clanmod.h_dmflags1.value)
+			var b= eval(a)
+			document.clanmod.h_dmflags1.value=b
+			document.clanmod.t_dmflags1.value=b
+		}
+		if (box.checked == false){
+			if (document.clanmod.h_dmflags1.value != ""){
+				var a=(document.clanmod.h_dmflags1.value);
+				b=a-(number);
+				c=eval(b);
+				document.clanmod.h_dmflags1.value=c
+				document.clanmod.t_dmflags1.value=c
+			}
+		}
+	// Force1
+	} else if (user == "Force1") {
+		if (number == "1"){var box = eval("document.clanmod.Force11")}
+		if (number == "2"){var box = eval("document.clanmod.Force12")}
+		if (number == "4"){var box = eval("document.clanmod.Force14")}
+		if (number == "8"){var box = eval("document.clanmod.Force18")}
+		if (number == "16"){var box = eval("document.clanmod.Force116")}
+		if (number == "32"){var box = eval("document.clanmod.Force132")}
+		if (number == "64"){var box = eval("document.clanmod.Force164")}
+		if (number == "128"){var box = eval("document.clanmod.Force1128")}
+		if (number == "256"){var box = eval("document.clanmod.Force1256")}
+		if (number == "512"){var box = eval("document.clanmod.Force1512")}
+		if (number == "1024"){var box = eval("document.clanmod.Force11024")}
+		if (number == "2048"){var box = eval("document.clanmod.Force12048")}
+		if (number == "4096"){var box = eval("document.clanmod.Force14096")}
+		if (number == "8192"){var box = eval("document.clanmod.Force18192")}
+		if (number == "16384"){var box = eval("document.clanmod.Force116384")}
+		if (number == "32768"){var box = eval("document.clanmod.Force132768")}
+		if (number == "65536"){var box = eval("document.clanmod.Force165536")}
+		if (number == "131072"){var box = eval("document.clanmod.Force1131072")}
+		if (box.checked == true){
+			document.clanmod.h_force1.value += ("+number")
+			var a= (document.clanmod.h_force1.value)
+			var b= eval(a)
+			document.clanmod.h_force1.value=b
+			document.clanmod.t_force1.value=b
+		}
+		if (box.checked == false){
+			if (document.clanmod.h_force1.value != ""){
+				var a=(document.clanmod.h_force1.value);
+				b=a-(number);
+				c=eval(b);
+				document.clanmod.h_force1.value=c
+				document.clanmod.t_force1.value=c
+			}
+		}
+	// Weapon1
+	} else if (user == "Weapon1") {
+		if (number == "2"){var box = eval("document.clanmod.Weapon12")}
+		if (number == "4"){var box = eval("document.clanmod.Weapon14")}
+		if (number == "8"){var box = eval("document.clanmod.Weapon18")}
+		if (number == "16"){var box = eval("document.clanmod.Weapon116")}
+		if (number == "32"){var box = eval("document.clanmod.Weapon132")}
+		if (number == "64"){var box = eval("document.clanmod.Weapon164")}
+		if (number == "128"){var box = eval("document.clanmod.Weapon1128")}
+		if (number == "256"){var box = eval("document.clanmod.Weapon1256")}
+		if (number == "512"){var box = eval("document.clanmod.Weapon1512")}
+		if (number == "1024"){var box = eval("document.clanmod.Weapon11024")}
+		if (number == "2048"){var box = eval("document.clanmod.Weapon12048")}
+		if (number == "4096"){var box = eval("document.clanmod.Weapon14096")}
+		if (number == "8192"){var box = eval("document.clanmod.Weapon18192")}
+		if (number == "16384"){var box = eval("document.clanmod.Weapon116384")}
+		if (number == "32768"){var box = eval("document.clanmod.Weapon132768")}
+		if (number == "65536"){var box = eval("document.clanmod.Weapon165536")}
+		if (number == "131072"){var box = eval("document.clanmod.Weapon1131072")}
+		if (number == "262144"){var box = eval("document.clanmod.Weapon1262144")}
+		if (box.checked == true){
+			document.clanmod.h_weapon1.value += ("+number")
+			var a= (document.clanmod.h_weapon1.value)
+			var b= eval(a)
+			document.clanmod.h_weapon1.value=b
+			document.clanmod.t_weapon1.value=b
+		}
+		if (box.checked == false){
+			if (document.clanmod.h_weapon1.value != ""){
+				var a=(document.clanmod.h_weapon1.value);
+				b=a-(number);
+				c=eval(b);
+				document.clanmod.h_weapon1.value=c
+				document.clanmod.t_weapon1.value=c
+			}
+		}
+	// Vote1
+	} else if (user == "Vote1") {
+		if (number == "1"){var box = eval("document.clanmod.Vote11")}
+		if (number == "2"){var box = eval("document.clanmod.Vote12")}
+		if (number == "4"){var box = eval("document.clanmod.Vote14")}
+		if (number == "8"){var box = eval("document.clanmod.Vote18")}
+		if (number == "16"){var box = eval("document.clanmod.Vote116")}
+		if (number == "32"){var box = eval("document.clanmod.Vote132")}
+		if (number == "64"){var box = eval("document.clanmod.Vote164")}
+		if (number == "128"){var box = eval("document.clanmod.Vote1128")}
+		if (number == "256"){var box = eval("document.clanmod.Vote1256")}
+		if (number == "512"){var box = eval("document.clanmod.Vote1512")}
+		if (number == "1024"){var box = eval("document.clanmod.Vote11024")}
+		if (number == "2048"){var box = eval("document.clanmod.Vote12048")}
+		if (box.checked == true){
+			document.clanmod.h_vote1.value += ("+number")
+			var a= (document.clanmod.h_vote1.value)
+			var b= eval(a)
+			document.clanmod.h_vote1.value=b
+			document.clanmod.t_vote1.value=b
+		}
+		if (box.checked == false){
+			if (document.clanmod.h_vote1.value != ""){
+				var a=(document.clanmod.h_vote1.value);
+				b=a-(number);
+				c=eval(b);
+				document.clanmod.h_vote1.value=c
+				document.clanmod.t_vote1.value=c
+			}
+		}
+	}
+}
+
+function checkAll (type) {
+	var x = document.getElementsByClassName(type);
+	var i;
+	for (i = 0; i < x.length; i++) {
+    	if(x[i].checked) x[i].checked = false;
+    	else x[i].checked = true;
+    	x[i].onclick();
+   	}
+}
+</script>
+
+<h1 style="text-align:center;color:#386381;">Clan Mod Bit Calculator</h1>
+
+<div style="clear:both;width:100%;">
+<form name="clanmod">
+
+<div style="width:200px;float:left;background-color:#141E2B;padding:10px;margin:10px;">
+<h2 style="margin-bottom:0px;color:white;">Administration</h2>
+<hr>
+<input name="h_admin1" type="hidden" value="">
+<p><input type="checkbox" class="admin" name="Admin11" value="1" onClick="calculator('Admin1', 1)"> AdminTele </p>
+<p><input type="checkbox" class="admin" name="Admin12" value="2" onClick="calculator('Admin1', 2)"> Freeze </p>
+<p><input type="checkbox" class="admin" name="Admin14" value="4" onClick="calculator('Admin1', 4)"> Silence </p>
+<p><input type="checkbox" class="admin" name="Admin18" value="8" onClick="calculator('Admin1', 8)"> Protect </p>
+<p><input type="checkbox" class="admin" name="Admin116" value="16" onClick="calculator('Admin1', 16)"> AmBan </p>
+<p><input type="checkbox" class="admin" name="Admin132" value="32" onClick="calculator('Admin1', 32)"> AmKick </p>
+<p><input type="checkbox" class="admin" name="Admin164" value="64" onClick="calculator('Admin1', 64)"> NPC </p>
+<p><input type="checkbox" class="admin" name="Admin1128" value="128" onClick="calculator('Admin1', 128)"> InsultSilence </p>
+<p><input type="checkbox" class="admin" name="Admin1256" value="256" onClick="calculator('Admin1', 256)"> Terminator </p>
+<p><input type="checkbox" class="admin" name="Admin1512" value="512" onClick="calculator('Admin1', 512)"> DemiGod </p>
+<p><input type="checkbox" class="admin" name="Admin11024" value="1024" onClick="calculator('Admin1', 1024)"> AdminBan </p>
+<p><input type="checkbox" class="admin" name="Admin12048" value="2048" onClick="calculator('Admin1', 2048)"> Scale </p>
+<p><input type="checkbox" class="admin" name="Admin14096" value="4096" onClick="calculator('Admin1', 4096)"> Splat </p>
+<p><input type="checkbox" class="admin" name="Admin18192" value="8192" onClick="calculator('Admin1', 8192)"> Slay </p>
+<p><input type="checkbox" class="admin" name="Admin116384" value="16384" onClick="calculator('Admin1', 16384)"> GrantAdmin </p>
+<p><input type="checkbox" class="admin" name="Admin132768" value="32768" onClick="calculator('Admin1', 32768)"> ChangeMap </p>
+<p><input type="checkbox" class="admin" name="Admin165536" value="65536" onClick="calculator('Admin1', 65536)"> Empower </p>
+<p><input type="checkbox" class="admin" name="Admin1131072" value="131072" onClick="calculator('Admin1', 131072)"> Rename </p>
+<p><input type="checkbox" class="admin" name="Admin1262144" value="262144" onClick="calculator('Admin1', 262144)"> LockName </p>
+<p><input type="checkbox" class="admin" name="Admin1524288" value="524288" onClick="calculator('Admin1', 524288)"> CSPrint </p>
+<p><input type="checkbox" class="admin" name="Admin11048576" value="1048576" onClick="calculator('Admin1', 1048576)"> ForceTeam </p>
+<p><input type="checkbox" class="admin" name="Admin12097152" value="2097152" onClick="calculator('Admin1', 2097152)"> ChangeMode </p>
+<p><input type="checkbox" class="admin" name="Admin14194304" value="4194304" onClick="calculator('Admin1', 4194304)"> Monk </p>
+<p><input type="checkbox" class="admin" name="Admin18388608" value="8388608" onClick="calculator('Admin1', 8388608)"> Weather </p>
+<p><input type="checkbox" class="admin" name="Admin116777216" value="16777216" onClick="calculator('Admin1', 16777216)"> AddEffect </p>
+<p><input type="checkbox" class="admin" name="Admin133554432" value="33554432" onClick="calculator('Admin1', 33554432)"> Punish </p>
+<p><input type="checkbox" class="admin" name="Admin167108864" value="67108864" onClick="calculator('Admin1', 67108864)"> Sleep </p>
+<p><input type="checkbox" class="admin" name="Admin1134217728" value="134217728" onClick="calculator('Admin1', 134217728)"> Slap </p>
+<p><input type="checkbox" class="admin" name="Admin1268435456" value="268435456" onClick="calculator('Admin1', 268435456)"> LockTeam </p>
+<p><input type="checkbox" class="admin" name="Admin1536870912" value="536870912" onClick="calculator('Admin1', 536870912)"> AddModel </p>
+<p><input type="checkbox" class="admin" name="Admin11073741824" value="1073741824" onClick="calculator('Admin1', 1073741824)"> WhoIP </p>
+<p><input type="checkbox" class="admin" name="Admin12147483648" value="2147483648" onClick="calculator('Admin1', 2147483648)"> AmVSTR </p>
+<div style="padding:10px 0px 10px 0px;"><a href="javascript:checkAll('admin');" style="color:white;font-weight:bold;">check / uncheck all</a></td></div>
+cm_adminControl# = <input type="text" name="t_admin1" value="0" style="width:80px;">
+</div>
+
+<div style="width:200px;float:left;background-color:#141E2B;padding:10px;margin:10px;">
+<h2 style="margin-bottom:0px;color:white;">Emotes</h2>
+<hr>
+<input name="h_emote1" type="hidden" value="">
+<p><input type="checkbox" class="emote" name="Emote11" value="1" onClick="calculator('Emote1', 1)"> MyHead  </p>
+<p><input type="checkbox" class="emote" name="Emote12" value="2" onClick="calculator('Emote1', 2)"> Cower  </p>
+<p><input type="checkbox" class="emote" name="Emote14" value="4" onClick="calculator('Emote1', 4)"> Smack  </p>
+<p><input type="checkbox" class="emote" name="Emote18" value="8" onClick="calculator('Emote1', 8)"> Enraged  </p>
+<p><input type="checkbox" class="emote" name="Emote116" value="16" onClick="calculator('Emote1', 16)"> Victory  </p>
+<p><input type="checkbox" class="emote" name="Emote132" value="32" onClick="calculator('Emote1', 32)"> Victory2  </p>
+<p><input type="checkbox" class="emote" name="Emote164" value="64" onClick="calculator('Emote1', 64)"> Victory3  </p>
+<p><input type="checkbox" class="emote" name="Emote1128" value="128" onClick="calculator('Emote1', 128)"> Swirl  </p>
+<p><input type="checkbox" class="emote" name="Emote1256" value="256" onClick="calculator('Emote1', 256)"> Dance  </p>
+<p><input type="checkbox" class="emote" name="Emote1512" value="512" onClick="calculator('Emote1', 512)"> Dance2  </p>
+<p><input type="checkbox" class="emote" name="Emote11024" value="1024" onClick="calculator('Emote1', 1024)"> Dance3  </p>
+<p><input type="checkbox" class="emote" name="Emote12048" value="2048" onClick="calculator('Emote1', 2048)"> Punch  </p>
+<p><input type="checkbox" class="emote" name="Emote14096" value="4096" onClick="calculator('Emote1', 4096)"> Intimidate  </p>
+<p><input type="checkbox" class="emote" name="Emote18192" value="8192" onClick="calculator('Emote1', 8192)"> Slash  </p>
+<p><input type="checkbox" class="emote" name="Emote116384" value="16384" onClick="calculator('Emote1', 16384)"> Sit  </p>
+<p><input type="checkbox" class="emote" name="Emote132768" value="32768" onClick="calculator('Emote1', 32768)"> Sit2  </p>
+<p><input type="checkbox" class="emote" name="Emote165536" value="65536" onClick="calculator('Emote1', 65536)"> Point    </p>
+<p><input type="checkbox" class="emote" name="Emote1131072" value="131072" onClick="calculator('Emote1', 131072)"> Kneel2  </p>
+<p><input type="checkbox" class="emote" name="Emote1262144" value="262144" onClick="calculator('Emote1', 262144)"> Kneel  </p>
+<p><input type="checkbox" class="emote" name="Emote1524288" value="524288" onClick="calculator('Emote1', 524288)"> LayDown  </p>
+<p><input type="checkbox" class="emote" name="Emote11048576" value="1048576" onClick="calculator('Emote1', 1048576)"> BreakDance  </p>
+<p><input type="checkbox" class="emote" name="Emote12097152" value="2097152" onClick="calculator('Emote1', 2097152)"> Cheer  </p>
+<p><input type="checkbox" class="emote" name="Emote14194304" value="4194304" onClick="calculator('Emote1', 4194304)"> Surrender  </p>
+<p><input type="checkbox" class="emote" name="Emote18388608" value="8388608" onClick="calculator('Emote1', 8388608)"> HeadShake  </p>
+<p><input type="checkbox" class="emote" name="Emote116777216" value="16777216" onClick="calculator('Emote1', 16777216)"> HeadNod  </p>
+<p><input type="checkbox" class="emote" name="Emote133554432" value="33554432" onClick="calculator('Emote1', 33554432)"> aTease  </p>
+<p><input type="checkbox" class="emote" name="Emote167108864" value="67108864" onClick="calculator('Emote1', 67108864)"> ComeOn  </p>
+<p><input type="checkbox" class="emote" name="Emote1134217728" value="134217728" onClick="calculator('Emote1', 134217728)"> Kiss  </p>
+<p><input type="checkbox" class="emote" name="Emote1268435456" value="268435456" onClick="calculator('Emote1', 268435456)"> Hug  </p>
+<div style="padding:10px 0px 10px 0px;"><a href="javascript:checkAll('emote');" style="color:white;font-weight:bold;">check / uncheck all</a></td></div>
+cm_emoteControl = <input type="text" name="t_emote1" value="0" style="width:80px;">
+</div>
+
+<div style="width:200px;float:left;background-color:#141E2B;padding:10px;margin:10px;">
+<h2 style="margin-bottom:0px;color:white;">dmflags</h2>
+<hr>
+<input name="h_dmflags1" type="hidden" value="">
+<p><input type="checkbox" class="dmflags" name="dmflags18" value="8" onClick="calculator('dmflags1', 8)"> No Falling Damage  </p>
+<p><input type="checkbox" class="dmflags" name="dmflags116" value="16" onClick="calculator('dmflags1', 16)"> Fixed FOV  </p>
+<p><input type="checkbox" class="dmflags" name="dmflags132" value="32" onClick="calculator('dmflags1', 32)"> No Footsteps  </p>
+<p><input type="checkbox" class="dmflags" name="dmflags164" value="64" onClick="calculator('dmflags1', 64)"> JK2 Yellow DFA  </p>
+<p><input type="checkbox" class="dmflags" name="dmflags1512" value="512" onClick="calculator('dmflags1', 512)"> Easy Start Rolling  </p>
+<p><input type="checkbox" class="dmflags" name="dmflags11024" value="1024" onClick="calculator('dmflags1', 1024)"> JK2 Style Roll  </p>
+<p><input type="checkbox" class="dmflags" name="dmflags12048" value="2048" onClick="calculator('dmflags1', 2048)"> No Slide on Head  </p>
+<p><input type="checkbox" class="dmflags" name="dmflags14096" value="4096" onClick="calculator('dmflags1', 4096)"> Enable Macro Scanning  </p>
+<div style="padding:10px 0px 10px 0px;"><a href="javascript:checkAll('dmflags');" style="color:white;font-weight:bold;">check / uncheck all</a></td></div>
+dmflags = <input type="text" name="t_dmflags1" value="0" style="width:80px;">
+</div>
+
+<div style="width:200px;float:left;background-color:#141E2B;padding:10px;margin:10px;">
+<h2 style="margin-bottom:0px;color:white;">Force Powers</h2>
+<hr>
+<input name="h_force1" type="hidden" value="">
+<p><input type="checkbox" class="force" name="Force11" value="1" onClick="calculator('Force1', 1)"> FP_HEAL   </p>
+<p><input type="checkbox" class="force" name="Force12" value="2" onClick="calculator('Force1', 2)"> FP_JUMP   </p>
+<p><input type="checkbox" class="force" name="Force14" value="4" onClick="calculator('Force1', 4)"> FP_SPEED   </p>
+<p><input type="checkbox" class="force" name="Force18" value="8" onClick="calculator('Force1', 8)"> FP_PUSH   </p>
+<p><input type="checkbox" class="force" name="Force116" value="16" onClick="calculator('Force1', 16)"> FP_PULL   </p>
+<p><input type="checkbox" class="force" name="Force132" value="32" onClick="calculator('Force1', 32)"> FP_MINDTRICK   </p>
+<p><input type="checkbox" class="force" name="Force164" value="64" onClick="calculator('Force1', 64)"> FP_GRIP   </p>
+<p><input type="checkbox" class="force" name="Force1128" value="128" onClick="calculator('Force1', 128)"> FP_LIGHTNING   </p>
+<p><input type="checkbox" class="force" name="Force1256" value="256" onClick="calculator('Force1', 256)"> FP_RAGE   </p>
+<p><input type="checkbox" class="force" name="Force1512" value="512" onClick="calculator('Force1', 512)"> FP_PROTECT   </p>
+<p><input type="checkbox" class="force" name="Force11024" value="1024" onClick="calculator('Force1', 1024)"> FP_ABSORB   </p>
+<p><input type="checkbox" class="force" name="Force12048" value="2048" onClick="calculator('Force1', 2048)"> FP_TEAM_HEAL   </p>
+<p><input type="checkbox" class="force" name="Force14096" value="4096" onClick="calculator('Force1', 4096)"> FP_TEAM_FORCE   </p>
+<p><input type="checkbox" class="force" name="Force18192" value="8192" onClick="calculator('Force1', 8192)"> FP_DRAIN   </p>
+<p><input type="checkbox" class="force" name="Force116384" value="16384" onClick="calculator('Force1', 16384)"> FP_SEE   </p>
+<p><input type="checkbox" class="force" name="Force132768" value="32768" onClick="calculator('Force1', 32768)"> FP_SABER_OFFENSE   </p>
+<p><input type="checkbox" class="force" name="Force165536" value="65536" onClick="calculator('Force1', 65536)"> FP_SABER_DEFENSE     </p>
+<p><input type="checkbox" class="force" name="Force1131072" value="131072" onClick="calculator('Force1', 131072)"> FP_SABERTHROW   </p>
+<div style="padding:10px 0px 10px 0px;"><a href="javascript:checkAll('force');" style="color:white;font-weight:bold;">check / uncheck all</a></td></div>
+g_forcePowerDisable = <input type="text" name="t_force1" value="0" style="width:60px;">
+</div>
+
+<div style="width:200px;float:left;background-color:#141E2B;padding:10px;margin:10px;">
+<h2 style="margin-bottom:0px;color:white;">Weapon Disabling</h2>
+<hr>
+<input name="h_weapon1" type="hidden" value="">
+<p><input type="checkbox" class="weapon" name="Weapon12" value="2" onClick="calculator('Weapon1', 2)"> WP_STUN_BATON    </p>
+<p><input type="checkbox" class="weapon" name="Weapon14" value="4" onClick="calculator('Weapon1', 4)"> WP_MELEE    </p>
+<p><input type="checkbox" class="weapon" name="Weapon18" value="8" onClick="calculator('Weapon1', 8)"> WP_SABER    </p>
+<p><input type="checkbox" class="weapon" name="Weapon116" value="16" onClick="calculator('Weapon1', 16)"> WP_BRYAR_PISTOL    </p>
+<p><input type="checkbox" class="weapon" name="Weapon132" value="32" onClick="calculator('Weapon1', 32)"> WP_BLASTER    </p>
+<p><input type="checkbox" class="weapon" name="Weapon164" value="64" onClick="calculator('Weapon1', 64)"> WP_DISRUPTOR    </p>
+<p><input type="checkbox" class="weapon" name="Weapon1128" value="128" onClick="calculator('Weapon1', 128)"> WP_BOWCASTER    </p>
+<p><input type="checkbox" class="weapon" name="Weapon1256" value="256" onClick="calculator('Weapon1', 256)"> WP_REPEATER    </p>
+<p><input type="checkbox" class="weapon" name="Weapon1512" value="512" onClick="calculator('Weapon1', 512)"> WP_DEMP2    </p>
+<p><input type="checkbox" class="weapon" name="Weapon11024" value="1024" onClick="calculator('Weapon1', 1024)"> WP_FLECHETTE    </p>
+<p><input type="checkbox" class="weapon" name="Weapon12048" value="2048" onClick="calculator('Weapon1', 2048)"> WP_ROCKET_LAUNCHER    </p>
+<p><input type="checkbox" class="weapon" name="Weapon14096" value="4096" onClick="calculator('Weapon1', 4096)"> WP_THERMAL    </p>
+<p><input type="checkbox" class="weapon" name="Weapon18192" value="8192" onClick="calculator('Weapon1', 8192)"> WP_TRIP_MINE    </p>
+<p><input type="checkbox" class="weapon" name="Weapon116384" value="16384" onClick="calculator('Weapon1', 16384)"> WP_DET_PACK    </p>
+<p><input type="checkbox" class="weapon" name="Weapon132768" value="32768" onClick="calculator('Weapon1', 32768)"> WP_CONCUSSION    </p>
+<p><input type="checkbox" class="weapon" name="Weapon165536" value="65536" onClick="calculator('Weapon1', 65536)"> WP_BRYAR_OLD      </p>
+<p><input type="checkbox" class="weapon" name="Weapon1131072" value="131072" onClick="calculator('Weapon1', 131072)"> WP_EMPLACED_GUN    </p>
+<p><input type="checkbox" class="weapon" name="Weapon1262144" value="262144" onClick="calculator('Weapon1', 262144)"> WP_TURRET    </p>
+<div style="padding:10px 0px 10px 0px;"><a href="javascript:checkAll('weapon');" style="color:white;font-weight:bold;">check / uncheck all</a></td></div>
+g_weaponDisable = <input type="text" name="t_weapon1" value="0" style="width:80px;">
+</div>
+
+<div style="width:200px;float:left;background-color:#141E2B;padding:10px;margin:10px;">
+<h2 style="margin-bottom:0px;color:white;">Vote Disabling</h2>
+<hr>
+<input name="h_vote1" type="hidden" value="">
+<p><input type="checkbox" class="vote" name="Vote11" value="1" onClick="calculator('Vote1', 1)"> MAP_RESTART    </p>
+<p><input type="checkbox" class="vote" name="Vote12" value="2" onClick="calculator('Vote1', 2)"> NEXTMAP    </p>
+<p><input type="checkbox" class="vote" name="Vote14" value="4" onClick="calculator('Vote1', 4)"> MAP    </p>
+<p><input type="checkbox" class="vote" name="Vote18" value="8" onClick="calculator('Vote1', 8)"> G_GAMETYPE    </p>
+<p><input type="checkbox" class="vote" name="Vote116" value="16" onClick="calculator('Vote1', 16)"> KICK    </p>
+<p><input type="checkbox" class="vote" name="Vote132" value="32" onClick="calculator('Vote1', 32)"> CLIENTKICK    </p>
+<p><input type="checkbox" class="vote" name="Vote164" value="64" onClick="calculator('Vote1', 64)"> G_DOWARMUP    </p>
+<p><input type="checkbox" class="vote" name="Vote1128" value="128" onClick="calculator('Vote1', 128)"> TIMELIMIT    </p>
+<p><input type="checkbox" class="vote" name="Vote1256" value="256" onClick="calculator('Vote1', 256)"> FRAGLIMIT    </p>
+<p><input type="checkbox" class="vote" name="Vote1512" value="512" onClick="calculator('Vote1', 512)"> MODCONTROL    </p>
+<p><input type="checkbox" class="vote" name="Vote11024" value="1024" onClick="calculator('Vote1', 1024)"> SLEEP    </p>
+<p><input type="checkbox" class="vote" name="Vote12048" value="2048" onClick="calculator('Vote1', 2048)"> SILENCE    </p>
+<div style="padding:10px 0px 10px 0px;"><a href="javascript:checkAll('vote');" style="color:white;font-weight:bold;">check / uncheck all</a></td></div>
+cm_restrictvote = <input type="text" name="t_vote1" value="0" style="width:60px;">
+</div>
+
+</form>
+</div>
+</BODY>
+</HTML>

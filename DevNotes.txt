@@ -30,16 +30,10 @@ click on Preprocessor. On Preprocessor Definitions on the end, add...
 4. hit f5 to launch the game.
 
 
-------------------------------
-| Building on Linux with ICC |
-------------------------------
-I have not had any success with GCC. RavenSoft has compiled their source with ICC, so that's what I'm going to use.
-
-Version 9.0.32
--------------
-This is what I used to use. You can still use this version, but you might want to remove the current Makefile 
-and replace it with the Makefile_9 file and use the game/build_9.sh file.
-
-Version 2015 - https://software.intel.com/en-us/intel-parallel-studio-xe
--------------
-All files provided are ready for building. Just use the game/build_2015.sh file.
+---------------------
+| Building on Linux |
+---------------------
+- I have had success with ICC version 9.0.32 on an older version of Fedora x86 (i386) and GCC 2015 on CentOS 5 x86 (i386).
+- GCC will NOT compile the source on an x86_64 64bit system, you need i386. 
+- ICC will compile, but not work on 2015 (both i386 and x86_64), both jampded and ojpded crash. Not sure why.
+- To use ICC Version 9.0.32, replace the current Makefile with the Makefile_9 file and use the build_9.sh to begin the compile.

@@ -1,0 +1,7 @@
+Version 1.2.0
+=============
+- Changed version numbering system
+- Fixed 3rd person camera falling behined
+- Fixed linux build files to make required files static
+- Fixed several typos
+
