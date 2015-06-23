@@ -964,7 +964,7 @@ static cvarTable_t		gameCvarTable[] = {
 	{ &bg_fighterAltControl, "bg_fighterAltControl", "0", CVAR_SERVERINFO, 0, qtrue },
 
 #ifdef DEBUG_SABER_BOX
-	{ &g_saberDebugBox, "g_saberDebugBox", "0", CVAR_CHEAT, 0, qfalse },
+	{ &g_saberDebugBox, "g_saberDebugBox", "0", CVAR_ARCHIVE, 0, qfalse },
 #endif
 
 	{ &d_altRoutes, "d_altRoutes", "0", CVAR_CHEAT, 0, qfalse },
@@ -972,7 +972,7 @@ static cvarTable_t		gameCvarTable[] = {
 
 	{ &g_saberRealisticCombat, "g_saberRealisticCombat", "0", CVAR_CHEAT, 0, qtrue },
 	{ &g_saberRestrictForce, "g_saberRestrictForce", "0", CVAR_CHEAT },
-	{ &d_saberSPStyleDamage, "d_saberSPStyleDamage", "1", CVAR_CHEAT },
+	{ &d_saberSPStyleDamage, "d_saberSPStyleDamage", "0", CVAR_CHEAT },
 
 	{ &debugNoRoam, "d_noroam", "0", CVAR_CHEAT },
 	{ &debugNPCAimingBeam, "d_npcaiming", "0", CVAR_CHEAT },

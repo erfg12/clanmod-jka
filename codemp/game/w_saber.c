@@ -37,7 +37,10 @@ void WP_SaberAddG2Model( gentity_t *saberent, const char *saberModel, qhandle_t 
 void WP_SaberRemoveG2Model( gentity_t *saberent );
 
 float RandFloat(float min, float max) {
-	return ((rand() * (max - min)) / 32768.0F) + min;
+	int randActual = rand();
+	//return ((rand() * (max - min)) / 32768.0F) + min; //OpenJK says this is bad
+	float randMax = RAND_MAX;
+	return ((randActual * (max - min)) / randMax) + min;
 }
 
 float RandFloatMissle(float min, float max) {
@@ -401,7 +404,7 @@ static GAME_INLINE void SetSaberBoxSize(gentity_t *saberent)
 		owner = &g_entities[saberent->r.ownerNum];
 	}
 
-		if (!owner || !owner->client || !owner->inuse /*|| !owner->client*/)
+	/*	if (!owner || !owner->client || !owner->inuse)
 	{
 // XMOD ERROR WITH SABER!!!
 		//assert(!"Saber with no owner?");
@@ -412,10 +415,19 @@ static GAME_INLINE void SetSaberBoxSize(gentity_t *saberent)
 		saberent->nextthink = level.time;
 		// delete the saber entity
 		return;
+	}*/
+	if (!owner || !owner->inuse || !owner->client)
+	{
+		assert(!"Saber with no owner?");
+		return;
 	}
 
-	if ( owner->client->saber[1].model
+	/*if ( owner->client->saber[1].model
 		&& owner->client->saber[1].model[0] )
+	{
+		dualSabers = qtrue;
+	}*/
+	if (owner->client->saber[1].model[0])
 	{
 		dualSabers = qtrue;
 	}
@@ -3957,28 +3969,7 @@ static GAME_INLINE qboolean CheckSaberDamage(gentity_t *self, int rSaberNum, int
 		VectorClear(saberTrMins);
 		VectorClear(saberTrMaxs);
 	}
-	// LAST HOPE MOD
-	//RoAR mod NOTE: This is for darchind.
 	else if (d_saberGhoul2Collision.integer)
-	{
-		if ( d_saberSPStyleDamage.integer )
-		{//SP-size saber damage traces
-			VectorSet(saberTrMins, -2, -2, -2 );
-			VectorSet(saberTrMaxs, 2, 2, 2 );
-		}
-		else
-		{
-			int boxScale = 10;
-
-			boxScale *= 0.3;
-
-			VectorSet(saberTrMins, -saberBoxSize*boxScale, -saberBoxSize*boxScale, -saberBoxSize*boxScale);
-			VectorSet(saberTrMaxs, saberBoxSize*boxScale, saberBoxSize*boxScale, saberBoxSize*boxScale);
-
-		}
-	}
-	// BASEJKA
-	/*else if (d_saberGhoul2Collision.integer)
 	{
 		if ( d_saberSPStyleDamage.integer )
 		{//SP-size saber damage traces
@@ -3990,7 +3981,7 @@ static GAME_INLINE qboolean CheckSaberDamage(gentity_t *self, int rSaberNum, int
 			VectorSet(saberTrMins, -saberBoxSize*3, -saberBoxSize*3, -saberBoxSize*3);
 			VectorSet(saberTrMaxs, saberBoxSize*3, saberBoxSize*3, saberBoxSize*3);
 		}
-	}*/
+	}
 	else if (self->client->ps.fd.saberAnimLevel < FORCE_LEVEL_2)
 	{ //box trace for fast, because it doesn't get updated so often
 		VectorSet(saberTrMins, -saberBoxSize, -saberBoxSize, -saberBoxSize);
@@ -4012,7 +4003,7 @@ static GAME_INLINE qboolean CheckSaberDamage(gentity_t *self, int rSaberNum, int
 	while (!saberTraceDone)
 	{
 		if ( doInterpolate
-			&& !d_saberSPStyleDamage.integer )
+			/*&& !d_saberSPStyleDamage.integer*/ )
 		{ //This didn't quite work out like I hoped. But it's better than nothing. Sort of.
 			vec3_t oldSaberStart, oldSaberEnd, saberDif, oldSaberDif;
 			int traceTests = 0;
@@ -4130,16 +4121,16 @@ static GAME_INLINE qboolean CheckSaberDamage(gentity_t *self, int rSaberNum, int
 
 			VectorCopy(saberStart, lastValidStart);
 			VectorCopy(saberEndExtrapolated, lastValidEnd);
-			/*
+			
 			if ( tr.allsolid || tr.startsolid )
 			{
 				if ( tr.entityNum == ENTITYNUM_NONE )
 				{
 					qboolean whah = qtrue;
 				}
-				Com_Printf( "saber trace start/all solid - ent is %d\n", tr.entityNum );
+				//Com_Printf( "saber trace start/all solid - ent is %d\n", tr.entityNum );
 			}
-			*/
+			
 			if (tr.entityNum < MAX_CLIENTS)
 			{
 				G_G2TraceCollide(&tr, lastValidStart, lastValidEnd, saberTrMins, saberTrMaxs);
@@ -4150,6 +4141,7 @@ static GAME_INLINE qboolean CheckSaberDamage(gentity_t *self, int rSaberNum, int
 
 				if (trHit->inuse && trHit->ghoul2)
 				{ //hit a non-client entity with a g2 instance
+				
 					G_G2TraceCollide(&tr, lastValidStart, lastValidEnd, saberTrMins, saberTrMaxs);
 				}
 			}
@@ -4481,8 +4473,8 @@ static GAME_INLINE qboolean CheckSaberDamage(gentity_t *self, int rSaberNum, int
 				{
 					//RoAR mod NOTE: This is for Darchind because he noticed 1.07 was closer to base. 
 					//This is what caused it to look so close to base.
-					dmg = SABER_NONATTACK_DAMAGE;
-					//dmg = 0;
+					//dmg = SABER_NONATTACK_DAMAGE;
+					dmg = 0;
 				}
 			}
 		}

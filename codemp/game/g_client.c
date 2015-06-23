@@ -3265,7 +3265,7 @@ void ClientBegin( int clientNum, qboolean allowTeamReset ) {
 	if (client->sess.sessionTeam != TEAM_SPECTATOR && ent->client->sess.sawMOTD == qfalse) //NO MATTER WHAT
 	{
 		trap_SendServerCommand( ent-g_entities, va("print \"^1                   \n^1                    \n^1                 \n^1                \n\n^1         \n^1           \n^1            \n^1           \"" ) );
-		trap_SendServerCommand( ent-g_entities, va("print \"\n^3===============================================\n^3||^1Author: ^6NeWaGe                                ^3||\n^3||^1Website: ^5http://www.newagesoldier.com/clanmod ^3||\n^3===============================================\n^1* ^3Type in /HELP for a command list! ^1*\n\n\"" ) );
+		trap_SendServerCommand( ent-g_entities, va("print \"\n^3==================================================\n^3||^1Author: ^6NeWaGe                                ^3||\n^3||^1Website: ^5http://www.newagesoldier.com/clanmod ^3||\n^3==================================================\n^1* ^3Type in /HELP for a command list! ^1*\n\n\"" ) );
 		if (level.modeClanMatch == qtrue){
 			trap_SendServerCommand( ent-g_entities, "print \"^5*** ^2CURRENT MODE: Clan Match ^5***\n\"");
 		} else if (level.modeMeeting == qtrue){

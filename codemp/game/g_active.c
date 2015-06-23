@@ -1799,12 +1799,12 @@ typedef enum {
 void G_SetTauntAnim( gentity_t *ent, int taunt )
 {
 	//RoAR mod NOTE: For darchind.
-	/*if (ent->client->pers.cmd.upmove ||
+	if (ent->client->pers.cmd.upmove ||
 		ent->client->pers.cmd.forwardmove ||
 		ent->client->pers.cmd.rightmove)
 	{ //hack, don't do while moving
 		return;
-	}*/
+	}
 
 	//[TAUNTFIX]
 	// dead clients dont get to spam taunt
