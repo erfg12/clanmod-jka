@@ -182,11 +182,11 @@ typedef enum
 #define TOSS_DEBOUNCE_TIME				5000
 
 //LastHope MOD Linux
-#ifndef __linux__
+//#ifndef __linux__
 typedef enum {
-#else
-enum {
-#endif
+//#else
+//enum {
+//#endif
 	GT_FFA,				// free for all
 	GT_HOLOCRON,		// holocron ffa
 	GT_JEDIMASTER,		// jedi master
@@ -214,11 +214,11 @@ extern int forcePowerSorted[NUM_FORCE_POWERS];
 #include "../namespace_end.h"
 
 //LastHope MOD Linux
-#ifndef __linux__
+//#ifndef __linux__
 typedef enum
-#else
-enum
-#endif
+//#else
+//enum
+//#endif
 {
 	SABERLOCK_TOP,
 	SABERLOCK_SIDE,
@@ -241,11 +241,11 @@ enum
 	DIR_FRONT,
 	DIR_BACK
 };*/
-#ifndef __linux__
+//#ifndef __linux__
 typedef enum
-#else
-enum
-#endif
+//#else
+//enum
+//#endif
 {
 	DIR_RIGHT,
 	DIR_LEFT,
@@ -413,11 +413,11 @@ typedef enum {
 } weaponstate_t;
 
 //LastHope MOD Linux
-#ifndef __linux__
+//#ifndef __linux__
 typedef enum {
-#else
-enum {
-#endif
+//#else
+//enum {
+//#endif
 	FORCE_MASTERY_UNINITIATED,
 	FORCE_MASTERY_INITIATE,
 	FORCE_MASTERY_PADAWAN,
@@ -460,11 +460,11 @@ extern int bgForcePowerCost[NUM_FORCE_POWERS][NUM_FORCE_POWER_LEVELS];
 
 // MJN - Linux
 //[Linux]
-#ifndef __linux__
+//#ifndef __linux__
 typedef struct bgEntity_s
-#else
-struct bgEntity_s
-#endif
+//#else
+//struct bgEntity_s
+//#endif
 //[/Linux]
 {
 	entityState_t	s;
@@ -702,11 +702,11 @@ typedef enum {
 
 // NOTE: may not have more than 16
 //LastHope MOD Linux
-#ifndef __linux__
+//#ifndef __linux__
 typedef enum {
-#else
-enum {
-#endif
+//#else
+//enum {
+//#endif
 	PW_NONE,
 
 	PW_QUAD,
@@ -741,11 +741,11 @@ enum {
 typedef int powerup_t;
 
 //LastHope MOD Linux
-#ifndef __linux__
+//#ifndef __linux__
 typedef enum {
-#else
-enum {
-#endif
+//#else
+//enum {
+//#endif
 	HI_NONE,
 
 	HI_SEEKER,
@@ -1068,11 +1068,11 @@ typedef enum {
 
 
 //LastHope MOD Linux
-#ifndef __linux__
+//#ifndef __linux__
 typedef enum {
-#else
-enum {
-#endif
+//#else
+//enum {
+//#endif
 	TEAM_FREE,
 	TEAM_RED,
 	TEAM_BLUE,
@@ -1214,11 +1214,11 @@ typedef enum {
 
 // gitem_t->type
 //LastHope MOD Linux
-#ifndef __linux__
+//#ifndef __linux__
 typedef enum {
-#else
-enum {
-#endif
+//#else
+//enum {
+//#endif
 	IT_BAD,
 	IT_WEAPON,				// EFX: rotate + upscale + minlight
 	IT_AMMO,				// EFX: rotate
@@ -1432,11 +1432,11 @@ typedef struct
 #endif
 
 //LastHope MOD Linux
-#ifndef __linux__
+//#ifndef __linux__
 typedef enum {
-#else
-enum {
-#endif
+//#else
+//enum {
+//#endif
 	//totally invalid
 	LS_INVALID	= -1,
 	// Invalid, or saber not armed

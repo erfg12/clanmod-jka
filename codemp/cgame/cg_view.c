@@ -409,15 +409,6 @@ static void CG_ResetThirdPersonViewDamp(void)
 	cameraStiffFactor = 0.0f;
 }
 
-//[VS2005]
-#if defined(_WIN32) 
-//#if(_MSC_VER < 1400)
-float FIXEDpowf(float x, int y);
-//#endif
-#endif
-//[/VS2005]
-//[/Test]
-
 // This is called every frame.
 static void CG_UpdateThirdPersonTargetDamp(void)
 {
@@ -451,7 +442,7 @@ static void CG_UpdateThirdPersonTargetDamp(void)
 		// Note that since there are a finite number of "practical" delta millisecond values possible, 
 		// the ratio should be initialized into a chart ultimately.
 		// MJN - Linux
-		ratio = FIXEDpowf(dampfactor, dtime);
+		ratio = Q_powf(dampfactor, dtime);
 		
 		// This value is how much distance is "left" from the ideal.
 		// MJN - Linux
@@ -459,7 +450,7 @@ static void CG_UpdateThirdPersonTargetDamp(void)
 		/////////////////////////////////////////////////////////////////////////////////////////////////////////
 	}
 
-	// Now we trace to see if the new location is cool or not.
+	// Now we trace to see if the Fnew location is cool or not.
 
 	// First thing we do is trace from the first person viewpoint out to the new target location.
 	CG_Trace(&trace, cameraFocusLoc, cameramins, cameramaxs, cameraCurTarget, cg.snap->ps.clientNum, MASK_CAMERACLIP);
@@ -540,7 +531,7 @@ static void CG_UpdateThirdPersonCameraDamp(void)
 		// Note that since there are a finite number of "practical" delta millisecond values possible, 
 		// the ratio should be initialized into a chart ultimately.
 		// MJN - Linux
-		ratio = FIXEDpowf(dampfactor, dtime);
+		ratio = Q_powf(dampfactor, dtime);
 		
 		// This value is how much distance is "left" from the ideal.
 		// MJN - Linux

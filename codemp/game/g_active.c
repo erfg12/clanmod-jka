@@ -3414,7 +3414,7 @@ void ClientThink_real( gentity_t *ent ) {
 					ent->client->ps.forceHandExtend = HANDEXTEND_KNOCKDOWN;
 					ent->client->ps.forceHandExtendTime = level.time + 500;
 					ent->client->ps.velocity[2] = 400;
-					G_PreDefSound(ent, PDSOUND_FORCEJUMP);
+					G_PreDefSound(ent->client->ps.origin, PDSOUND_FORCEJUMP);
 				}
 				else if ((client->beingThrown - level.time) < 4000)
 				{ //step into the next part of the throw, and go flying back
@@ -3484,7 +3484,7 @@ void ClientThink_real( gentity_t *ent ) {
 						ent->client->ps.forceHandExtend = HANDEXTEND_KNOCKDOWN;
 						ent->client->ps.forceHandExtendTime = level.time + 500;
 						ent->client->ps.velocity[2] = 400;
-						G_PreDefSound(ent, PDSOUND_FORCEJUMP);
+						G_PreDefSound(ent->client->ps.origin, PDSOUND_FORCEJUMP);
 					}
 				}
 			}

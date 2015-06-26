@@ -5391,7 +5391,7 @@ void G_Damage( gentity_t *targ, gentity_t *inflictor, gentity_t *attacker,
 				//G_Sound(targ, CHAN_AUTO, protectHitSound);
 				if (targ->client->forcePowerSoundDebounce < level.time)
 				{
-					G_PreDefSound(targ, PDSOUND_PROTECTHIT);
+					G_PreDefSound(targ->client->ps.origin, PDSOUND_PROTECTHIT);
 					targ->client->forcePowerSoundDebounce = level.time + 400;
 				}
 

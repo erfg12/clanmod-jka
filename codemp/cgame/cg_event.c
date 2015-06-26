@@ -28,11 +28,11 @@ extern int cg_vehicleAmmoWarningTime;
 
 //I know, not siege, but...
 //LastHope MOD Linux
-#ifndef __linux__
+//#ifndef __linux__
 typedef enum
-#else
-enum
-#endif
+//#else
+//enum
+//#endif
 {
 	TAUNT_TAUNT = 0,
 	TAUNT_BOW,

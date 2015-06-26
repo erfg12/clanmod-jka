@@ -38,14 +38,13 @@ int	ysalamiriLoopSound = 0;
 
 int ForceShootDrain( gentity_t *self );
 
-gentity_t *G_PreDefSound(gentity_t *ent, int pdSound)
+gentity_t *G_PreDefSound(vec3_t org, int pdSound)
 {
 	gentity_t	*te;
 
-	te = G_TempEntity( ent->client->ps.origin, EV_PREDEFSOUND );
+	te = G_TempEntity( org, EV_PREDEFSOUND);
 	te->s.eventParm = pdSound;
-	VectorCopy(ent->client->ps.origin, te->s.origin);
-	te->s.otherEntityNum = ent->s.number; //lmo hack to send origination info
+	VectorCopy(org, te->s.origin);
 
 	return te;
 }
@@ -834,7 +833,7 @@ int ForcePowerUsableOn(gentity_t *attacker, gentity_t *other, forcePowers_t forc
 			//play sound indicating that attack was absorbed
 			if (other->client->forcePowerSoundDebounce < level.time)
 			{
-				gentity_t *abSound = G_PreDefSound(other, PDSOUND_ABSORBHIT);
+				gentity_t *abSound = G_PreDefSound(other->client->ps.origin, PDSOUND_ABSORBHIT);
 				abSound->s.trickedentindex = other->s.number;
 				other->client->forcePowerSoundDebounce = level.time + 400;
 			}
@@ -1117,7 +1116,7 @@ int WP_AbsorbConversion(gentity_t *attacked, int atdAbsLevel, gentity_t *attacke
 	//play sound indicating that attack was absorbed
 	if (attacked->client->forcePowerSoundDebounce < level.time)
 	{
-		abSound = G_PreDefSound(attacked, PDSOUND_ABSORBHIT);
+		abSound = G_PreDefSound(attacked->client->ps.origin, PDSOUND_ABSORBHIT);
 		abSound->s.trickedentindex = attacked->s.number;
 
 		attacked->client->forcePowerSoundDebounce = level.time + 400;
@@ -1817,7 +1816,7 @@ void ForceProtect( gentity_t *self )
 	self->client->ps.forceAllowDeactivateTime = level.time + 1500;
 
 	WP_ForcePowerStart( self, FP_PROTECT, 0 );
-	G_PreDefSound(self, PDSOUND_PROTECT);
+	G_PreDefSound(self->client->ps.origin, PDSOUND_PROTECT);
 	G_Sound( self, TRACK_CHANNEL_3, protectLoopSound );
 }
 
@@ -1856,7 +1855,7 @@ void ForceAbsorb( gentity_t *self )
 	self->client->ps.forceAllowDeactivateTime = level.time + 1500;
 
 	WP_ForcePowerStart( self, FP_ABSORB, 0 );
-	G_PreDefSound(self, PDSOUND_ABSORB);
+	G_PreDefSound(self->client->ps.origin, PDSOUND_ABSORB);
 	G_Sound( self, TRACK_CHANNEL_3, absorbLoopSound );
 }
 
@@ -2557,7 +2556,7 @@ int WP_GetVelocityForForceJump( gentity_t *self, vec3_t jumpVel, usercmd_t *ucmd
 
 	G_MuteSound(self->client->ps.fd.killSoundEntIndex[TRACK_CHANNEL_1-50], CHAN_VOICE);
 
-	G_PreDefSound(self, PDSOUND_FORCEJUMP);
+	G_PreDefSound(self->client->ps.origin, PDSOUND_FORCEJUMP);
 
 	if (self->client->ps.fd.forceJumpCharge < JUMP_VELOCITY+40)
 	{ //give him at least a tiny boost from just a tap
@@ -5287,7 +5286,7 @@ qboolean G_SpecialRollGetup(gentity_t *self)
 	}
 	else if (self->client->pers.cmd.upmove)
 	{
-		G_PreDefSound(self, PDSOUND_FORCEJUMP);
+		G_PreDefSound(self->client->ps.origin, PDSOUND_FORCEJUMP);
 		self->client->ps.forceDodgeAnim = 2;
 		self->client->ps.forceHandExtendTime = level.time + 500;
 
@@ -5417,7 +5416,7 @@ void WP_ForcePowersUpdate( gentity_t *self, usercmd_t *ucmd )
 					if (self->client->pers.cmd.upmove &&
 						self->client->ps.fd.forcePowerLevel[FP_LEVITATION] > FORCE_LEVEL_1)
 					{ //force getup
-						G_PreDefSound(self, PDSOUND_FORCEJUMP);
+						G_PreDefSound(self->client->ps.origin, PDSOUND_FORCEJUMP);
 						self->client->ps.forceDodgeAnim = 2;
 						self->client->ps.forceHandExtendTime = level.time + 500;
 
@@ -5627,7 +5626,7 @@ if (roar_grip_open_saber.integer == 0) {
 
 	if (self->client->ps.fd.forceJumpSound)
 	{
-		G_PreDefSound(self, PDSOUND_FORCEJUMP);
+		G_PreDefSound(self->client->ps.origin, PDSOUND_FORCEJUMP);
 		self->client->ps.fd.forceJumpSound = 0;
 	}
 
@@ -5635,7 +5634,7 @@ if (roar_grip_open_saber.integer == 0) {
 	{
 		if (self->client->ps.fd.forceGripSoundTime < level.time)
 		{
-			G_PreDefSound(self, PDSOUND_FORCEGRIP);
+			G_PreDefSound(self->client->ps.origin, PDSOUND_FORCEGRIP);
 			self->client->ps.fd.forceGripSoundTime = level.time + 1000;
 		}
 	}

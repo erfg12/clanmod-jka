@@ -1278,14 +1278,14 @@ void respawn( gentity_t *ent ) {
 	}
 	else
 	{
-		gentity_t	*tent;
+		//gentity_t	*tent;
 
 		ClientSpawn(ent);
 
 		// add a teleportation effect
-		tent = G_TempEntity( ent->client->ps.origin, EV_PLAYER_TELEPORT_IN );
-		tent->s.clientNum = ent->s.clientNum;
-		tent->s.otherEntityNum = ent->s.clientNum; //lmo for client id of sound when played
+		//tent = G_TempEntity( ent->client->ps.origin, EV_PLAYER_TELEPORT_IN );
+		//tent->s.clientNum = ent->s.clientNum;
+		//tent->s.otherEntityNum = ent->s.clientNum; //lmo for client id of sound when played
 	}
 }
 
@@ -3659,7 +3659,7 @@ Initializes all non-persistant parts of playerState
 ============
 */
 extern qboolean WP_HasForcePowers( const playerState_t *ps );
-void ClientSpawn(gentity_t *ent) {
+/*void ClientSpawn(gentity_t *ent) {
 	int					index;
 	vec3_t				spawn_origin, spawn_angles;
 	gclient_t			*client;
@@ -3928,7 +3928,8 @@ void ClientSpawn(gentity_t *ent) {
 		i++;
 	}
 
-	memset (client, 0, sizeof(*client)); // bk FIXME: Com_Memset?
+	//memset (client, 0, sizeof(*client)); // bk FIXME: Com_Memset?
+
 	client->bodyGrabIndex = ENTITYNUM_NONE;
 
 	//Get the skin RGB based on his userinfo
@@ -3963,10 +3964,10 @@ void ClientSpawn(gentity_t *ent) {
 	}
 
 	//RoAR mod NOTE: I think ppl want dark characters...
-	/*if ((client->ps.customRGBA[0]+client->ps.customRGBA[1]+client->ps.customRGBA[2]) < 100)
-	{ //hmm, too dark!
-		client->ps.customRGBA[0] = client->ps.customRGBA[1] = client->ps.customRGBA[2] = 255;
-	}*/
+	//if ((client->ps.customRGBA[0]+client->ps.customRGBA[1]+client->ps.customRGBA[2]) < 100)
+	//{ //hmm, too dark!
+	//	client->ps.customRGBA[0] = client->ps.customRGBA[1] = client->ps.customRGBA[2] = 255;
+	//}
 
 	client->ps.customRGBA[3]=255;
 
@@ -4229,10 +4230,10 @@ void ClientSpawn(gentity_t *ent) {
 		}
 	}
 
-	/*
-	client->ps.stats[STAT_HOLDABLE_ITEMS] |= ( 1 << HI_BINOCULARS );
-	client->ps.stats[STAT_HOLDABLE_ITEM] = BG_GetItemIndexByTag(HI_BINOCULARS, IT_HOLDABLE);
-	*/
+	
+	//client->ps.stats[STAT_HOLDABLE_ITEMS] |= ( 1 << HI_BINOCULARS );
+	//client->ps.stats[STAT_HOLDABLE_ITEM] = BG_GetItemIndexByTag(HI_BINOCULARS, IT_HOLDABLE);
+	
 
 	if (g_gametype.integer == GT_SIEGE && client->siegeClass != -1 &&
 		client->sess.sessionTeam != TEAM_SPECTATOR)
@@ -4348,14 +4349,14 @@ void ClientSpawn(gentity_t *ent) {
 //	client->ps.ammo[AMMO_FORCE] = ammoData[AMMO_FORCE].max;
 //	client->ps.ammo[AMMO_METAL_BOLTS] = ammoData[AMMO_METAL_BOLTS].max;
 //	client->ps.ammo[AMMO_ROCKETS] = ammoData[AMMO_ROCKETS].max;
-/*
-	client->ps.stats[STAT_WEAPONS] = ( 1 << WP_BRYAR_PISTOL);
-	if ( g_gametype.integer == GT_TEAM ) {
-		client->ps.ammo[WP_BRYAR_PISTOL] = 50;
-	} else {
-		client->ps.ammo[WP_BRYAR_PISTOL] = 100;
-	}
-*/
+
+	//client->ps.stats[STAT_WEAPONS] = ( 1 << WP_BRYAR_PISTOL);
+	//if ( g_gametype.integer == GT_TEAM ) {
+	//	client->ps.ammo[WP_BRYAR_PISTOL] = 50;
+	//} else {
+	//	client->ps.ammo[WP_BRYAR_PISTOL] = 100;
+	//}
+
 	client->ps.rocketLockIndex = ENTITYNUM_NONE;
 	client->ps.rocketLockTime = 0;
 
@@ -4423,8 +4424,7 @@ void ClientSpawn(gentity_t *ent) {
 
 	// Start with a small amount of armor as well.
 	if (g_gametype.integer == GT_SIEGE &&
-		client->siegeClass != -1 /*&&
-		bgSiegeClasses[client->siegeClass].startarmor*/)
+		client->siegeClass != -1)
 	{ //class specifies a start armor amount, so use it
 		client->ps.stats[STAT_ARMOR] = bgSiegeClasses[client->siegeClass].startarmor;
 	}
@@ -4491,15 +4491,15 @@ void ClientSpawn(gentity_t *ent) {
 
 		// select the highest weapon number available, after any
 		// spawn given items have fired
-		/*
-		client->ps.weapon = 1;
-		for ( i = WP_NUM_WEAPONS - 1 ; i > 0 ; i-- ) {
-			if ( client->ps.stats[STAT_WEAPONS] & ( 1 << i ) ) {
-				client->ps.weapon = i;
-				break;
-			}
-		}
-		*/
+		
+		//client->ps.weapon = 1;
+		//for ( i = WP_NUM_WEAPONS - 1 ; i > 0 ; i-- ) {
+		//	if ( client->ps.stats[STAT_WEAPONS] & ( 1 << i ) ) {
+		//		client->ps.weapon = i;
+		//		break;
+		//	}
+		//}
+		
 	}
 
 	//set teams for NPCs to recognize
@@ -4556,15 +4556,15 @@ void ClientSpawn(gentity_t *ent) {
 		//wtf
 		//ent->client->ps.stats[STAT_ARMOR] = 100;
 
-	/*
+	
 	//scaling for the power duel opponent
-	if (g_gametype.integer == GT_POWERDUEL &&
-		client->sess.duelTeam == DUELTEAM_LONE)
-	{
-		client->ps.iModelScale = 125;
-		VectorSet(ent->modelScale, 1.25f, 1.25f, 1.25f);
-	}
-	*/
+	//if (g_gametype.integer == GT_POWERDUEL &&
+	//	client->sess.duelTeam == DUELTEAM_LONE)
+	//{
+	//	client->ps.iModelScale = 125;
+	//	VectorSet(ent->modelScale, 1.25f, 1.25f, 1.25f);
+	//}
+	
 	//Disabled. At least for now. Not sure if I'll want to do it or not eventually.
 
 	// run a client frame to drop exactly to the floor,
@@ -4596,6 +4596,947 @@ void ClientSpawn(gentity_t *ent) {
 	trap_ICARUS_FreeEnt( ent );
 	trap_ICARUS_InitEnt( ent );
 
+}*/
+
+void ClientSpawn(gentity_t *ent) {
+	int					index;
+	vec3_t				spawn_origin, spawn_angles;
+	gclient_t			*client;
+	int					i;
+	clientPersistant_t	saved;
+	clientSession_t		savedSess;
+	int					persistant[MAX_PERSISTANT];
+	gentity_t			*spawnPoint;
+	int					flags, gameFlags;
+	int					savedPing;
+	int					accuracy_hits, accuracy_shots;
+	int					eventSequence;
+	char				userinfo[MAX_INFO_STRING];
+	forcedata_t			savedForce;
+	int					saveSaberNum = ENTITYNUM_NONE;
+	int					wDisable = 0;
+	int					savedSiegeIndex = 0;
+	int					maxHealth;
+	saberInfo_t			saberSaved[MAX_SABERS];
+	int					l = 0;
+	void				*g2WeaponPtrs[MAX_SABERS];
+	char				*value;
+	char				*saber;
+	qboolean			changedSaber = qfalse;
+	qboolean			inSiegeWithClass = qfalse;
+
+	index = ent - g_entities;
+	client = ent->client;
+
+	//first we want the userinfo so we can see if we should update this client's saber -rww
+	trap_GetUserinfo(index, userinfo, sizeof(userinfo));
+	while (l < MAX_SABERS)
+	{
+		switch (l)
+		{
+		case 0:
+			saber = &ent->client->sess.saberType[0];
+			break;
+		case 1:
+			saber = &ent->client->sess.saber2Type[0];
+			break;
+		default:
+			saber = NULL;
+			break;
+		}
+
+		value = Info_ValueForKey(userinfo, va("saber%i", l + 1));
+		if (saber &&
+			value &&
+			(Q_stricmp(value, saber) || !saber[0] || !ent->client->saber[0].model[0]))
+		{ //doesn't match up (or our session saber is BS), we want to try setting it
+			if (G_SetSaber(ent, l, value, qfalse))
+			{
+				changedSaber = qtrue;
+			}
+			else if (!saber[0] || !ent->client->saber[0].model[0])
+			{ //Well, we still want to say they changed then (it means this is siege and we have some overrides)
+				changedSaber = qtrue;
+			}
+		}
+		l++;
+	}
+
+	if (changedSaber)
+	{ //make sure our new info is sent out to all the other clients, and give us a valid stance
+		ClientUserinfoChanged(ent->s.number);
+
+		//make sure the saber models are updated
+		G_SaberModelSetup(ent);
+
+		l = 0;
+		while (l < MAX_SABERS)
+		{ //go through and make sure both sabers match the userinfo
+			switch (l)
+			{
+			case 0:
+				saber = &ent->client->sess.saberType[0];
+				break;
+			case 1:
+				saber = &ent->client->sess.saber2Type[0];
+				break;
+			default:
+				saber = NULL;
+				break;
+			}
+
+			value = Info_ValueForKey(userinfo, va("saber%i", l + 1));
+
+			if (Q_stricmp(value, saber))
+			{ //they don't match up, force the user info
+				Info_SetValueForKey(userinfo, va("saber%i", l + 1), saber);
+				trap_SetUserinfo(ent->s.number, userinfo);
+			}
+			l++;
+		}
+
+		if (ent->client->saber[0].model[0] &&
+			ent->client->saber[1].model[0])
+		{ //dual
+			ent->client->ps.fd.saberAnimLevelBase = ent->client->ps.fd.saberAnimLevel = ent->client->ps.fd.saberDrawAnimLevel = SS_DUAL;
+		}
+		else if ((ent->client->saber[0].saberFlags&SFL_TWO_HANDED))
+		{ //staff
+			ent->client->ps.fd.saberAnimLevel = ent->client->ps.fd.saberDrawAnimLevel = SS_STAFF;
+		}
+		else
+		{
+			if (ent->client->sess.saberLevel < SS_FAST)
+			{
+				ent->client->sess.saberLevel = SS_FAST;
+			}
+			else if (ent->client->sess.saberLevel > SS_STRONG)
+			{
+				ent->client->sess.saberLevel = SS_STRONG;
+			}
+			ent->client->ps.fd.saberAnimLevelBase = ent->client->ps.fd.saberAnimLevel = ent->client->ps.fd.saberDrawAnimLevel = ent->client->sess.saberLevel;
+
+			if (g_gametype.integer != GT_SIEGE &&
+				ent->client->ps.fd.saberAnimLevel > ent->client->ps.fd.forcePowerLevel[FP_SABER_OFFENSE])
+			{
+				ent->client->ps.fd.saberAnimLevelBase = ent->client->ps.fd.saberAnimLevel = ent->client->ps.fd.saberDrawAnimLevel = ent->client->sess.saberLevel = ent->client->ps.fd.forcePowerLevel[FP_SABER_OFFENSE];
+			}
+		}
+		if (g_gametype.integer != GT_SIEGE)
+		{
+			//let's just make sure the styles we chose are cool
+			if (!WP_SaberStyleValidForSaber(&ent->client->saber[0], &ent->client->saber[1], ent->client->ps.saberHolstered, ent->client->ps.fd.saberAnimLevel))
+			{
+				WP_UseFirstValidSaberStyle(&ent->client->saber[0], &ent->client->saber[1], ent->client->ps.saberHolstered, &ent->client->ps.fd.saberAnimLevel);
+				ent->client->ps.fd.saberAnimLevelBase = ent->client->saberCycleQueue = ent->client->ps.fd.saberAnimLevel;
+			}
+		}
+	}
+	l = 0;
+
+	if (client->ps.fd.forceDoInit)
+	{ //force a reread of force powers
+		WP_InitForcePowers(ent);
+		client->ps.fd.forceDoInit = 0;
+	}
+
+	if (ent->client->ps.fd.saberAnimLevel != SS_STAFF &&
+		ent->client->ps.fd.saberAnimLevel != SS_DUAL &&
+		ent->client->ps.fd.saberAnimLevel == ent->client->ps.fd.saberDrawAnimLevel &&
+		ent->client->ps.fd.saberAnimLevel == ent->client->sess.saberLevel)
+	{
+		if (ent->client->sess.saberLevel < SS_FAST)
+		{
+			ent->client->sess.saberLevel = SS_FAST;
+		}
+		else if (ent->client->sess.saberLevel > SS_STRONG)
+		{
+			ent->client->sess.saberLevel = SS_STRONG;
+		}
+		ent->client->ps.fd.saberAnimLevel = ent->client->ps.fd.saberDrawAnimLevel = ent->client->sess.saberLevel;
+
+		if (g_gametype.integer != GT_SIEGE &&
+			ent->client->ps.fd.saberAnimLevel > ent->client->ps.fd.forcePowerLevel[FP_SABER_OFFENSE])
+		{
+			ent->client->ps.fd.saberAnimLevel = ent->client->ps.fd.saberDrawAnimLevel = ent->client->sess.saberLevel = ent->client->ps.fd.forcePowerLevel[FP_SABER_OFFENSE];
+		}
+	}
+
+	// find a spawn point
+	// do it before setting health back up, so farthest
+	// ranging doesn't count this client
+	if (client->sess.sessionTeam == TEAM_SPECTATOR) {
+		spawnPoint = SelectSpectatorSpawnPoint(
+			spawn_origin, spawn_angles);
+	}
+	else if (g_gametype.integer == GT_CTF || g_gametype.integer == GT_CTY) {
+		// all base oriented team games use the CTF spawn points
+		spawnPoint = SelectCTFSpawnPoint(
+			client->sess.sessionTeam,
+			client->pers.teamState.state,
+			spawn_origin, spawn_angles);
+	}
+	else if (g_gametype.integer == GT_SIEGE)
+	{
+		spawnPoint = SelectSiegeSpawnPoint(
+			client->siegeClass,
+			client->sess.sessionTeam,
+			client->pers.teamState.state,
+			spawn_origin, spawn_angles);
+	}
+	else {
+		do {
+			if (g_gametype.integer == GT_POWERDUEL)
+			{
+				spawnPoint = SelectDuelSpawnPoint(client->sess.duelTeam, client->ps.origin, spawn_origin, spawn_angles);
+			}
+			else if (g_gametype.integer == GT_DUEL)
+			{	// duel 
+				spawnPoint = SelectDuelSpawnPoint(DUELTEAM_SINGLE, client->ps.origin, spawn_origin, spawn_angles);
+			}
+			else
+			{
+				// the first spawn should be at a good looking spot
+				if (!client->pers.initialSpawn && client->pers.localClient) {
+					client->pers.initialSpawn = qtrue;
+					spawnPoint = SelectInitialSpawnPoint(spawn_origin, spawn_angles, client->sess.sessionTeam);
+				}
+				else {
+					// don't spawn near existing origin if possible
+					spawnPoint = SelectSpawnPoint(
+						client->ps.origin,
+						spawn_origin, spawn_angles, client->sess.sessionTeam);
+				}
+			}
+
+			// Tim needs to prevent bots from spawning at the initial point
+			// on q3dm0...
+			if ((spawnPoint->flags & FL_NO_BOTS) && (ent->r.svFlags & SVF_BOT)) {
+				continue;	// try again
+			}
+			// just to be symetric, we have a nohumans option...
+			if ((spawnPoint->flags & FL_NO_HUMANS) && !(ent->r.svFlags & SVF_BOT)) {
+				continue;	// try again
+			}
+
+			break;
+
+		} while (1);
+	}
+	client->pers.teamState.state = TEAM_ACTIVE;
+
+	// toggle the teleport bit so the client knows to not lerp
+	// and never clear the voted flag
+	flags = ent->client->ps.eFlags & (EF_TELEPORT_BIT);
+	flags ^= EF_TELEPORT_BIT;
+	gameFlags = ent->client->mGameFlags & (PSG_VOTED | PSG_TEAMVOTED);
+
+	// clear everything but the persistant data
+
+	saved = client->pers;
+	savedSess = client->sess;
+	savedPing = client->ps.ping;
+	//	savedAreaBits = client->areabits;
+	accuracy_hits = client->accuracy_hits;
+	accuracy_shots = client->accuracy_shots;
+	for (i = 0; i < MAX_PERSISTANT; i++) {
+		persistant[i] = client->ps.persistant[i];
+	}
+	eventSequence = client->ps.eventSequence;
+
+	savedForce = client->ps.fd;
+
+	saveSaberNum = client->ps.saberEntityNum;
+
+	savedSiegeIndex = client->siegeClass;
+
+	l = 0;
+	while (l < MAX_SABERS)
+	{
+		saberSaved[l] = client->saber[l];
+		g2WeaponPtrs[l] = client->weaponGhoul2[l];
+		l++;
+	}
+
+	i = 0;
+	while (i < HL_MAX)
+	{
+		ent->locationDamage[i] = 0;
+		i++;
+	}
+
+	memset(client, 0, sizeof(*client)); // bk FIXME: Com_Memset?
+	client->bodyGrabIndex = ENTITYNUM_NONE;
+
+	//Get the skin RGB based on his userinfo
+	value = Info_ValueForKey(userinfo, "char_color_red");
+	if (value)
+	{
+		client->ps.customRGBA[0] = atoi(value);
+	}
+	else
+	{
+		client->ps.customRGBA[0] = 255;
+	}
+
+	value = Info_ValueForKey(userinfo, "char_color_green");
+	if (value)
+	{
+		client->ps.customRGBA[1] = atoi(value);
+	}
+	else
+	{
+		client->ps.customRGBA[1] = 255;
+	}
+
+	value = Info_ValueForKey(userinfo, "char_color_blue");
+	if (value)
+	{
+		client->ps.customRGBA[2] = atoi(value);
+	}
+	else
+	{
+		client->ps.customRGBA[2] = 255;
+	}
+
+	//RoAR mod
+	//if ((client->ps.customRGBA[0] + client->ps.customRGBA[1] + client->ps.customRGBA[2]) < 100)
+	//{ //hmm, too dark!
+	//	client->ps.customRGBA[0] = client->ps.customRGBA[1] = client->ps.customRGBA[2] = 255;
+	//}
+
+	client->ps.customRGBA[3] = 255;
+
+	client->siegeClass = savedSiegeIndex;
+
+	l = 0;
+	while (l < MAX_SABERS)
+	{
+		client->saber[l] = saberSaved[l];
+		client->weaponGhoul2[l] = g2WeaponPtrs[l];
+		l++;
+	}
+
+	//or the saber ent num
+	client->ps.saberEntityNum = saveSaberNum;
+	client->saberStoredIndex = saveSaberNum;
+
+	client->ps.fd = savedForce;
+
+	client->ps.duelIndex = ENTITYNUM_NONE;
+
+	//spawn with 100
+	client->ps.jetpackFuel = 100;
+	client->ps.cloakFuel = 100;
+
+	client->pers = saved;
+	client->sess = savedSess;
+	client->ps.ping = savedPing;
+	//	client->areabits = savedAreaBits;
+	client->accuracy_hits = accuracy_hits;
+	client->accuracy_shots = accuracy_shots;
+	client->lastkilled_client = -1;
+
+	for (i = 0; i < MAX_PERSISTANT; i++) {
+		client->ps.persistant[i] = persistant[i];
+	}
+	client->ps.eventSequence = eventSequence;
+	// increment the spawncount so the client will detect the respawn
+	client->ps.persistant[PERS_SPAWN_COUNT]++;
+	client->ps.persistant[PERS_TEAM] = client->sess.sessionTeam;
+
+	client->airOutTime = level.time + 12000;
+
+	// set max health
+	if (g_gametype.integer == GT_SIEGE && client->siegeClass != -1)
+	{
+		siegeClass_t *scl = &bgSiegeClasses[client->siegeClass];
+		maxHealth = 100;
+
+		if (scl->maxhealth)
+		{
+			maxHealth = scl->maxhealth;
+		}
+	}
+	else
+	{
+		maxHealth = 100;
+	}
+	client->pers.maxHealth = maxHealth;//atoi( Info_ValueForKey( userinfo, "handicap" ) );
+	if (client->pers.maxHealth < 1 || client->pers.maxHealth > maxHealth) {
+		client->pers.maxHealth = 100;
+	}
+	// clear entity values
+	client->ps.stats[STAT_MAX_HEALTH] = client->pers.maxHealth;
+	client->ps.eFlags = flags;
+	client->mGameFlags = gameFlags;
+
+	ent->s.groundEntityNum = ENTITYNUM_NONE;
+	ent->client = &level.clients[index];
+	ent->playerState = &ent->client->ps;
+	ent->takedamage = qtrue;
+	ent->inuse = qtrue;
+	ent->classname = "player";
+	ent->r.contents = CONTENTS_BODY;
+	ent->clipmask = MASK_PLAYERSOLID;
+	ent->die = player_die;
+	ent->waterlevel = 0;
+	ent->watertype = 0;
+	ent->flags = 0;
+
+	VectorCopy(playerMins, ent->r.mins);
+	VectorCopy(playerMaxs, ent->r.maxs);
+	client->ps.crouchheight = CROUCH_MAXS_2;
+	client->ps.standheight = DEFAULT_MAXS_2;
+
+	client->ps.clientNum = index;
+	//give default weapons
+	client->ps.stats[STAT_WEAPONS] = (1 << WP_NONE);
+
+	if (g_gametype.integer == GT_DUEL || g_gametype.integer == GT_POWERDUEL)
+	{
+		wDisable = g_duelWeaponDisable.integer;
+	}
+	else
+	{
+		wDisable = g_weaponDisable.integer;
+	}
+
+
+
+	if (g_gametype.integer != GT_HOLOCRON
+		&& g_gametype.integer != GT_JEDIMASTER
+		&& !HasSetSaberOnly()
+		&& !AllForceDisabled(g_forcePowerDisable.integer)
+		&& g_trueJedi.integer)
+	{
+		if (g_gametype.integer >= GT_TEAM && (client->sess.sessionTeam == TEAM_BLUE || client->sess.sessionTeam == TEAM_RED))
+		{//In Team games, force one side to be merc and other to be jedi
+			if (level.numPlayingClients > 0)
+			{//already someone in the game
+				int		i, forceTeam = TEAM_SPECTATOR;
+				for (i = 0; i < level.maxclients; i++)
+				{
+					if (level.clients[i].pers.connected == CON_DISCONNECTED) {
+						continue;
+					}
+					if (level.clients[i].sess.sessionTeam == TEAM_BLUE || level.clients[i].sess.sessionTeam == TEAM_RED)
+					{//in-game
+						if (WP_HasForcePowers(&level.clients[i].ps))
+						{//this side is using force
+							forceTeam = level.clients[i].sess.sessionTeam;
+						}
+						else
+						{//other team is using force
+							if (level.clients[i].sess.sessionTeam == TEAM_BLUE)
+							{
+								forceTeam = TEAM_RED;
+							}
+							else
+							{
+								forceTeam = TEAM_BLUE;
+							}
+						}
+						break;
+					}
+				}
+				if (WP_HasForcePowers(&client->ps) && client->sess.sessionTeam != forceTeam)
+				{//using force but not on right team, switch him over
+					const char *teamName = TeamName(forceTeam);
+					//client->sess.sessionTeam = forceTeam;
+					SetTeam(ent, (char *)teamName);
+					return;
+				}
+			}
+		}
+
+		if (WP_HasForcePowers(&client->ps))
+		{
+			client->ps.trueNonJedi = qfalse;
+			client->ps.trueJedi = qtrue;
+			//make sure they only use the saber
+			client->ps.weapon = WP_SABER;
+			client->ps.stats[STAT_WEAPONS] = (1 << WP_SABER);
+		}
+		else
+		{//no force powers set
+			client->ps.trueNonJedi = qtrue;
+			client->ps.trueJedi = qfalse;
+			if (!wDisable || !(wDisable & (1 << WP_BRYAR_PISTOL)))
+			{
+				client->ps.stats[STAT_WEAPONS] |= (1 << WP_BRYAR_PISTOL);
+			}
+			if (!wDisable || !(wDisable & (1 << WP_BLASTER)))
+			{
+				client->ps.stats[STAT_WEAPONS] |= (1 << WP_BLASTER);
+			}
+			if (!wDisable || !(wDisable & (1 << WP_BOWCASTER)))
+			{
+				client->ps.stats[STAT_WEAPONS] |= (1 << WP_BOWCASTER);
+			}
+			client->ps.stats[STAT_WEAPONS] &= ~(1 << WP_SABER);
+			client->ps.stats[STAT_WEAPONS] |= (1 << WP_MELEE);
+			client->ps.ammo[AMMO_POWERCELL] = ammoData[AMMO_POWERCELL].max;
+			client->ps.weapon = WP_BRYAR_PISTOL;
+		}
+	}
+	else
+	{//jediVmerc is incompatible with this gametype, turn it off!
+		trap_Cvar_Set("g_jediVmerc", "0");
+		if (g_gametype.integer == GT_HOLOCRON)
+		{
+			//always get free saber level 1 in holocron
+			client->ps.stats[STAT_WEAPONS] |= (1 << WP_SABER);	//these are precached in g_items, ClearRegisteredItems()
+		}
+		else
+		{
+			if (client->ps.fd.forcePowerLevel[FP_SABER_OFFENSE])
+			{
+				if (client->pers.amhuman)
+				{
+					client->ps.stats[STAT_WEAPONS] &= ~(1 << WP_SABER) & ~(1 << WP_BRYAR_PISTOL);
+					client->ps.stats[STAT_WEAPONS] |= (1 << WP_MELEE);
+				}
+				else if (ent->client->pers.amempower)
+				{
+					client->ps.stats[STAT_WEAPONS] &= ~(1 << WP_BRYAR_PISTOL);
+					client->ps.stats[STAT_WEAPONS] |= (1 << WP_MELEE) | (1 << WP_SABER);
+				}
+				else if (client->pers.amterminator)
+				{
+					client->ps.stats[STAT_WEAPONS] &= ~(1 << WP_SABER);
+					client->ps.stats[STAT_WEAPONS] |= (1 << WP_MELEE);
+				}
+				else {
+					if (roar_starting_weapons.integer == 0)
+					{
+						client->ps.stats[STAT_WEAPONS] |= (1 << WP_SABER);
+						client->ps.stats[STAT_WEAPONS] &= ~(1 << WP_MELEE);
+					}
+					else if (roar_starting_weapons.integer == 1)
+					{
+						client->ps.stats[STAT_WEAPONS] |= (1 << WP_MELEE);
+					}
+					else if (roar_starting_weapons.integer == 2)
+					{
+						client->ps.stats[STAT_WEAPONS] |= (1 << WP_SABER) | (1 << WP_MELEE);
+					}
+					else if (!wDisable || !(wDisable & (1 << WP_BRYAR_PISTOL)))
+					{
+						client->ps.stats[STAT_WEAPONS] |= (1 << WP_BRYAR_PISTOL);
+					}
+				}
+			}
+			else
+			{ //if you don't have saber attack rank then you don't get a saber
+				client->ps.stats[STAT_WEAPONS] |= (1 << WP_MELEE);
+			}
+		}
+		// BASEJKA
+		/*else
+		{
+			if (client->ps.fd.forcePowerLevel[FP_SABER_OFFENSE])
+			{
+				client->ps.stats[STAT_WEAPONS] |= (1 << WP_SABER);	//these are precached in g_items, ClearRegisteredItems()
+			}
+			else
+			{ //if you don't have saber attack rank then you don't get a saber
+				client->ps.stats[STAT_WEAPONS] |= (1 << WP_MELEE);
+			}
+		}*/
+
+		if (g_gametype.integer != GT_SIEGE)
+		{
+			if (!wDisable || !(wDisable & (1 << WP_BRYAR_PISTOL)))
+			{
+				client->ps.stats[STAT_WEAPONS] |= (1 << WP_BRYAR_PISTOL);
+			}
+			else if (g_gametype.integer == GT_JEDIMASTER)
+			{
+				client->ps.stats[STAT_WEAPONS] |= (1 << WP_BRYAR_PISTOL);
+			}
+		}
+
+		if (g_gametype.integer == GT_JEDIMASTER)
+		{
+			client->ps.stats[STAT_WEAPONS] &= ~(1 << WP_SABER);
+			client->ps.stats[STAT_WEAPONS] |= (1 << WP_MELEE);
+		}
+
+		if (client->ps.stats[STAT_WEAPONS] & (1 << WP_SABER))
+		{
+			client->ps.weapon = WP_SABER;
+		}
+		else if (client->ps.stats[STAT_WEAPONS] & (1 << WP_BRYAR_PISTOL))
+		{
+			client->ps.weapon = WP_BRYAR_PISTOL;
+		}
+		else
+		{
+			client->ps.weapon = WP_MELEE;
+		}
+	}
+
+	/*
+	client->ps.stats[STAT_HOLDABLE_ITEMS] |= ( 1 << HI_BINOCULARS );
+	client->ps.stats[STAT_HOLDABLE_ITEM] = BG_GetItemIndexByTag(HI_BINOCULARS, IT_HOLDABLE);
+	*/
+
+	if (g_gametype.integer == GT_SIEGE && client->siegeClass != -1 &&
+		client->sess.sessionTeam != TEAM_SPECTATOR)
+	{ //well then, we will use a custom weaponset for our class
+		int m = 0;
+
+		client->ps.stats[STAT_WEAPONS] = bgSiegeClasses[client->siegeClass].weapons;
+
+		if (client->ps.stats[STAT_WEAPONS] & (1 << WP_SABER))
+		{
+			client->ps.weapon = WP_SABER;
+		}
+		else if (client->ps.stats[STAT_WEAPONS] & (1 << WP_BRYAR_PISTOL))
+		{
+			client->ps.weapon = WP_BRYAR_PISTOL;
+		}
+		else
+		{
+			client->ps.weapon = WP_MELEE;
+		}
+		inSiegeWithClass = qtrue;
+
+		while (m < WP_NUM_WEAPONS)
+		{
+			if (client->ps.stats[STAT_WEAPONS] & (1 << m))
+			{
+				if (client->ps.weapon != WP_SABER)
+				{ //try to find the highest ranking weapon we have
+					if (m > client->ps.weapon)
+					{
+						client->ps.weapon = m;
+					}
+				}
+
+				if (m >= WP_BRYAR_PISTOL)
+				{ //Max his ammo out for all the weapons he has.
+					if (g_gametype.integer == GT_SIEGE
+						&& m == WP_ROCKET_LAUNCHER)
+					{//don't give full ammo!
+						//FIXME: extern this and check it when getting ammo from supplier, pickups or ammo stations!
+						if (client->siegeClass != -1 &&
+							(bgSiegeClasses[client->siegeClass].classflags & (1 << CFL_SINGLE_ROCKET)))
+						{
+							client->ps.ammo[weaponData[m].ammoIndex] = 1;
+						}
+						else
+						{
+							client->ps.ammo[weaponData[m].ammoIndex] = 10;
+						}
+					}
+					else
+					{
+						if (g_gametype.integer == GT_SIEGE
+							&& client->siegeClass != -1
+							&& (bgSiegeClasses[client->siegeClass].classflags & (1 << CFL_EXTRA_AMMO)))
+						{//double ammo
+							client->ps.ammo[weaponData[m].ammoIndex] = ammoData[weaponData[m].ammoIndex].max * 2;
+							client->ps.eFlags |= EF_DOUBLE_AMMO;
+						}
+						else
+						{
+							client->ps.ammo[weaponData[m].ammoIndex] = ammoData[weaponData[m].ammoIndex].max;
+						}
+					}
+				}
+			}
+			m++;
+		}
+	}
+
+	if (g_gametype.integer == GT_SIEGE &&
+		client->siegeClass != -1 &&
+		client->sess.sessionTeam != TEAM_SPECTATOR)
+	{ //use class-specified inventory
+		client->ps.stats[STAT_HOLDABLE_ITEMS] = bgSiegeClasses[client->siegeClass].invenItems;
+		client->ps.stats[STAT_HOLDABLE_ITEM] = 0;
+	}
+	else
+	{
+		client->ps.stats[STAT_HOLDABLE_ITEMS] = 0;
+		client->ps.stats[STAT_HOLDABLE_ITEM] = 0;
+	}
+
+	if (g_gametype.integer == GT_SIEGE &&
+		client->siegeClass != -1 &&
+		bgSiegeClasses[client->siegeClass].powerups &&
+		client->sess.sessionTeam != TEAM_SPECTATOR)
+	{ //this class has some start powerups
+		i = 0;
+		while (i < PW_NUM_POWERUPS)
+		{
+			if (bgSiegeClasses[client->siegeClass].powerups & (1 << i))
+			{
+				client->ps.powerups[i] = Q3_INFINITE;
+			}
+			i++;
+		}
+	}
+
+	if (client->sess.sessionTeam == TEAM_SPECTATOR)
+	{
+		client->ps.stats[STAT_WEAPONS] = 0;
+		client->ps.stats[STAT_HOLDABLE_ITEMS] = 0;
+		client->ps.stats[STAT_HOLDABLE_ITEM] = 0;
+	}
+
+	// nmckenzie: DESERT_SIEGE... or well, siege generally.  This was over-writing the max value, which was NOT good for siege.
+	if (inSiegeWithClass == qfalse)
+	{
+		client->ps.ammo[AMMO_BLASTER] = 100; //ammoData[AMMO_BLASTER].max; //100 seems fair.
+	}
+	//	client->ps.ammo[AMMO_POWERCELL] = ammoData[AMMO_POWERCELL].max;
+	//	client->ps.ammo[AMMO_FORCE] = ammoData[AMMO_FORCE].max;
+	//	client->ps.ammo[AMMO_METAL_BOLTS] = ammoData[AMMO_METAL_BOLTS].max;
+	//	client->ps.ammo[AMMO_ROCKETS] = ammoData[AMMO_ROCKETS].max;
+	/*
+	client->ps.stats[STAT_WEAPONS] = ( 1 << WP_BRYAR_PISTOL);
+	if ( g_gametype.integer == GT_TEAM ) {
+	client->ps.ammo[WP_BRYAR_PISTOL] = 50;
+	} else {
+	client->ps.ammo[WP_BRYAR_PISTOL] = 100;
+	}
+	*/
+	client->ps.rocketLockIndex = ENTITYNUM_NONE;
+	client->ps.rocketLockTime = 0;
+
+	//rww - Set here to initialize the circling seeker drone to off.
+	//A quick note about this so I don't forget how it works again:
+	//ps.genericEnemyIndex is kept in sync between the server and client.
+	//When it gets set then an entitystate value of the same name gets
+	//set along with an entitystate flag in the shared bg code. Which
+	//is why a value needs to be both on the player state and entity state.
+	//(it doesn't seem to just carry over the entitystate value automatically
+	//because entity state value is derived from player state data or some
+	//such)
+	client->ps.genericEnemyIndex = -1;
+
+	client->ps.isJediMaster = qfalse;
+
+	if (client->ps.fallingToDeath)
+	{
+		client->ps.fallingToDeath = 0;
+		client->noCorpse = qtrue;
+	}
+
+	//Do per-spawn force power initialization
+	WP_SpawnInitForcePowers(ent);
+
+	// health will count down towards max_health
+	if (g_gametype.integer == GT_SIEGE &&
+		client->siegeClass != -1 &&
+		bgSiegeClasses[client->siegeClass].starthealth)
+	{ //class specifies a start health, so use it
+		ent->health = client->ps.stats[STAT_HEALTH] = bgSiegeClasses[client->siegeClass].starthealth;
+	}
+	else if (g_gametype.integer == GT_DUEL || g_gametype.integer == GT_POWERDUEL)
+	{//only start with 100 health in Duel
+		if (g_gametype.integer == GT_POWERDUEL && client->sess.duelTeam == DUELTEAM_LONE)
+		{
+			if (g_duel_fraglimit.integer)
+			{
+
+				ent->health = client->ps.stats[STAT_HEALTH] = client->ps.stats[STAT_MAX_HEALTH] =
+					g_powerDuelStartHealth.integer - ((g_powerDuelStartHealth.integer - g_powerDuelEndHealth.integer) * (float)client->sess.wins / (float)g_duel_fraglimit.integer);
+			}
+			else
+			{
+				ent->health = client->ps.stats[STAT_HEALTH] = client->ps.stats[STAT_MAX_HEALTH] = 150;
+			}
+		}
+		else
+		{
+			ent->health = client->ps.stats[STAT_HEALTH] = client->ps.stats[STAT_MAX_HEALTH] = 100;
+		}
+	}
+	else if (client->ps.stats[STAT_MAX_HEALTH] <= 100)
+	{
+		ent->health = client->ps.stats[STAT_HEALTH] = client->ps.stats[STAT_MAX_HEALTH] * 1.25;
+	}
+	else if (client->ps.stats[STAT_MAX_HEALTH] < 125)
+	{
+		ent->health = client->ps.stats[STAT_HEALTH] = 125;
+	}
+	else
+	{
+		ent->health = client->ps.stats[STAT_HEALTH] = client->ps.stats[STAT_MAX_HEALTH];
+	}
+
+	// Start with a small amount of armor as well.
+	if (g_gametype.integer == GT_SIEGE &&
+		client->siegeClass != -1 /*&&
+								 bgSiegeClasses[client->siegeClass].startarmor*/)
+	{ //class specifies a start armor amount, so use it
+		client->ps.stats[STAT_ARMOR] = bgSiegeClasses[client->siegeClass].startarmor;
+	}
+	else if (g_gametype.integer == GT_DUEL || g_gametype.integer == GT_POWERDUEL)
+	{//no armor in duel
+		client->ps.stats[STAT_ARMOR] = 0;
+	}
+	else
+	{
+		client->ps.stats[STAT_ARMOR] = client->ps.stats[STAT_MAX_HEALTH] * 0.25;
+	}
+
+	G_SetOrigin(ent, spawn_origin);
+	VectorCopy(spawn_origin, client->ps.origin);
+
+	// the respawned flag will be cleared after the attack and jump keys come up
+	client->ps.pm_flags |= PMF_RESPAWNED;
+
+	trap_GetUsercmd(client - level.clients, &ent->client->pers.cmd);
+	SetClientViewAngle(ent, spawn_angles);
+
+	if (ent->client->sess.sessionTeam == TEAM_SPECTATOR) {
+
+	}
+	else {
+		G_KillBox(ent);
+		trap_LinkEntity(ent);
+
+		// force the base weapon up
+		//client->ps.weapon = WP_BRYAR_PISTOL;
+		//client->ps.weaponstate = FIRST_WEAPON;
+		if (client->ps.weapon <= WP_NONE)
+		{
+			client->ps.weapon = WP_BRYAR_PISTOL;
+		}
+
+		client->ps.torsoTimer = client->ps.legsTimer = 0;
+
+		if (client->ps.weapon == WP_SABER)
+		{
+			G_SetAnim(ent, NULL, SETANIM_BOTH, BOTH_STAND1TO2, SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD | SETANIM_FLAG_HOLDLESS, 0);
+		}
+		else
+		{
+			G_SetAnim(ent, NULL, SETANIM_TORSO, TORSO_RAISEWEAP1, SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD | SETANIM_FLAG_HOLDLESS, 0);
+			client->ps.legsAnim = WeaponReadyAnim[client->ps.weapon];
+		}
+		client->ps.weaponstate = WEAPON_RAISING;
+		client->ps.weaponTime = client->ps.torsoTimer;
+	}
+
+	// don't allow full run speed for a bit
+	client->ps.pm_flags |= PMF_TIME_KNOCKBACK;
+	client->ps.pm_time = 100;
+
+	client->respawnTime = level.time;
+	client->inactivityTime = level.time + g_inactivity.integer * 1000;
+	client->latched_buttons = 0;
+
+	if (level.intermissiontime) {
+		MoveClientToIntermission(ent);
+	}
+	else {
+		// fire the targets of the spawn point
+		G_UseTargets(spawnPoint, ent);
+
+		// select the highest weapon number available, after any
+		// spawn given items have fired
+		/*
+		client->ps.weapon = 1;
+		for ( i = WP_NUM_WEAPONS - 1 ; i > 0 ; i-- ) {
+		if ( client->ps.stats[STAT_WEAPONS] & ( 1 << i ) ) {
+		client->ps.weapon = i;
+		break;
+		}
+		}
+		*/
+	}
+
+	//RoAR mod BEGIN
+	if (cm_terminator_infammo.integer == 0 && ent->client->pers.amterminator == 1){
+		int	i;
+		int	num = 999;
+		for (i = 0; i < MAX_WEAPONS; i++) {
+			ent->client->ps.ammo[i] = num;
+		}
+	}
+	if (ent->client->pers.amterminator == 1){
+		//ITEMS
+		ent->client->ps.stats[STAT_HOLDABLE_ITEMS] |= (1 << HI_BINOCULARS) | (1 << HI_SEEKER) | (1 << HI_CLOAK) | (1 << HI_EWEB) | (1 << HI_SENTRY_GUN);
+		//WEAPONS
+		ent->client->ps.stats[STAT_WEAPONS] &= ~(1 << WP_SABER);
+		ent->client->ps.stats[STAT_WEAPONS] |= (1 << WP_MELEE) | (1 << WP_BLASTER) | (1 << WP_DISRUPTOR) | (1 << WP_BOWCASTER)
+			| (1 << WP_REPEATER) | (1 << WP_DEMP2) | (1 << WP_FLECHETTE) | (1 << WP_ROCKET_LAUNCHER) | (1 << WP_THERMAL) | (1 << WP_DET_PACK)
+			| (1 << WP_BRYAR_OLD) | (1 << WP_CONCUSSION) | (1 << WP_TRIP_MINE) | (1 << WP_BRYAR_PISTOL);
+	}
+	if (ent->client->pers.amterminator == 1 || ent->client->pers.amhuman == 1){
+		ent->client->ps.fd.forcePowersKnown &= ~(1 << FP_HEAL) & ~(1 << FP_SPEED) & ~(1 << FP_PUSH) & ~(1 << FP_PULL)
+			& ~(1 << FP_TELEPATHY) & ~(1 << FP_GRIP) & ~(1 << FP_LIGHTNING) & ~(1 << FP_RAGE)
+			& ~(1 << FP_PROTECT) & ~(1 << FP_ABSORB) & ~(1 << FP_DRAIN) & ~(1 << FP_SEE);
+		ent->client->ps.fd.forcePowersKnown |= (1 << FP_LEVITATION);
+	}
+	ScalePlayer(ent, ent->client->pers.ammodelchanged3);
+	// END
+
+	//set teams for NPCs to recognize
+	if (g_gametype.integer == GT_SIEGE)
+	{ //Imperial (team1) team is allied with "enemy" NPCs in this mode
+		if (client->sess.sessionTeam == SIEGETEAM_TEAM1)
+		{
+			client->playerTeam = ent->s.teamowner = NPCTEAM_ENEMY;
+			client->enemyTeam = NPCTEAM_PLAYER;
+		}
+		else
+		{
+			client->playerTeam = ent->s.teamowner = NPCTEAM_PLAYER;
+			client->enemyTeam = NPCTEAM_ENEMY;
+		}
+	}
+	else
+	{
+		client->playerTeam = ent->s.teamowner = NPCTEAM_PLAYER;
+		client->enemyTeam = NPCTEAM_ENEMY;
+	}
+
+	/*
+	//scaling for the power duel opponent
+	if (g_gametype.integer == GT_POWERDUEL &&
+	client->sess.duelTeam == DUELTEAM_LONE)
+	{
+	client->ps.iModelScale = 125;
+	VectorSet(ent->modelScale, 1.25f, 1.25f, 1.25f);
+	}
+	*/
+	//Disabled. At least for now. Not sure if I'll want to do it or not eventually.
+
+	// run a client frame to drop exactly to the floor,
+	// initialize animations and other things
+	client->ps.commandTime = level.time - 100;
+	ent->client->pers.cmd.serverTime = level.time;
+	ClientThink(ent - g_entities, NULL);
+
+	// positively link the client, even if the command times are weird
+	if (ent->client->sess.sessionTeam != TEAM_SPECTATOR) {
+		BG_PlayerStateToEntityState(&client->ps, &ent->s, qtrue);
+		VectorCopy(ent->client->ps.origin, ent->r.currentOrigin);
+		trap_LinkEntity(ent);
+	}
+
+	if (g_spawnInvulnerability.integer)
+	{
+		ent->client->ps.eFlags |= EF_INVULNERABLE;
+		ent->client->invulnerableTimer = level.time + g_spawnInvulnerability.integer;
+	}
+
+	// run the presend to set anything else
+	ClientEndFrame(ent);
+
+	// clear entity state values
+	BG_PlayerStateToEntityState(&client->ps, &ent->s, qtrue);
+
+	//rww - make sure client has a valid icarus instance
+	trap_ICARUS_FreeEnt(ent);
+	trap_ICARUS_InitEnt(ent);
 }
 
 

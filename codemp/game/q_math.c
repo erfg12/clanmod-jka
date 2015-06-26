@@ -1473,23 +1473,13 @@ int Q_irand(int value1, int value2)
 	return irand(value1, value2);
 }
 
-//[Linux]
-//[VS2005]
-#if defined(_WIN32)
-//#if(_MSC_VER < 1400)
-//[/VS2005]
-//[/Linux]
-float FIXEDpowf ( float x, int y )
+float Q_powf(float x, int y)
 {
 	float r = x;
-	for ( y--; y>0; y-- )
-		r = r * r;
+	for (y--; y>0; y--)
+		r *= x;
 	return r;
 }
-//[Linux]
-//#endif
-//[/Linux]
-#endif
 
 #ifdef Q3_VM 
 //rwwRMG - needed for HandleEntityAdjustment

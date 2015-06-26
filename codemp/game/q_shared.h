@@ -349,9 +349,9 @@ static float LittleFloat (const float *l) { return FloatSwap(l); }
 typedef unsigned char 		byte;
 typedef unsigned short		word;
 //LastHope MOD Linux
-#ifndef __linux__
+//#ifndef __linux__
 typedef unsigned long		ulong;
-#endif
+//#endif
 
 typedef enum {qfalse, qtrue}	qboolean;
 #ifdef _XBOX
@@ -597,11 +597,11 @@ typedef enum
 typedef int saber_colors_t;
 
 //LastHope MOD Linux
-#ifndef __linux__
+//#ifndef __linux__
 typedef enum {
-#else
-enum {
-#endif
+//#else
+//enum {
+//#endif
 	FP_FIRST = 0,//marker
 	FP_HEAL = 0,//instant
 	FP_LEVITATION,//hold/duration
@@ -854,11 +854,11 @@ typedef struct
 #define MAX_SABERS 2
 
 //LastHope MOD Linux
-#ifndef __linux__
+//#ifndef __linux__
 typedef enum {
-#else
-enum {
-#endif
+//#else
+//enum {
+//#endif
 	FORCE_LEVEL_0,
 	FORCE_LEVEL_1,
 	FORCE_LEVEL_2,
@@ -982,11 +982,11 @@ enum sharedEIKMoveState
 
 //material stuff needs to be shared
 //LastHope MOD Linux
-#ifndef __linux__
+//#ifndef __linux__
 typedef enum {
-#else
-enum {
-#endif //# material_e
+//#else
+//enum {
+//#endif //# material_e
 	MAT_METAL = 0,	// scorched blue-grey metal
 	MAT_GLASS,		// not a real chunk type, just plays an effect with glass sprites
 	MAT_ELECTRICAL,	// sparks only
@@ -1260,19 +1260,7 @@ float Q_rsqrt( float f );		// reciprocal square root
 signed char ClampChar( int i );
 signed short ClampShort( int i );
 
-//[Linux]
-//[VS2005]
-#if defined(_WIN32) 
-//#if(_MSC_VER < 1400)
-//#ifdef _WIN32
-//[/VS2005]
-//[Test]
-//#if !MAC_PORT //This should also work for the MAC port, so I'm commenting this out for now.
-//[/Test]
-float FIXEDpowf(float x, int y);
-//#endif
-#endif
-//[/Linux]
+float Q_powf(float x, int y);
 
 // this isn't a real cheap function to call!
 int DirToByte( vec3_t dir );
@@ -1991,11 +1979,11 @@ typedef struct {
 // channel 0 never willingly overrides
 // other channels will allways override a playing sound on that channel
 //LastHope MOD Linux
-#ifndef __linux__
+//#ifndef __linux__
 typedef enum {
-#else
-enum {
-#endif
+//#else
+//enum {
+//#endif
 	CHAN_AUTO,	//## %s !!"W:\game\base\!!sound\*.wav;*.mp3" # Auto-picks an empty channel to play sound on
 	CHAN_LOCAL,	//## %s !!"W:\game\base\!!sound\*.wav;*.mp3" # menu sounds, etc
 	CHAN_WEAPON,//## %s !!"W:\game\base\!!sound\*.wav;*.mp3" 
@@ -3088,11 +3076,11 @@ typedef struct qtime_s {
 
 // cinematic states
 //LastHope MOD Linux
-#ifndef __linux__
+//#ifndef __linux__
 typedef enum {
-#else
-enum {
-#endif
+//#else
+//enum {
+//#endif
 	FMV_IDLE,
 	FMV_PLAY,		// play
 	FMV_EOF,		// all other conditions, i.e. stop/EOF/abort
@@ -3104,11 +3092,11 @@ enum {
 typedef int e_status;
 
 //LastHope MOD Linux
-#ifndef __linux__
+//#ifndef __linux__
 typedef enum _flag_status {
-#else
-enum _flag_status {
-#endif
+//#else
+//enum _flag_status {
+//#endif
 	FLAG_ATBASE = 0,
 	FLAG_TAKEN,			// CTF
 	FLAG_TAKEN_RED,		// One Flag CTF
@@ -3149,11 +3137,11 @@ typedef struct {
 
 // For ghoul2 axis use
 //LastHope MOD Linux
-#ifndef __linux__
+//#ifndef __linux__
 typedef enum Eorientations{
-#else
-enum Eorientations{
-#endif
+//#else
+//enum Eorientations{
+//#endif
 	ORIGIN = 0, 
 	POSITIVE_X,
 	POSITIVE_Z,
@@ -3171,11 +3159,11 @@ Ghoul2 Insert End
 //
 #define TAGDEF(blah) TAG_ ## blah
 //LastHope MOD Linux
-#ifndef __linux__
+//#ifndef __linux__
 typedef enum {
-#else
-enum {
-#endif
+//#else
+//enum {
+//#endif
 	#include "../qcommon/tags.h"
 };
 typedef char memtag_t;
