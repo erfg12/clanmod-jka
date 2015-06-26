@@ -6,11 +6,11 @@
 #define __WEAPONS_H__
 
 //LastHope MOD Linux
-//#ifndef __linux__
+#ifndef __linux__
 typedef enum {
-//#else
-//enum {
-//#endif
+#else
+enum {
+#endif
 	WP_NONE,
 
 	WP_STUN_BATON,

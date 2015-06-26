@@ -818,13 +818,6 @@ int ForcePowerUsableOn(gentity_t *attacker, gentity_t *other, forcePowers_t forc
 		return 0;
 	}
 
-	//RoAR mod NOTE: PvP in RPG
-	/*if ((g_gametype.integer == GT_RPG) && other && other->client && (other->client->ps.userInt2 == 0 || attacker->client->ps.userInt2 == 0) && other->client->ps.pm_type != PM_DEAD
-		 && attacker->client->ps.pm_type != PM_DEAD)
-	{
-		return 0;
-	}*/
-
 	if (forcePower == FP_GRIP)
 	{
 		if (other && other->client &&
@@ -2002,7 +1995,7 @@ void ForceLightningDamage( gentity_t *self, gentity_t *traceEnt, vec3_t dir, vec
 				{//2-handed lightning
 					//jackin' 'em up, Palpatine-style
 					//dmg *= 2;
-					//RoAR mod NOTE: DONT GIVE THEM EXTRA DMG JUST CAUSE THEY HAVE MELEE!!!!! IT HURTS ALOT ALREADY SHEEESH!
+					//RoAR mod NOTE: DONT GIVE THEM EXTRA DMG JUST CAUSE THEY HAVE MELEE!!!!! IT HURTS A LOT ALREADY SHEEESH!
 				}
 
 				if (dmg)

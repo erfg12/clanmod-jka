@@ -34,18 +34,18 @@ int		rand( void );
 
 // String functions
 //LastHope MOD Linux
-//#ifndef __linux__
+#ifndef __linux__
 size_t strlen( const char *string );
-//#endif
+#endif
 char *strcat( char *strDestination, const char *strSource );
 char *strcpy( char *strDestination, const char *strSource );
 int strcmp( const char *string1, const char *string2 );
 char *strchr( const char *string, int c );
 char *strstr( const char *string, const char *strCharSet );
 //LastHope MOD Linux
-//#ifndef __linux__
+#ifndef __linux__
 char *strncpy( char *strDest, const char *strSource, size_t count );
-//#endif
+#endif
 int tolower( int c );
 int toupper( int c );
 
@@ -59,11 +59,11 @@ int sscanf( const char *buffer, const char *fmt, ... );
 
 // Memory functions
 //LastHope MOD Linux
-//#ifndef __linux__
+#ifndef __linux__
 void *memmove( void *dest, const void *src, size_t count );
 void *memset( void *dest, int c, size_t count );
 void *memcpy( void *dest, const void *src, size_t count );
-//#endif
+#endif
 
 // Math functions
 double ceil( double x );

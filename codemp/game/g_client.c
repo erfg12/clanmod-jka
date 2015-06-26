@@ -22,12 +22,6 @@ void WP_SaberRemoveG2Model( gentity_t *saberent );
 extern qboolean WP_SaberStyleValidForSaber( saberInfo_t *saber1, saberInfo_t *saber2, int saberHolstered, int saberAnimLevel );
 extern qboolean WP_UseFirstValidSaberStyle( saberInfo_t *saber1, saberInfo_t *saber2, int saberHolstered, int *saberAnimLevel );
 
-extern void GiveMoney( gentity_t *ent, int amount );
-extern void TakeMoney( gentity_t *ent, int amount );
-
-extern void GiveExperience( gentity_t *ent, int amount );
-extern void TakeExperience( gentity_t *ent, int amount );
-
 forcedata_t Client_Force[MAX_CLIENTS];
 
 //RoAR mod BEGIN

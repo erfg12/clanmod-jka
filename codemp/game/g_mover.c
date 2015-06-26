@@ -758,11 +758,7 @@ void Use_BinaryMover_Go( gentity_t *ent )
 	int		total;
 	int		partial;
 //	gentity_t	*other = ent->enemy;
-	gentity_t	*activator = ent->activator; 
-
-	//RoAR mod NOTE: Watch this, this can cause switches to not work.
-	//lmo mark activator(as temporary owner for duel nox)
-	ent->s.otherEntityNum = activator->s.number;
+	gentity_t	*activator = ent->activator;
 
 	ent->activator = activator;
 

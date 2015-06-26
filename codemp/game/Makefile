@@ -1,17 +1,16 @@
-# Linux Makefile for Jedi Academy MP SDK
-# By Patrick Hemmer
-# Version 2
-# 
-# Created Nov 29, 2003
-# The Void - http://www.divoid.net
 #
-# You may set your own optimizations on the CFLAGS line. If you dont know what optimizations are, then just leave it as is.
-# Run 'make' to compile the code, once done, you will have a file called 'jampgamei386.so' in the 'game' directory. Copy this file to the 'base' folder of your server or to your mod folder.
-# If for some strange reason, you are running on less than a 586 processor, change the i586 to i386 on the CFLAGS line.
+# Linux Makefile for the Jedi Academy Clan Mod
+# Version: 1.0
+# Created: June 26, 2015
+# Compiler: Intel C++ Compiler EX v12 for Linux
+#
 
-CC = gcc
-CFLAGS = -w -fPIC -DFINAL_BUILD -DMISSIONPACK -DQAGAME -D_JK2 -D__linux__ -fexpensive-optimizations -O2
-TARGET = jampgamei386.so
+SHELL = /bin/sh
+CC = icc
+CFLAGS = -fpic -DFINAL_BUILD -DMISSIONPACK -DQAGAME -D_JK2 -D__linux__ -O2 -Os -mp1
+LDFLAGS = -shared -static-intel -Bstatic -limf
+BINARY = jampgamei386.so
+INSTALLDIR = /home
 
 OFILES = ai_main.o ai_util.o ai_wpnav.o AnimalNPC.o bg_g2_utils.o bg_misc.o bg_panimate.o \
 	   bg_pmove.o bg_saber.o bg_saberLoad.o bg_saga.o bg_slidemove.o bg_vehicleLoad.o bg_weapons.o \
@@ -27,13 +26,31 @@ OFILES = ai_main.o ai_util.o ai_wpnav.o AnimalNPC.o bg_g2_utils.o bg_misc.o bg_p
          NPC_reactions.o NPC_senses.o NPC_sounds.o NPC_spawn.o NPC_stats.o NPC_utils.o q_math.o q_shared.o \
          SpeederNPC.o tri_coll_test.o WalkerNPC.o w_force.o w_saber.o g_Xmod.o aotctc_holocron.o g_nox_syscalls.o g_emotes.o timestamp.o
 
-$(TARGET): $(OFILES)
-	$(CC) -shared -o $(TARGET) $(OFILES) -lm
-	strip $(TARGET)
+$(BINARY): $(OFILES)
+	$(CC) $(LDFLAGS) -o $(BINARY) $(OFILES)
 
 .c.o:
-	$(CC) $(CFLAGS) -c $*.c -o $*.o
+	$(CC) $(CFLAGS) -w0 -c $*.c -o $*.o
+
+info:
+	@echo ---Run 'make' to compile the code and create the binary called jampgamei386.so 
+	@echo    located in the 'game' directory of your source folder.
+	@echo ---Execute 'make install' to copy the jampgamei386.so binary to your mod folder.
+	@echo Note:
+	@echo ---You may set your own optimizations on the CFLAGS line.
+	@echo ---You may also add any additional source file objects to the OFILES line.
+	@echo ---Set your mod directory path to the INSTALLDIR line.
 
 clean:
 	rm -f $(OFILES)
-	rm -f $(TARGET)
+	rm -f $(BINARY)
+
+install:
+	cp -f $(BINARY) $(INSTALLDIR)
+
+uninstall:
+	rm -f $(INSTALLDIR)/$(BINARY)
+
+package:
+	tar cfv $(BINARY).tar $(BINARY)
+	gzip $(BINARY).tar

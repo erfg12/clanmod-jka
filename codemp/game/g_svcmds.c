@@ -859,11 +859,11 @@ jakes_model->s.origin[0] = atoi(origin_number);
 trap_Argv( 3, origin_number2, 1024 );
 jakes_model->s.origin[1] = atoi(origin_number2);
 trap_Argv( 4, origin_number3, 1024 );
-//#ifdef __LINUX__
+#ifdef __LINUX__
 jakes_model->s.origin[2] = atoi(origin_number3) - 55;
-//#else 
-//jakes_model->s.origin[2] = atoi(origin_number3) - 35;
-//#endif
+#else 
+jakes_model->s.origin[2] = atoi(origin_number3) - 35;
+#endif
 trap_Argv( 5, yaw_number, 1024 );
 jakes_model->s.angles[1] = atoi(yaw_number);
 SP_jakes_model(jakes_model);

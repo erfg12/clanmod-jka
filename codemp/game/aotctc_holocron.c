@@ -15,11 +15,11 @@ qboolean holocrons_loaded = qfalse;
 int number_of_holocronpositions = 0; 
 
 //[Linux]
-//#ifdef __LINUX__
+#ifdef __LINUX__
 typedef enum
-//#else
-//enum
-//#endif
+#else
+enum
+#endif
 //[/Linux]
 {// A list of the possible types..
 	HC_HEAL,

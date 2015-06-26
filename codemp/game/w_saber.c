@@ -404,30 +404,14 @@ static GAME_INLINE void SetSaberBoxSize(gentity_t *saberent)
 		owner = &g_entities[saberent->r.ownerNum];
 	}
 
-	/*	if (!owner || !owner->client || !owner->inuse)
-	{
-// XMOD ERROR WITH SABER!!!
-		//assert(!"Saber with no owner?");
-		G_Printf("Error: Saber ent has no owner... Deleted!\n");
-//		MakeDeadSaber(saberent);
-
-		saberent->think = G_FreeEntity;
-		saberent->nextthink = level.time;
-		// delete the saber entity
-		return;
-	}*/
 	if (!owner || !owner->inuse || !owner->client)
 	{
 		assert(!"Saber with no owner?");
 		return;
 	}
 
-	/*if ( owner->client->saber[1].model
-		&& owner->client->saber[1].model[0] )
-	{
-		dualSabers = qtrue;
-	}*/
-	if (owner->client->saber[1].model[0])
+	if (owner->client->saber[1].model
+		&& owner->client->saber[1].model[0])
 	{
 		dualSabers = qtrue;
 	}
@@ -2720,13 +2704,8 @@ static GAME_INLINE qboolean G_SaberFaceCollisionCheck(int fNum, saberFace_t *fLi
 	return qfalse;
 }
 
-//[BugFix26]
-qboolean OJP_SaberIsOff( gentity_t *self, int saberNum );
-qboolean OJP_BladeIsOff(gentity_t *self, int saberNum, int bladeNum);
-//[/BugFix26]
-//check for collision of 2 blades -rww
 static GAME_INLINE qboolean G_SaberCollide(gentity_t *atk, gentity_t *def, vec3_t atkStart,
-						vec3_t atkEnd, vec3_t atkMins, vec3_t atkMaxs, vec3_t impactPoint)
+	vec3_t atkEnd, vec3_t atkMins, vec3_t atkMaxs, vec3_t impactPoint)
 {
 	static int i, j;
 
@@ -2740,26 +2719,10 @@ static GAME_INLINE qboolean G_SaberCollide(gentity_t *atk, gentity_t *def, vec3_
 		return qfalse;
 	}
 
-	//[BugFix26]
-	if(def->client->ps.saberHolstered == 2)
-	{//no sabers on.
-		return qfalse;
-	}
-	//[/BugFix26]
-
 	i = 0;
 	while (i < MAX_SABERS)
 	{
 		j = 0;
-
-		//[BugFix26]
-		if( OJP_SaberIsOff(def, i) )
-		{//saber is off and can't be used.
-			i++;
-			continue;
-		}
-		//[/BugFix26]
-
 		if (def->client->saber[i].model && def->client->saber[i].model[0])
 		{ //valid saber on the defender
 			bladeInfo_t *blade;
@@ -2771,14 +2734,6 @@ static GAME_INLINE qboolean G_SaberCollide(gentity_t *atk, gentity_t *def, vec3_
 			while (j < def->client->saber[i].numBlades)
 			{
 				blade = &def->client->saber[i].blade[j];
-
-				//[BugFix26]
-				if(OJP_BladeIsOff(def, i, j))
-				{//this particular blade is turned off.
-					j++;
-					continue;
-				}
-				//[/BugFix26]
 
 				if ((level.time-blade->storageTime) < 200)
 				{ //recently updated
@@ -3705,20 +3660,15 @@ void WP_SaberDoHit( gentity_t *self, int saberNum, int bladeNum )
 		te = G_TempEntity( dmgSpot[i], EV_SABER_HIT );
 		if ( te )
 		{
-			//te->s.otherEntityNum = victimEntityNum[i];
-			//te->s.otherEntityNum2 = self->s.number;
-			te->s.otherEntityNum2 = victimEntityNum[i];
-			te->s.otherEntityNum = self->s.number;
-//	lmo reverse for consistency with nox code
-//			te->s.otherEntityNum = victimEntityNum[i];
-//			te->s.otherEntityNum2 = self->s.number;
+			te->s.otherEntityNum = victimEntityNum[i];
+			te->s.otherEntityNum2 = self->s.number;
 			te->s.weapon = saberNum;
 			te->s.legsAnim = bladeNum;
 
 			VectorCopy(dmgSpot[i], te->s.origin);
 			//VectorCopy(tr.plane.normal, te->s.angles);
-			VectorScale( dmgDir[i], -1, te->s.angles);
-			
+			VectorScale(dmgDir[i], -1, te->s.angles);
+
 			if (!te->s.angles[0] && !te->s.angles[1] && !te->s.angles[2])
 			{ //don't let it play with no direction
 				te->s.angles[1] = 1;
@@ -3863,26 +3813,18 @@ static qboolean saberDoClashEffect = qfalse;
 static vec3_t saberClashPos = {0};
 static vec3_t saberClashNorm = {0};
 static int saberClashEventParm = 1;
-void WP_SaberDoClash( gentity_t *self, int saberNum, int bladeNum )
+void WP_SaberDoClash(gentity_t *self, int saberNum, int bladeNum)
 {
-	if ( saberDoClashEffect )
+	if (saberDoClashEffect)
 	{
-		gentity_t *te = G_TempEntity( saberClashPos, EV_SABER_BLOCK );
+		gentity_t *te = G_TempEntity(saberClashPos, EV_SABER_BLOCK);
 		VectorCopy(saberClashPos, te->s.origin);
 		VectorCopy(saberClashNorm, te->s.angles);
 		te->s.eventParm = saberClashEventParm;
 		te->s.otherEntityNum2 = self->s.number;
-		te->s.otherEntityNum = self->s.number; //lmo hack for sending owner info with sound event entity
 		te->s.weapon = saberNum;
 		te->s.legsAnim = bladeNum;
 	}
-
-	//[BugFix5]
-	//I think the clasheffect is repeating for each blade on a saber.
-	//This is bad, so I'm hacking it to reset saberDoClashEffect to prevent duplicate clashes
-	//from occuring.
-	saberDoClashEffect = qfalse;
-	//[/BugFix5]
 }
 
 void WP_SaberBounceSound( gentity_t *ent, int saberNum, int bladeNum )
@@ -4121,16 +4063,16 @@ static GAME_INLINE qboolean CheckSaberDamage(gentity_t *self, int rSaberNum, int
 
 			VectorCopy(saberStart, lastValidStart);
 			VectorCopy(saberEndExtrapolated, lastValidEnd);
-			
+			/*
 			if ( tr.allsolid || tr.startsolid )
 			{
-				if ( tr.entityNum == ENTITYNUM_NONE )
-				{
-					qboolean whah = qtrue;
-				}
-				//Com_Printf( "saber trace start/all solid - ent is %d\n", tr.entityNum );
+			if ( tr.entityNum == ENTITYNUM_NONE )
+			{
+			qboolean whah = qtrue;
 			}
-			
+			Com_Printf( "saber trace start/all solid - ent is %d\n", tr.entityNum );
+			}
+			*/
 			if (tr.entityNum < MAX_CLIENTS)
 			{
 				G_G2TraceCollide(&tr, lastValidStart, lastValidEnd, saberTrMins, saberTrMaxs);
@@ -4141,7 +4083,6 @@ static GAME_INLINE qboolean CheckSaberDamage(gentity_t *self, int rSaberNum, int
 
 				if (trHit->inuse && trHit->ghoul2)
 				{ //hit a non-client entity with a g2 instance
-				
 					G_G2TraceCollide(&tr, lastValidStart, lastValidEnd, saberTrMins, saberTrMaxs);
 				}
 			}
@@ -4456,7 +4397,6 @@ static GAME_INLINE qboolean CheckSaberDamage(gentity_t *self, int rSaberNum, int
 			return qtrue;//true cause even though we didn't get a hit, we don't want to do those extra traces because the debounce time says not to.
 		}
 		trMask &= ~CONTENTS_LIGHTSABER;
-
 		if ( d_saberSPStyleDamage.integer )
 		{
 			if ( BG_SaberInReturn( self->client->ps.saberMove ) )
@@ -4471,9 +4411,6 @@ static GAME_INLINE qboolean CheckSaberDamage(gentity_t *self, int rSaberNum, int
 				}
 				else
 				{
-					//RoAR mod NOTE: This is for Darchind because he noticed 1.07 was closer to base. 
-					//This is what caused it to look so close to base.
-					//dmg = SABER_NONATTACK_DAMAGE;
 					dmg = 0;
 				}
 			}
@@ -4667,14 +4604,11 @@ static GAME_INLINE qboolean CheckSaberDamage(gentity_t *self, int rSaberNum, int
 			}
 
 			//do bounce sound & force feedback
-			WP_SaberBounceSound( self, rSaberNum, rBladeNum );
+			WP_SaberBounceSound(self, rSaberNum, rBladeNum);
 			//do hit effect
-			te = G_TempEntity( tr.endpos, EV_SABER_HIT );
-			te->s.otherEntityNum2 = ENTITYNUM_NONE;//we didn't hit anyone in particular
-			te->s.otherEntityNum = self->s.number;//send this so it knows who we are
-// lmo reverse for consistency with nox code
-//			te->s.otherEntityNum = ENTITYNUM_NONE;//we didn't hit anyone in particular
-//			te->s.otherEntityNum2 = self->s.number;//send this so it knows who we are
+			te = G_TempEntity(tr.endpos, EV_SABER_HIT);
+			te->s.otherEntityNum = ENTITYNUM_NONE;//we didn't hit anyone in particular
+			te->s.otherEntityNum2 = self->s.number;//send this so it knows who we are
 			te->s.weapon = rSaberNum;
 			te->s.legsAnim = rBladeNum;
 			VectorCopy(tr.endpos, te->s.origin);
@@ -4897,8 +4831,7 @@ static GAME_INLINE qboolean CheckSaberDamage(gentity_t *self, int rSaberNum, int
 			}
 			else
 			{
-				//self->client->ps.saberAttackWound = level.time + 100; //RoAR mod NOTE: LastHope has this at 400. BASEJKA is 100
-				self->client->ps.saberAttackWound = level.time + 300;
+				self->client->ps.saberAttackWound = level.time + 100;
 			}
 		}
 	}
@@ -6083,7 +6016,6 @@ static GAME_INLINE qboolean CheckThrownSaberDamaged(gentity_t *saberent, gentity
 
 			trap_Trace(&tr, saberent->r.currentOrigin, NULL, NULL, ent->client->ps.origin, saberent->s.number, MASK_SHOT);
 
-			//RoAR mod NOTE: Will this fix the hit box problem?
 			if (tr.fraction == 1 || tr.entityNum == ent->s.number)
 			{ //Slice them
 				if (!saberOwner->client->ps.isJediMaster && WP_SaberCanBlock(ent, tr.endpos, 0, MOD_SABER, qfalse, 999))
@@ -6098,7 +6030,6 @@ static GAME_INLINE qboolean CheckThrownSaberDamaged(gentity_t *saberent, gentity
 						te->s.angles[1] = 1;
 					}
 					te->s.eventParm = 1;
-					te->s.otherEntityNum = saberOwner->s.number; //lmo hack for sending owner info with sound event entity
 					te->s.weapon = 0;//saberNum
 					te->s.legsAnim = 0;//bladeNum
 
@@ -6147,12 +6078,9 @@ static GAME_INLINE qboolean CheckThrownSaberDamaged(gentity_t *saberent, gentity
 						G_Damage(ent, saberOwner, saberOwner, dir, tr.endpos, saberent->damage, dflags, MOD_SABER);
 					}
 
-					te = G_TempEntity( tr.endpos, EV_SABER_HIT );
-					te->s.otherEntityNum2 = ent->s.number;
-					te->s.otherEntityNum = saberOwner->s.number;
-// lmo reverse for consitency with nox code
-//					te->s.otherEntityNum = ent->s.number;
-//					te->s.otherEntityNum2 = saberOwner->s.number;
+					te = G_TempEntity(tr.endpos, EV_SABER_HIT);
+					te->s.otherEntityNum = ent->s.number;
+					te->s.otherEntityNum2 = saberOwner->s.number;
 					te->s.weapon = 0;//saberNum
 					te->s.legsAnim = 0;//bladeNum
 					VectorCopy(tr.endpos, te->s.origin);
@@ -6233,12 +6161,10 @@ static GAME_INLINE qboolean CheckThrownSaberDamaged(gentity_t *saberent, gentity
 					G_Damage(ent, saberOwner, saberOwner, dir, tr.endpos, 5, dflags, MOD_SABER);
 				}
 
-				te = G_TempEntity( tr.endpos, EV_SABER_HIT );
-				te->s.otherEntityNum2 = ENTITYNUM_NONE; //don't do this for throw damage
-				te->s.otherEntityNum = saberOwner->s.number;//actually, do send this, though - for the overridden per-saber hit effects/sounds
-//	lmo reverse for consitency with nox code
-//				te->s.otherEntityNum = ENTITYNUM_NONE; //don't do this for throw damage
-//				te->s.otherEntityNum2 = saberOwner->s.number;//actually, do send this, though - for the overridden per-saber hit effects/sounds
+				te = G_TempEntity(tr.endpos, EV_SABER_HIT);
+				te->s.otherEntityNum = ENTITYNUM_NONE; //don't do this for throw damage
+				//te->s.otherEntityNum = ent->s.number;
+				te->s.otherEntityNum2 = saberOwner->s.number;//actually, do send this, though - for the overridden per-saber hit effects/sounds
 				te->s.weapon = 0;//saberNum
 				te->s.legsAnim = 0;//bladeNum
 				VectorCopy(tr.endpos, te->s.origin);
@@ -6406,10 +6332,6 @@ void DeadSaberThink(gentity_t *saberent)
 void MakeDeadSaber(gentity_t *ent)
 {	//spawn a "dead" saber entity here so it looks like the saber fell out of the air.
 	//This entity will remove itself after a very short time period.
-	//[BugFix23]
-	//trace stuct used for determining if it's safe to spawn at current location
-	trace_t		tr;  
-	//[/BugFix23]
 	vec3_t startorg;
 	vec3_t startang;
 	gentity_t *saberent;
@@ -6447,7 +6369,7 @@ void MakeDeadSaber(gentity_t *ent)
 	//unfortunately, it's a fairly regular occurance that current saber location
 	//(normally at the player's right hand) could result in the saber being stuck 
 	//in the the map and then freaking out.
-	trap_Trace(&tr, startorg, saberent->r.mins, saberent->r.maxs,
+	/*trap_Trace(&tr, startorg, saberent->r.mins, saberent->r.maxs,
 		startorg, saberent->s.number, saberent->clipmask);
 	if(tr.startsolid || tr.fraction != 1)
 	{//bad position, try popping our origin up a bit
@@ -6464,7 +6386,7 @@ void MakeDeadSaber(gentity_t *ent)
 			
 			//since this is our last chance, we don't care if this works or not.
 		}
-	}
+	}*/
 	//[/BugFix23]
 
 	VectorCopy(startorg, saberent->s.pos.trBase);
@@ -6512,9 +6434,6 @@ void MakeDeadSaber(gentity_t *ent)
 	saberent->speed = level.time + 4000;
 
 	saberent->bounceCount = 12;
-
-	//lmo add owner inforation for tracking this under duel nox
-	saberent->s.otherEntityNum = ent->r.ownerNum;
 
 	//fall off in the direction the real saber was headed
 	VectorCopy(ent->s.pos.trDelta, saberent->s.pos.trDelta);
@@ -6702,11 +6621,6 @@ void saberReactivate(gentity_t *saberent, gentity_t *saberOwner)
 
 void saberKnockDown(gentity_t *saberent, gentity_t *saberOwner, gentity_t *other)
 {
-	//[BugFix23]
-	//trace stuct used for determining if it's safe to spawn at current location
-	trace_t		tr;  
-	//[/BugFix23]
-
 	saberOwner->client->ps.saberEntityNum = 0; //still stored in client->saberStoredIndex
 	saberOwner->client->saberKnockedTime = level.time + SABER_RETRIEVE_DELAY;
 
@@ -6721,7 +6635,7 @@ void saberKnockDown(gentity_t *saberent, gentity_t *saberOwner, gentity_t *other
 	//unfortunately, it's a fairly regular occurance that current saber location
 	//(normally at the player's right hand) could result in the saber being stuck 
 	//in the the map and then freaking out.
-	trap_Trace(&tr, saberent->r.currentOrigin, saberent->r.mins, saberent->r.maxs,
+	/*trap_Trace(&tr, saberent->r.currentOrigin, saberent->r.mins, saberent->r.maxs,
 		saberent->r.currentOrigin, saberent->s.number, saberent->clipmask);
 	if(tr.startsolid || tr.fraction != 1)
 	{//bad position, try popping our origin up a bit
@@ -6735,7 +6649,7 @@ void saberKnockDown(gentity_t *saberent, gentity_t *saberOwner, gentity_t *other
 			
 			//since this is our last chance, we don't care if this works or not.
 		}
-	}
+	}*/
 	//[/BugFix23]
 
 	saberent->s.apos.trType = TR_GRAVITY;
@@ -8735,11 +8649,7 @@ void WP_SaberPositionUpdate( gentity_t *self, usercmd_t *ucmd )
 
 	if (self->client->ps.saberThrowDelay < level.time)
 	{
-		if (self->client->emote_freeze == 0 && !(self->client->saber[0].saberFlags&SFL_NOT_THROWABLE))
-		{
-			self->client->ps.saberCanThrow = qtrue;
-		}
-		if ( (self->client->saber[0].saberFlags&SFL_NOT_THROWABLE) )
+		if ((self->client->saber[0].saberFlags&SFL_NOT_THROWABLE) || self->client->emote_freeze > 0)
 		{//cant throw it normally!
 			if ( (self->client->saber[0].saberFlags&SFL_SINGLE_BLADE_THROWABLE) )
 			{//but can throw it if only have 1 blade on
@@ -9003,9 +8913,6 @@ nextStep:
 				self->client->ps.eFlags &= ~EF_INVULNERABLE;
 				self->client->invulnerableTimer = 0;
 
-				//lmo mark saberent state with owner info for duel non interference
-				saberent->s.otherEntityNum = self->client->ps.clientNum;
-
 				trap_LinkEntity(saberent);
 			}
 			else if (self->client->ps.saberEntityNum) //only do this stuff if your saber is active and has not been knocked out of the air.
@@ -9060,7 +8967,6 @@ nextStep:
 				VectorCopy(g_entities[saberNum].r.currentOrigin, te->s.origin);
 				VectorCopy(dir, te->s.angles);
 				te->s.eventParm = 1;
-				te->s.otherEntityNum = self->s.number; //lmo hack for sending owner info with sound event entity
 				te->s.weapon = 0;//saberNum
 				te->s.legsAnim = 0;//bladeNum
 
@@ -9205,10 +9111,7 @@ nextStep:
 
 				self->client->saber[rSaberNum].blade[rBladeNum].storageTime = level.time;
 
-				//[SaberSys]
-				if (self->client->hasCurrentPosition && d_saberInterpolate.integer == 1)
-				//if (self->client->hasCurrentPosition && d_saberInterpolate.integer)
-				//[/SaberSys]
+				if (self->client->hasCurrentPosition && d_saberInterpolate.integer)
 				{
 					if (self->client->ps.weaponTime <= 0)
 					{ //rww - 07/17/02 - don't bother doing the extra stuff unless actually attacking. This is in attempt to save CPU.
@@ -9366,61 +9269,13 @@ nextStep:
 						}
 					}
 				}
-				//[SaberSys]
-				//Not Used Anymore.  Removing to prevent problems.
-				/*
-				else if ( d_saberSPStyleDamage.integer )
+				else if (d_saberSPStyleDamage.integer)
 				{
-					G_SPSaberDamageTraceLerped( self, rSaberNum, rBladeNum, boltOrigin, end, (MASK_PLAYERSOLID|CONTENTS_LIGHTSABER|MASK_SHOT) );
-				}
-				*/
-
-				else if(self->client->hasCurrentPosition && d_saberInterpolate.integer == 2)
-				{//Super duper interplotation system
-					if ( (level.time-self->client->saber[rSaberNum].blade[rBladeNum].trail.lastTime) < 100/* && BG_SaberInFullDamageMove(&self->client->ps, self->localAnimIndex)*/ )
-					{//only do the full swing interpolation while in a true attack swing.
-						vec3_t olddir, endpos, startpos;
-						float dist = (d_saberBoxTraceSize.value + self->client->saber[rSaberNum].blade[rBladeNum].radius)*0.5f;
-						VectorSubtract(self->client->saber[rSaberNum].blade[rBladeNum].trail.tip, self->client->saber[rSaberNum].blade[rBladeNum].trail.base, olddir);
-						VectorNormalize(olddir);
-
-						//start off by firing a trace down the old saber position to see if it's still inside something.
-						if(CheckSaberDamage(self, rSaberNum, rBladeNum, self->client->saber[rSaberNum].blade[rBladeNum].trail.base, 
-							self->client->saber[rSaberNum].blade[rBladeNum].trail.tip, qfalse, (MASK_PLAYERSOLID|CONTENTS_LIGHTSABER|MASK_SHOT), qtrue) )
-						{//saber was still in something at it's previous position, just check damage there.
-						}
-						else
-						{//fire a series of traces thru the space the saber moved thru where it moved during the last frame.
-							//This is done linearly so it's not going to 100% accurately reflect the normally curved movement
-							//of the saber.
-							while( dist < self->client->saber[rSaberNum].blade[rBladeNum].lengthMax )
-							{
-								//set new blade position
-								VectorMA( boltOrigin, dist, self->client->saber[rSaberNum].blade[rBladeNum].muzzleDir, endpos );
-							
-								//set old blade position
-								VectorMA( self->client->saber[rSaberNum].blade[rBladeNum].trail.base, dist, olddir, startpos );
-								
-								if(CheckSaberDamage(self, rSaberNum, rBladeNum, startpos, endpos, qfalse, (MASK_PLAYERSOLID|CONTENTS_LIGHTSABER|MASK_SHOT), qtrue))
-								{//saber hit something, that's good enough for us!
-									break;
-								}
-
-								//didn't hit anything, slide down the blade a bit and try again.
-								dist += d_saberBoxTraceSize.value + self->client->saber[rSaberNum].blade[rBladeNum].radius;
-							}
-						}
-					}
-					else
-					{//out of date blade position data or not in full damage move, 
-						//just do a single ghoul2 trace to keep the CPU useage down.					
-						CheckSaberDamage(self, rSaberNum, rBladeNum, boltOrigin, end, qfalse, (MASK_PLAYERSOLID|CONTENTS_LIGHTSABER|MASK_SHOT), qtrue);
-					}
-				//[/SaberSys]
+					G_SPSaberDamageTraceLerped(self, rSaberNum, rBladeNum, boltOrigin, end, (MASK_PLAYERSOLID | CONTENTS_LIGHTSABER | MASK_SHOT));
 				}
 				else
 				{
-					CheckSaberDamage(self, rSaberNum, rBladeNum, boltOrigin, end, qfalse, (MASK_PLAYERSOLID|CONTENTS_LIGHTSABER|MASK_SHOT), qfalse);
+					CheckSaberDamage(self, rSaberNum, rBladeNum, boltOrigin, end, qfalse, (MASK_PLAYERSOLID | CONTENTS_LIGHTSABER | MASK_SHOT), qfalse);
 				}
 
 				VectorCopy(boltOrigin, self->client->saber[rSaberNum].blade[rBladeNum].trail.base);
@@ -9846,79 +9701,4 @@ qboolean HasSetSaberOnly(void)
 
 	return qtrue;
 }
-
-//[BugFix26]
-qboolean OJP_SaberIsOff( gentity_t *self, int saberNum )
-{//this function checks to see if a given saber is off.  This function doesn't check to see if this player actually has
-	//that saber.  We only have this function to account for the weird special case for dual sabers where one saber has 
-	//been dropped.
-
-	switch (self->client->ps.saberHolstered)
-	{
-	case 0:
-		//all sabers on
-		return qfalse;
-		break;
-
-	case 1:
-		//one saber off, one saber on
-		if(saberNum == 0)
-		{//primary is on
-			return qfalse;
-		}
-		else
-		{//secondary is off
-			return qtrue;
-		}
-		break;
-	case 2:
-		//all sabers off
-		return qtrue;
-		break;
-	default:
-		G_Printf("Unknown saberHolstered value %i in OJP_SaberIsOff\n", self->client->ps.saberHolstered);
-		return qtrue;
-		break;
-	};
-}
-
-
-qboolean OJP_BladeIsOff(gentity_t *self, int saberNum, int bladeNum)
-{//checks to see if a given saber blade is supposed to be off.  This function does not check to see if the 
-	//saber or saber blade actually exists.
-
-	//We have this function to account for the special cases with dual sabers where one saber has been dropped.
-
-	if(saberNum > 0)
-	{//secondary sabers are all on/all off.
-		if(OJP_SaberIsOff(self, saberNum))
-		{//blades are all off
-			return qtrue;
-		}
-		else
-		{//blades are all on
-			return qfalse;
-		}
-	}
-	else
-	{//primary blade
-		//based on number of blades on saber
-		if(OJP_SaberIsOff(self, saberNum)) //This function accounts for the weird saber throw situations.
-		{//saber is off, all blades are off
-			return qtrue;
-		}
-		else
-		{//saber is on, secondary blades status is based on saberHolstered value.
-			if(bladeNum > 0 && self->client->ps.saberHolstered == 1)
-			{//secondaries are off
-				return qtrue;
-			}
-			else
-			{//blade is on.
-				return qfalse;
-			}
-		}
-	}
-}
-//[/BugFix26]
 

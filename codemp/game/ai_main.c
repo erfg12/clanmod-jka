@@ -64,9 +64,6 @@ vmCvar_t bot_forgimmick;
 vmCvar_t bot_honorableduelacceptance;
 vmCvar_t bot_pvstype;
 vmCvar_t bot_normgpath;
-//RoAR mod BEGIN
-//vmCvar_t bot_nolaming;
-//RoAR mod END
 #ifndef FINAL_BUILD
 vmCvar_t bot_getinthecarrr;
 #endif

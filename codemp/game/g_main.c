@@ -252,59 +252,6 @@ vmCvar_t		cm_badword5;
 vmCvar_t		cm_precoded_badwords;
 //END
 
-//RoAR mod NOTE: Lvl exp. for RPG gametype
-/*vmCvar_t		lvl1_experience;
-vmCvar_t		lvl2_experience;
-vmCvar_t		lvl3_experience;
-vmCvar_t		lvl4_experience;
-vmCvar_t		lvl5_experience;
-vmCvar_t		lvl6_experience;
-vmCvar_t		lvl7_experience;
-vmCvar_t		lvl8_experience;
-vmCvar_t		lvl9_experience;
-vmCvar_t		lvl10_experience;
-vmCvar_t		lvl11_experience;
-vmCvar_t		lvl12_experience;
-vmCvar_t		lvl13_experience;
-vmCvar_t		lvl14_experience;
-vmCvar_t		lvl15_experience;
-vmCvar_t		lvl16_experience;
-vmCvar_t		lvl17_experience;
-vmCvar_t		lvl18_experience;
-vmCvar_t		lvl19_experience;
-vmCvar_t		lvl20_experience;
-vmCvar_t		lvl21_experience;
-vmCvar_t		lvl22_experience;
-vmCvar_t		lvl23_experience;
-vmCvar_t		lvl24_experience;
-vmCvar_t		lvl25_experience;
-vmCvar_t		lvl26_experience;
-vmCvar_t		lvl27_experience;
-vmCvar_t		lvl28_experience;
-vmCvar_t		lvl29_experience;
-vmCvar_t		lvl30_experience;
-vmCvar_t		lvl31_experience;
-vmCvar_t		lvl32_experience;
-vmCvar_t		lvl33_experience;
-vmCvar_t		lvl34_experience;
-vmCvar_t		lvl35_experience;
-vmCvar_t		lvl36_experience;
-vmCvar_t		lvl37_experience;
-vmCvar_t		lvl38_experience;
-vmCvar_t		lvl39_experience;
-vmCvar_t		lvl40_experience;
-vmCvar_t		lvl41_experience;
-vmCvar_t		lvl42_experience;
-vmCvar_t		lvl43_experience;
-vmCvar_t		lvl44_experience;
-vmCvar_t		lvl45_experience;
-vmCvar_t		lvl46_experience;
-vmCvar_t		lvl47_experience;
-vmCvar_t		lvl48_experience;
-vmCvar_t		lvl49_experience;
-vmCvar_t		lvl50_experience;*/
-//END!
-
 vmCvar_t	m_v1;
 vmCvar_t	m_v2;
 vmCvar_t	m_v3;
@@ -868,11 +815,7 @@ static cvarTable_t		gameCvarTable[] = {
 
 	{ &g_synchronousClients, "g_synchronousClients", "0", CVAR_SYSTEMINFO, 0, qfalse  },
 
-	//[SaberSys]
-	//turn on Super Duper Interpolation by default
-	{ &d_saberInterpolate, "d_saberInterpolate", "2", 0, 0, qtrue },
-	//{ &d_saberInterpolate, "d_saberInterpolate", "0", CVAR_CHEAT, 0, qtrue },
-	//[/SaberSys]
+	{ &d_saberInterpolate, "d_saberInterpolate", "0", CVAR_CHEAT, 0, qtrue },
 
 	{ &g_friendlyFire, "g_friendlyFire", "0", CVAR_ARCHIVE, 0, qtrue  },
 	{ &g_friendlySaber, "g_friendlySaber", "0", CVAR_ARCHIVE, 0, qtrue  },
@@ -1842,9 +1785,6 @@ extern void SP_info_jedimaster_start(gentity_t *ent);
 //[BugFix44]
 extern void G_LoadArenas(void);
 //[/BugFix44]
-#ifdef _WIN32
-void JKG_PatchEngine();
-#endif
 void G_InitGame( int levelTime, int randomSeed, int restart ) {
 	int			i;
 	vmCvar_t	mapname;
@@ -1855,6 +1795,9 @@ void G_InitGame( int levelTime, int randomSeed, int restart ) {
 if (!strncmp((char *)0x4A88AC, "(internal)JAmp:", 15)) {
 	JKG_PatchEngine();
 }
+#endif
+#ifdef __linux__
+	void JKG_PatchEngine();
 #endif
 
 	//Init RMG to 0, it will be autoset to 1 if there is terrain on the level.
@@ -1982,7 +1925,7 @@ if (!strncmp((char *)0x4A88AC, "(internal)JAmp:", 15)) {
 
 	//Mod
 	//Faites vos prières pour les waypoints
-	G_ReadLevelFix();
+	//G_ReadLevelFix();
 
 	// parse the key/value pairs and spawn gentities
 	G_SpawnEntitiesFromString(qfalse);

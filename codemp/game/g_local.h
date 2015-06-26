@@ -1972,59 +1972,6 @@ extern vmCvar_t		cm_precoded_badwords;
 extern vmCvar_t		roar_FPGRIPspeed;
 extern vmCvar_t		roar_BotFakePings;
 
-//RoAR mod NOTE: Lvl exp. for RPG gametype
-/*extern vmCvar_t		lvl1_experience;
-extern vmCvar_t		lvl2_experience;
-extern vmCvar_t		lvl3_experience;
-extern vmCvar_t		lvl4_experience;
-extern vmCvar_t		lvl5_experience;
-extern vmCvar_t		lvl6_experience;
-extern vmCvar_t		lvl7_experience;
-extern vmCvar_t		lvl8_experience;
-extern vmCvar_t		lvl9_experience;
-extern vmCvar_t		lvl10_experience;
-extern vmCvar_t		lvl11_experience;
-extern vmCvar_t		lvl12_experience;
-extern vmCvar_t		lvl13_experience;
-extern vmCvar_t		lvl14_experience;
-extern vmCvar_t		lvl15_experience;
-extern vmCvar_t		lvl16_experience;
-extern vmCvar_t		lvl17_experience;
-extern vmCvar_t		lvl18_experience;
-extern vmCvar_t		lvl19_experience;
-extern vmCvar_t		lvl20_experience;
-extern vmCvar_t		lvl21_experience;
-extern vmCvar_t		lvl22_experience;
-extern vmCvar_t		lvl23_experience;
-extern vmCvar_t		lvl24_experience;
-extern vmCvar_t		lvl25_experience;
-extern vmCvar_t		lvl26_experience;
-extern vmCvar_t		lvl27_experience;
-extern vmCvar_t		lvl28_experience;
-extern vmCvar_t		lvl29_experience;
-extern vmCvar_t		lvl30_experience;
-extern vmCvar_t		lvl31_experience;
-extern vmCvar_t		lvl32_experience;
-extern vmCvar_t		lvl33_experience;
-extern vmCvar_t		lvl34_experience;
-extern vmCvar_t		lvl35_experience;
-extern vmCvar_t		lvl36_experience;
-extern vmCvar_t		lvl37_experience;
-extern vmCvar_t		lvl38_experience;
-extern vmCvar_t		lvl39_experience;
-extern vmCvar_t		lvl40_experience;
-extern vmCvar_t		lvl41_experience;
-extern vmCvar_t		lvl42_experience;
-extern vmCvar_t		lvl43_experience;
-extern vmCvar_t		lvl44_experience;
-extern vmCvar_t		lvl45_experience;
-extern vmCvar_t		lvl46_experience;
-extern vmCvar_t		lvl47_experience;
-extern vmCvar_t		lvl48_experience;
-extern vmCvar_t		lvl49_experience;
-extern vmCvar_t		lvl50_experience;*/
-//END!
-
 //RoAR mod CUSTOM SAYINGS BEGIN
 extern vmCvar_t		roar_sayings_display;
 extern vmCvar_t		roar_protect_on_saying;
