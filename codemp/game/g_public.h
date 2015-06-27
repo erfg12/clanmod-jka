@@ -681,7 +681,9 @@ typedef struct
 #define MAX_FAILED_NODES 8
 
 //MJN - Linux
-//typedef struct Vehicle_s Vehicle_t;
+#ifndef __GCC__
+typedef struct Vehicle_s Vehicle_t;
+#endif
 
 // the server looks at a sharedEntity, which is the start of the game's gentity_t structure
 //mod authors should not touch this struct

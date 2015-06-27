@@ -481,7 +481,11 @@ typedef struct
 // This is the implementation of the vehicle interface and any of the other variables needed. This
 // is what actually represents a vehicle. -AReis.
 // MJN - Linux
+#ifdef __GCC__
 struct Vehicle_s
+#else
+typedef struct Vehicle_s
+#endif
 {
 	// The entity who pilots/drives this vehicle.
 	// NOTE: This is redundant (since m_pParentEntity->owner _should_ be the pilot). This makes things clearer though.
@@ -627,7 +631,11 @@ struct Vehicle_s
 	//the guy who was previously the pilot
 	bgEntity_t *	m_pOldPilot;
 
+#ifdef __GCC__
 };
+#else
+} Vehicle_t;
+#endif
 
 #include "../namespace_begin.h"
 extern int BG_VehicleGetIndex( const char *vehicleName );

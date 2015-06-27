@@ -32,8 +32,7 @@ void GCam_Move( vec3_t dest, float duration );
 // so that we only get the C version of the includes (no full Icarus) in that
 // scenario, but I think we'll just try to leave this out instead.
 #ifndef _XBOX
-// MJN - Linux
-//#ifndef __linux__
+#if defined(__linux__) && defined(__GCC__) || !defined(__linux__)
 enum
 {
 	TK_EOF = -1,
@@ -49,7 +48,7 @@ enum
 	TK_USERDEF,
 };
 // MJN - Linux
-//#endif
+#endif
 #endif
 
 #include "../icarus/interpreter.h"

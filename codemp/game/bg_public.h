@@ -449,10 +449,10 @@ extern int bgForcePowerCost[NUM_FORCE_POWERS][NUM_FORCE_POWER_LEVELS];
 
 // MJN - Linux
 //[Linux]
-#ifndef __linux__
-typedef struct bgEntity_s
-#else
+#ifdef __GCC__
 struct bgEntity_s
+#else
+typedef struct bgEntity_s
 #endif
 //[/Linux]
 {

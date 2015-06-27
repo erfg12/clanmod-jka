@@ -1,17 +1,24 @@
 #
-# Linux Makefile for the Jedi Academy Clan Mod
-# Version: 1.0
-# Created: June 26, 2015
-# Compiler: Intel C++ Compiler EX v12 for Linux
+# Linux Makefile for GCC for Jedi Academy SDK
 #
 
-SHELL = /bin/sh
-CC = icc
-CFLAGS = -fpic -DFINAL_BUILD -DMISSIONPACK -DQAGAME -D_JK2 -D__linux__ -O2 -Os -mp1
-LDFLAGS = -shared -static-intel -Bstatic -limf
-BINARY = jampgamei386.so
-INSTALLDIR = /home
 
+# === Variables ===
+
+# Compiler - GCC
+CC = gcc
+
+# Compiler Flags
+# -D<name> ( Used to make a define like #define mydefine )
+# -w ( disable warnings )
+# -I<include path>  used to include headers
+# -fPIC ( this flag is necessary to build shared libraries )
+CFLAGS = -I../qcommon -I../server -I../icarus -I../ghoul2 -fPIC -DFINAL_BUILD -DMISSION_PACK -DQAGAME -D_JK2 -D__linux__ -D__GCC__ -w
+
+# Target file
+TARGET = jampgamei386.so
+
+# Object Files
 OFILES = ai_main.o ai_util.o ai_wpnav.o AnimalNPC.o bg_g2_utils.o bg_misc.o bg_panimate.o \
 	   bg_pmove.o bg_saber.o bg_saberLoad.o bg_saga.o bg_slidemove.o bg_vehicleLoad.o bg_weapons.o \
 	   FighterNPC.o g_active.o g_adminshared.o g_arenas.o g_bot.o g_client.o g_cmds.o \
@@ -26,31 +33,13 @@ OFILES = ai_main.o ai_util.o ai_wpnav.o AnimalNPC.o bg_g2_utils.o bg_misc.o bg_p
          NPC_reactions.o NPC_senses.o NPC_sounds.o NPC_spawn.o NPC_stats.o NPC_utils.o q_math.o q_shared.o \
          SpeederNPC.o tri_coll_test.o WalkerNPC.o w_force.o w_saber.o g_Xmod.o aotctc_holocron.o g_nox_syscalls.o g_emotes.o timestamp.o
 
-$(BINARY): $(OFILES)
-	$(CC) $(LDFLAGS) -o $(BINARY) $(OFILES)
+$(TARGET): $(OFILES)
+	$(CC) -shared -o $(TARGET) $(OFILES) -lm
+	strip $(TARGET)
 
 .c.o:
-	$(CC) $(CFLAGS) -w0 -c $*.c -o $*.o
-
-info:
-	@echo ---Run 'make' to compile the code and create the binary called jampgamei386.so 
-	@echo    located in the 'game' directory of your source folder.
-	@echo ---Execute 'make install' to copy the jampgamei386.so binary to your mod folder.
-	@echo Note:
-	@echo ---You may set your own optimizations on the CFLAGS line.
-	@echo ---You may also add any additional source file objects to the OFILES line.
-	@echo ---Set your mod directory path to the INSTALLDIR line.
+	$(CC) $(CFLAGS) -c $*.c -o $*.o
 
 clean:
 	rm -f $(OFILES)
-	rm -f $(BINARY)
-
-install:
-	cp -f $(BINARY) $(INSTALLDIR)
-
-uninstall:
-	rm -f $(INSTALLDIR)/$(BINARY)
-
-package:
-	tar cfv $(BINARY).tar $(BINARY)
-	gzip $(BINARY).tar
+	rm -f $(TARGET)
