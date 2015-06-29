@@ -1,3 +1,12 @@
+Version 1.2.2
+=============
+- Fixed AddModel server load Z axis off
+- Changed clientbegin code
+
+Version 1.2.1
+=============
+- Fixed music reset on spawn
+
 Version 1.2.0
 =============
 - Changed version numbering system

@@ -1091,7 +1091,7 @@ else if (Q_stricmp(cmd, "amkick") == 0)
          }
 		 if ((ent->r.svFlags & SVF_ADMIN)){
 				AddSpawnField("fxFile", arg1);
-#ifdef __LINUX__
+#ifdef __linux__
 				fx_runner->s.origin[2] = (int) ent->client->ps.origin[2];
 #endif
 #ifdef QAGAME
@@ -1115,7 +1115,7 @@ else if (Q_stricmp(cmd, "amkick") == 0)
 				}
 
 				//File saved in format: EffectName X Y Z
-				 G_LogPrintf("AddEffect admin command has been executed by %s. (%s) <%i %i %i>\n", ent->client->pers.netname, arg1, (int)ent->client->ps.origin[0], (int)ent->client->ps.origin[1], (int)ent->client->ps.origin[2] - 5);
+				G_LogPrintf("AddEffect admin command has been executed by %s. (%s) <%i %i %i>\n", ent->client->pers.netname, arg1, (int)ent->client->ps.origin[0], (int)ent->client->ps.origin[1], (int)ent->client->ps.origin[2] - 5);
 				Com_sprintf( line, sizeof(line), "addeffect %s %i %i %i\n", arg1, (int)ent->client->ps.origin[0], (int)ent->client->ps.origin[1], (int)ent->client->ps.origin[2] - 5);
 				trap_FS_Write( line, strlen(line), f);
 
@@ -1234,7 +1234,7 @@ else if (Q_stricmp(cmd, "amkick") == 0)
          }
 		 if ((ent->r.svFlags & SVF_ADMIN)){
 			AddSpawnField("fxFile", arg1);	
-#ifdef __LINUX__
+#ifdef __linux__
 			fx_runner->s.origin[2] = (int) ent->client->ps.origin[2];
 #endif
 #ifdef QAGAME
@@ -1276,7 +1276,7 @@ else if (Q_stricmp(cmd, "amkick") == 0)
 			if ((ent->r.svFlags & SVF_ADMIN)){
 				
 			//Spawn model origin
-#ifdef __LINUX__
+#ifdef __linux__
 			jakes_model->s.origin[2] = (int) ent->client->ps.origin[2] - 15;
 #else
 			jakes_model->s.origin[2] = (int) ent->client->ps.origin[2] - 25;
@@ -1343,7 +1343,7 @@ else if (Q_stricmp(cmd, "amkick") == 0)
 			if ((ent->r.svFlags & SVF_ADMIN)){
 				
 			//Spawn model origin
-#ifdef __LINUX__
+#ifdef __linux__
 			jakes_model->s.origin[2] = (int) ent->client->ps.origin[2] - 15;
 #else
 			jakes_model->s.origin[2] = (int) ent->client->ps.origin[2] - 25;

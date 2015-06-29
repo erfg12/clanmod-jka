@@ -15,7 +15,7 @@ qboolean holocrons_loaded = qfalse;
 int number_of_holocronpositions = 0; 
 
 //[Linux]
-#ifdef __LINUX__
+#ifdef __linux__
 typedef enum
 #else
 enum

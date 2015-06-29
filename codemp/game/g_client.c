@@ -3235,20 +3235,6 @@ void ClientBegin( int clientNum, qboolean allowTeamReset ) {
 		ClientSpawn( ent );
 	}
 
-	if ( client->sess.sessionTeam != TEAM_SPECTATOR ) {
-		// send event
-		tent = G_TempEntity( ent->client->ps.origin, EV_PLAYER_TELEPORT_IN );
-		tent->s.clientNum = ent->s.clientNum;
-
-		if ( g_gametype.integer != GT_DUEL || g_gametype.integer == GT_POWERDUEL ) {
-			trap_SendServerCommand( -1, va("print \"%s" S_COLOR_WHITE " %s\n\"", client->pers.netname, G_GetStringEdString("MP_SVGAME", "PLENTER")) );
-		}
-	}
-	G_LogPrintf( "ClientBegin: %i\n", clientNum );
-
-	// count current clients and rank for scoreboard
-	CalculateRanks();
-
 	if (client->sess.sessionTeam != TEAM_SPECTATOR && ent->client->sess.sawMOTD == qfalse
 		&& g_gametype.integer != GT_DUEL && g_gametype.integer != GT_POWERDUEL){ //ONLY CERTAIN GAMETYPES
 		strcpy(ent->client->csMessage, G_NewString(va("^0*^1%s^0*\n^7%s", GAMEVERSION, roar_motd_line.string )));
@@ -3300,14 +3286,27 @@ void ClientBegin( int clientNum, qboolean allowTeamReset ) {
          }
 		if ( ent->r.svFlags & SVF_ADMIN ) {
              trap_SendServerCommand( -1, va("print \"%s ^7%s\n\"", ent->client->pers.netname, ent->client->pers.login ));
-            return; 
          }
 	}
 
-	//cm - Dom
-	ClientUserinfoChanged(clientNum);
+	if ( client->sess.sessionTeam != TEAM_SPECTATOR ) {
+		// send event
+		tent = G_TempEntity( ent->client->ps.origin, EV_PLAYER_TELEPORT_IN );
+		tent->s.clientNum = ent->s.clientNum;
 
-	G_ClearClientLog(clientNum);
+		if ( g_gametype.integer != GT_DUEL || g_gametype.integer == GT_POWERDUEL ) {
+			trap_SendServerCommand( -1, va("print \"%s" S_COLOR_WHITE " %s\n\"", client->pers.netname, G_GetStringEdString("MP_SVGAME", "PLENTER")) );
+		}
+	}
+
+	G_LogPrintf( "ClientBegin: %i\n", clientNum );
+
+	// count current clients and rank for scoreboard
+	CalculateRanks();
+
+	//cm - Dom
+	//ClientUserinfoChanged(clientNum); // I think this is wrong.
+	G_LogPrintf( "ClientBegin: %i\n", clientNum );
 }
 
 static qboolean AllForceDisabled(int force)

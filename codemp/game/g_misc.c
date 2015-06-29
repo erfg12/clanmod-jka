@@ -3055,8 +3055,7 @@ void SP_jakes_model ( gentity_t *ent ) //cm - Jake
 	ent->clipmask = MASK_SOLID;
 	G_SetOrigin( ent, ent->s.origin );
 	VectorCopy( ent->s.angles, ent->s.apos.trBase );
-	//VectorSet( ent->r.maxs, 10, 10, 21 ); //This is our non-walkthroughable box.
-	VectorSet( ent->r.maxs, 25, 25, 21 );
+	VectorSet( ent->r.maxs, 25, 25, 21 ); //This is our non-walkthroughable box.
 	VectorScale( ent->r.maxs, -1, ent->r.mins );
 
 	trap_LinkEntity( ent );
