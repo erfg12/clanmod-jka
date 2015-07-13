@@ -479,9 +479,7 @@ void JKG_PatchEngine() {
 	// Hook 7: Download Hack Fix
 	///////////////////////////////
 	pDHFIX = JKG_PlacePatch(PATCH_CALL, _DHFIX_PATCHPOS, (unsigned int)_Hook_DownloadHackFix()); // We'll be overwriting a call here
-    if (!pDHFIX) {
-		//G_Printf("Warning: Failed to place hook 7: Download Hack Fix\n");
-    }
+	free(pDHFIX);
 
 	//G_Printf("Finished\n");
 }

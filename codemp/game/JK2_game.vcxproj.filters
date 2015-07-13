@@ -299,9 +299,6 @@
     <ClCompile Include="SpeederNPC.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="timestamp.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="tri_coll_test.c">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -461,9 +458,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="teams.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="timestamp.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="w_saber.h">

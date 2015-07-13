@@ -2001,7 +2001,7 @@ void ClientUserinfoChanged( int clientNum ) {
 	qboolean changedSaber = qfalse;
 	int rejectedSaberChange = 0;
 	char *time;
-	time = timestring ( );
+	//time = timestring ( );
 
 	ent = g_entities + clientNum;
 	client = ent->client;
@@ -3306,7 +3306,7 @@ void ClientBegin( int clientNum, qboolean allowTeamReset ) {
 
 	//cm - Dom
 	//ClientUserinfoChanged(clientNum); // I think this is wrong.
-	G_LogPrintf( "ClientBegin: %i\n", clientNum );
+	G_ClearClientLog(clientNum);
 }
 
 static qboolean AllForceDisabled(int force)

@@ -3188,7 +3188,7 @@ G_LogPrintf
 Print to the logfile with a time stamp if it is open
 =================
 */
-void QDECL G_LogPrintf( const char *fmt, ... ) {
+/*void QDECL G_LogPrintf( const char *fmt, ... ) {
 	va_list		argptr;
 	char		string[1024];
 	int			min, tens, sec;
@@ -3204,11 +3204,11 @@ void QDECL G_LogPrintf( const char *fmt, ... ) {
 	tens = sec / 10;
 	sec -= tens * 10;
 
-	s = timestring ( );
+	//s = timestring ( );
 
 	//RoAR mod NOTE: Timestamp here
 	Com_sprintf( string, sizeof(string), "%3i:%i%i ", min, tens, sec );
-	Com_sprintf( string, sizeof(string), "[%s]", s );
+	//Com_sprintf( string, sizeof(string), "[%s]", s );
 
 	//[OverflowProtection]
 	l = strlen(string);
@@ -3233,6 +3233,36 @@ void QDECL G_LogPrintf( const char *fmt, ... ) {
 	}
 	
 	trap_FS_Write( string, strlen( string ), level.logFile );
+}*/
+void QDECL G_LogPrintf(const char *fmt, ...) {
+	va_list	argptr;
+	char	string[1024];
+	int	mins, seconds, msec, l;
+
+	msec = level.time;
+
+	seconds = msec / 1000;
+	mins = seconds / 60;
+	seconds %= 60;
+	msec %= 1000;
+
+	Com_sprintf(string, sizeof(string), "%i:%02i ", mins, seconds);
+
+	l = strlen(string);
+
+	va_start(argptr, fmt);
+	Q_vsnprintf(string + l, sizeof(string) - l, fmt, argptr);
+	va_end(argptr);
+
+	if (g_dedicated.integer) {
+		G_Printf("%s", string + l);
+	}
+
+	if (!level.logFile) {
+		return;
+	}
+
+	trap_FS_Write(string, strlen(string), level.logFile);
 }
 
 /*

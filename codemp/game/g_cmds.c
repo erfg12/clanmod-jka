@@ -4775,7 +4775,7 @@ void ClientCommand( int clientNum ) {
 	else if (Q_stricmp(cmd, "servertime") == 0) {
 		char *time;
 
-		time = timestring ( );
+		//time = timestring ( );
 		trap_SendServerCommand( ent-g_entities, va("print \"%s\n\"", time ) );
 		trap_SendServerCommand( ent-g_entities, va("cp \"%s\n\"", time ) );
 	}

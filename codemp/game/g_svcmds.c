@@ -2061,7 +2061,7 @@ void	Svcmd_Ban( void ) {
 int client_id = -1; 
          char   arg1[MAX_STRING_CHARS];
 		char *time;
-		time = timestring ( );
+		//time = timestring ( );
          if ( trap_Argc() != 2 ) 
          { 
 			G_Printf ( "Usage: /ban (client).\n" ); 
