@@ -1211,7 +1211,7 @@ Q_vsnprintf: always appends a trailing '\0', returns number of characters writte
 or returns -1 on failure or if the buffer would be overflowed.
 ============
 */
-/*int Q_vsnprintf( char *dest, int size, const char *fmt, va_list argptr ) {
+int Q_vsnprintf( char *dest, int size, const char *fmt, va_list argptr ) {
 	int ret;
 
 #ifdef _WIN32
@@ -1225,24 +1225,7 @@ or returns -1 on failure or if the buffer would be overflowed.
 		return -1;
 	}
 	return ret;
-}*/
-
-#ifdef _MSC_VER
-int Q_vsnprintf(char *str, size_t size, const char *format, va_list ap)
-{
-	int retval;
-	
-	retval = _vsnprintf(str, size, format, ap);
-	
-	if (retval < 0 || retval == size)
-	{		
-		str[size - 1] = '\0';
-		return size;
-	}
-
-	return retval;
 }
-#endif
 
 //Ensiform provided this version of Com_sprintf, which is supposed to be overflow protected and less hacky.
 void QDECL Com_sprintf( char *dest, int size, const char *fmt, ...) {

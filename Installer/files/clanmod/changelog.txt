@@ -1,7 +1,8 @@
 Version 1.2.2
 =============
 - Fixed AddModel server load Z axis off
-- Changed clientbegin code
+- Removed timestamp for possible memory leak fix
+- Changed clientbegin code, possibly fixing saber collision update code
 
 Version 1.2.1
 =============
