@@ -340,6 +340,7 @@
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\sqlite3\sqlite3.c" />
     <ClCompile Include="ai_main.c" />
     <ClCompile Include="ai_util.c" />
     <ClCompile Include="ai_wpnav.c" />
@@ -456,6 +457,7 @@
     <ClInclude Include="..\icarus\Q3_Interface.h" />
     <ClInclude Include="..\qcommon\disablewarnings.h" />
     <ClInclude Include="..\qcommon\tags.h" />
+    <ClInclude Include="..\sqlite3\sqlite3.h" />
     <ClInclude Include="ai.h" />
     <ClInclude Include="ai_main.h" />
     <ClInclude Include="anims.h" />

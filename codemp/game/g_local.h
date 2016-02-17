@@ -26,7 +26,7 @@ extern vec3_t gPainPoint;
 //==================================================================
 
 // the "gameversion" client command will print this plus compile date
-#define	GAMEVERSION	"Clan Mod v1.2.2"
+#define	GAMEVERSION	"Clan Mod v1.3.0 BETA"
 
 #define BODY_QUEUE_SIZE		8
 

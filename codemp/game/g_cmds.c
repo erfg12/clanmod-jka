@@ -4,6 +4,7 @@
 #include "bg_saga.h"
 #include "g_adminshared.h"
 #include "timestamp.h"
+#include "../sqlite3/sqlite3.h"
 
 #include "../../ui/menudef.h"			// for the voice chats
 
@@ -24,6 +25,60 @@ void CG_CenterPrint( const char *str, int y, int charWidth );
 void SetTeamQuick(gentity_t *ent, int team, qboolean doBegin);
 extern int G_ClientNumberFromArg( char *str);
 void ChangeWeapon( gentity_t *ent, int newWeapon ) ;
+
+/*
+===================
+SQLite 3 database stuff
+
+===================
+*/
+static int callback(void *NotUsed, int argc, char **argv, char **azColName){
+	int i;
+	for (i = 0; i < argc; i++){
+		printf("%s = %s\n", azColName[i], argv[i] ? argv[i] : "NULL");
+	}
+	printf("\n");
+	return 0;
+}
+
+char sqlite(const char *SQLStmnt) {
+	sqlite3 *db;
+	char *zErrMsg = 0;
+	int rc;
+	rc = sqlite3_open("clanmod.db", &db);
+	if (rc){
+		sqlite3_close(db);
+		printf("Error connecting to clanmod.db");
+	}
+	rc = sqlite3_exec(db, SQLStmnt, callback, 0, &zErrMsg);
+	if (rc != SQLITE_OK){
+		fprintf(stderr, "SQL error: %s\n", zErrMsg);
+		sqlite3_free(zErrMsg);
+		sqlite3_close(db);
+		return "Database error";
+	}
+	else {
+		sqlite3_close(db);
+		return "Database success";
+	}
+}
+
+int sqliteSelectUserID(const char *SQLStmnt) {
+	sqlite3_stmt *stmt;
+	sqlite3 *db;
+	char *zErrMsg = 0;
+
+	if (sqlite3_open("clanmod.db", &db) == SQLITE_OK)
+	{
+		int rc = sqlite3_prepare_v2(db, SQLStmnt, -1, &stmt, NULL);
+		if (rc != SQLITE_OK)
+			fprintf(stderr, "SQL error: %s\n", zErrMsg);
+
+		rc = sqlite3_step(stmt);
+		sqlite3_finalize(stmt);
+	}
+	return sqlite3_column_int(stmt, 0);
+}
 
 /*
 ==================
@@ -4623,17 +4678,50 @@ void ClientCommand( int clientNum ) {
 		//trap_SendServerCommand( ent-g_entities, va("print \"^1YOU DO NOT HAVE THE CLAN MOD PLUGIN! WITHOUT IT, YOU CANNOT DO ANY OF THESE COMMANDS! DOWNLOAD IT AT WWW.CLANMOD.ORG/DOWNLOADS\n\"" ) );
 		//}
 	}
-		else if (Q_stricmp (cmd, "emotes") == 0)
+	else if (Q_stricmp(cmd, "register") == 0){
+		int client_id = -1;
+		char pass[MAX_STRING_CHARS];
+
+		trap_Argv(1, pass, sizeof(pass));
+		client_id = ent->client->ps.clientNum;
+
+		if (strcmp(g_entities[client_id].client->pers.netname, "Padawan"))
+			trap_SendServerCommand(client_id, va("print \"Users are registered to their player names. Padawan is not allowed.\n\""));
+
+		if ((trap_Argc() < 1) || (trap_Argc() > 2))
+		{
+			trap_SendServerCommand(client_id, va("print \"Usage: /register <password>\n\""));
+			return;
+		}
+
+		sqlite("INSERT INTO users (user, pass, ipaddress) VALUES ('%s', '%s', '%s')", g_entities[client_id].client->pers.netname, pass, g_entities[client_id].client->sess.myip);
+	}
+	else if (Q_stricmp(cmd, "login") == 0){
+		int client_id = -1;
+		char pass[MAX_STRING_CHARS];
+
+		trap_Argv(1, pass, sizeof(pass));
+		client_id = ent->client->ps.clientNum;
+
+		if ((trap_Argc() < 1) || (trap_Argc() > 2))
+		{
+			trap_SendServerCommand(client_id, va("print \"Usage: /login <password>\n\""));
+			return;
+		}
+
+		trap_SendServerCommand(client_id, va("print \"USER ID FOUND: %i\n\"", sqliteSelectUserID("SELECT * FROM users WHERE user = '%s' AND pass = '%s'", g_entities[client_id].client->pers.netname, pass)));
+	}
+	else if (Q_stricmp (cmd, "emotes") == 0)
 	{
 		trap_SendServerCommand( ent-g_entities, "print \"^3===^1EMOTES^3===\n\n/dance, /dance2, /dance3, /taunt, /cower, /smack, /swirl\n/kneel, /kneel2, /point, /breakdance, /laydown, /myhead, /cheer\n/sit, /sit2, /slash, /intimidate, /punch, /surrender, /enraged\n/victory, /victory2, /victory3, /headnod, /headshake, /comeon, /kiss\n/hug, /meditate\n\n\"" );
 	}
-		else if (Q_stricmp (cmd, "admincommands") == 0)
+	else if (Q_stricmp (cmd, "admincommands") == 0)
 	{
 		trap_SendServerCommand( ent-g_entities, "print \"^3===^1ADMIN COMMANDS^3===\n\n/amBan, /DemiGod, /GrantAdmin, /Protect, /Terminator, /Slay, /Rename\n/Silence, /InsultSilence, /Splat, /Empower, /Freeze, /NPC, /Scale\n/ChangeMap, /AdminTele, /amKick, /WhoIP, /LockName, /CSPrint\n/ForceTeam, /Monk, /Sleep, /Punish, /Slap, /LockTeam\n/AddEffect, /AddModel, /MyAdminCommands, /ChangeMode, /AdminCP, /AdminBan\n/AdminKick, /AmVSTR\n\n\"" );
 	}
-		else if (Q_stricmp (cmd, "commands") == 0)
+	else if (Q_stricmp (cmd, "commands") == 0)
 	{
-		trap_SendServerCommand( ent-g_entities, "print \"^3===^1COMMANDS^3===\n\n/jetpack <--- put on a jetpack\n/knockmedown <--- knock yourself down\n/drop <--- drop your saber or current weapon\n/showmotd <--- see the MOTD\n/freezemotd <--- show MOTD for infinite time\n/HideMOTD <--- hide the MOTD\n/engage_forceduel <--- duel with force powers\n/engage_meleeduel <--- duel with only melee moves (requires plugin)\n/engage_trainingduel <--- engage in a private training session\n/endduel <--- end training duel session\n/who <--- show all clients + their status\n/chatcolor <--- SAY_ALL in a different color\n/togglechat <--- toggle teamchat mode\n+button12 <--- grappling hook\n/ignore (client) <--- ignore a clients chat text\n/clansay <--- speak to clan members\n/adminsay <--- speak to admins\n/report <--- report something to an admin\n/refuseduels <--- toggle refusing duels on/off\n/telemark <--- mark your origin and yaw for /teleport\n/servertime <--- view the server's time\n/saber <--- change your saber(s)\n\n\"" );
+	trap_SendServerCommand( ent-g_entities, "print \"^3===^1COMMANDS^3===\n\n/jetpack <--- put on a jetpack\n/knockmedown <--- knock yourself down\n/drop <--- drop your saber or current weapon\n/showmotd <--- see the MOTD\n/freezemotd <--- show MOTD for infinite time\n/HideMOTD <--- hide the MOTD\n/engage_forceduel <--- duel with force powers\n/engage_meleeduel <--- duel with only melee moves (requires plugin)\n/engage_trainingduel <--- engage in a private training session\n/endduel <--- end training duel session\n/who <--- show all clients + their status\n/chatcolor <--- SAY_ALL in a different color\n/togglechat <--- toggle teamchat mode\n+button12 <--- grappling hook\n/ignore (client) <--- ignore a clients chat text\n/clansay <--- speak to clan members\n/adminsay <--- speak to admins\n/report <--- report something to an admin\n/refuseduels <--- toggle refusing duels on/off\n/telemark <--- mark your origin and yaw for /teleport\n/servertime <--- view the server's time\n/saber <--- change your saber(s)\n\n\"" );
 	}
 	//RoAR mod NOTE: Sorry RPG mode. You stunk.
 		/*else if (Q_stricmp (cmd, "RPGcommands") == 0)

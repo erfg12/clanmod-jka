@@ -3104,6 +3104,39 @@ qboolean	ConsoleCommand( void ) {
 		return qtrue;
 	}
 
+	else if (Q_stricmp(cmd, "register") == 0){
+		int client_id = -1;
+		char user[MAX_STRING_CHARS];
+		char pass[MAX_STRING_CHARS];
+
+		trap_Argv(1, user, sizeof(user));
+		trap_Argv(2, pass, sizeof(pass));
+
+		if ((trap_Argc() < 2) || (trap_Argc() > 3))
+		{
+			G_Printf("print \"Usage: /register <playername> <password>\n\"");
+			return;
+		}
+
+		G_Printf (sqlite("INSERT INTO users (user, pass, ipaddress) VALUES ('%s', '%s', '%s')", user, pass, g_entities[client_id].client->sess.myip));
+	}
+	else if (Q_stricmp(cmd, "checkid") == 0){
+		int client_id = -1;
+		char user[MAX_STRING_CHARS];
+		char pass[MAX_STRING_CHARS];
+
+		trap_Argv(1, user, sizeof(user));
+		trap_Argv(2, pass, sizeof(pass));
+
+		if ((trap_Argc() < 1) || (trap_Argc() > 2))
+		{
+			trap_SendServerCommand(client_id, va("print \"Usage: /checkid <playername>\n\""));
+			return;
+		}
+
+		G_Printf("print \"USER ID FOUND: %i\n\"", sqliteSelectUserID("SELECT * FROM users WHERE user = '%s'", user, pass));
+	}
+
 	if (Q_stricmp (cmd, "amvstr") == 0) {
 		Svcmd_AmVSTR();
 		return qtrue;
