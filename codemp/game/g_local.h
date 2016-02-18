@@ -551,6 +551,7 @@ typedef struct {
 	qboolean	amempower;
 	qboolean	silent2;
 	int			iamanadmin;
+	int			userID; //our SQLite user ID
 	qboolean	iamclan;
 	qboolean	ampunish;
 	qboolean	amsleep;

@@ -3926,6 +3926,11 @@ void CheckExitRules( void ) {
 			trap_SendServerCommand( -1,  va("print \"%s \"", G_GetStringEdString("MP_SVGAME", "PRINTREDTEAM")));
 			trap_SendServerCommand( -1,  va("print \"%s.\n\"", G_GetStringEdString("MP_SVGAME", "HIT_CAPTURE_LIMIT")));
 			LogExit( "Capturelimit hit." );
+			//todo: TEST THIS
+			if (cl->pers.userID > 0 && cl->sess.sessionTeam == TEAM_RED) {
+				trap_SendServerCommand(cl->ps.clientNum, va("print \"^3CTF wins increased in DB.\n\""));
+				sqliteUpdateStats("UPDATE stats SET ctf_wins = ctf_wins + 1 WHERE user_id = '%i'", cl->pers.userID);
+			}
 			return;
 		}
 
@@ -3933,6 +3938,11 @@ void CheckExitRules( void ) {
 			trap_SendServerCommand( -1,  va("print \"%s \"", G_GetStringEdString("MP_SVGAME", "PRINTBLUETEAM")));
 			trap_SendServerCommand( -1,  va("print \"%s.\n\"", G_GetStringEdString("MP_SVGAME", "HIT_CAPTURE_LIMIT")));
 			LogExit( "Capturelimit hit." );
+			//todo: TEST THIS
+			if (cl->pers.userID > 0 && cl->sess.sessionTeam == TEAM_BLUE) {
+				trap_SendServerCommand(cl->ps.clientNum, va("print \"^3CTF wins increased in DB.\n\""));
+				sqliteUpdateStats("UPDATE stats SET ctf_wins = ctf_wins + 1 WHERE user_id = '%i'", cl->pers.userID);
+			}
 			return;
 		}
 	}

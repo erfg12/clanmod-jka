@@ -3151,35 +3151,39 @@ void ClientThink_real( gentity_t *ent ) {
 			//RoAR mod BEGIN (SHOW HEALTH AT END OF DUEL)
 			if (roar_display_ending_duel_status.integer >= 1)
 			{
-			trap_SendServerCommand( -1, va("print \"%s ^7survived with ^5%d ^7health and ^5%d ^7shield\n\"",
-			ent->client->pers.netname, ent->client->ps.stats[STAT_HEALTH], ent->client->ps.stats[STAT_ARMOR] ) );
+				trap_SendServerCommand( -1, va("print \"%s ^7survived with ^5%d ^7health and ^5%d ^7shield\n\"",
+				ent->client->pers.netname, ent->client->ps.stats[STAT_HEALTH], ent->client->ps.stats[STAT_ARMOR] ) );
+			}
+
+			//duel wins/loses for FFA duel (duelAgainst = loser, ent = winner)
+			if (duelAgainst->client->pers.userID > 0) {
+				trap_SendServerCommand(duelAgainst->client->ps.clientNum, va("print \"^3Duel Loses increased in DB.\n\""));
+				sqliteUpdateStats("UPDATE stats SET duel_loses = duel_loses + 1 WHERE user_id = '%i'", duelAgainst->client->pers.userID);
+			}
+			if (ent->client->pers.userID > 0) {
+				trap_SendServerCommand(ent->client->ps.clientNum, va("print \"^3Duel Wins increased in DB.\n\""));
+				sqliteUpdateStats("UPDATE stats SET duel_wins = duel_wins + 1 WHERE user_id = '%i'", ent->client->pers.userID);
 			}
 			//RoAR mod END
 
 			if (dueltypes[duelAgainst->client->ps.clientNum] == 3 || dueltypes[duelAgainst->client->ps.clientNum] == 2)
 			{
-			ent->client->ps.stats[STAT_MAX_HEALTH] = 100;
-			ent->client->ps.stats[STAT_HEALTH] = ent->health = 100;
-			ent->client->ps.stats[STAT_ARMOR] = 100;
+				ent->client->ps.stats[STAT_MAX_HEALTH] = 100;
+				ent->client->ps.stats[STAT_HEALTH] = ent->health = 100;
+				ent->client->ps.stats[STAT_ARMOR] = 100;
 			}
 			else {
-			if (roar_starting_weapons.integer == 0)
+				if (roar_starting_weapons.integer == 0)
 				{
-				client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_SABER );
-				client->ps.stats[STAT_WEAPONS] &= ~(1 << WP_MELEE);
+					client->ps.stats[STAT_WEAPONS] |= (1 << WP_SABER);
+					client->ps.stats[STAT_WEAPONS] &= ~(1 << WP_MELEE);
 				}
 				else if (roar_starting_weapons.integer == 1)
-				{
-				client->ps.stats[STAT_WEAPONS] |= (1 << WP_MELEE);
-				}
+					client->ps.stats[STAT_WEAPONS] |= (1 << WP_MELEE);
 				else if (roar_starting_weapons.integer == 2)
-				{
-				client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_SABER ) | (1 << WP_MELEE);
-				}
+					client->ps.stats[STAT_WEAPONS] |= (1 << WP_SABER) | (1 << WP_MELEE);
 				if (!(g_weaponDisable.integer & (1 << WP_BRYAR_PISTOL)))
-			{
-				client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_BRYAR_PISTOL );
-			}
+					client->ps.stats[STAT_WEAPONS] |= (1 << WP_BRYAR_PISTOL);
 			}
 
 			//Winner gets full health.. providing he's still alive
@@ -3190,11 +3194,11 @@ void ClientThink_real( gentity_t *ent ) {
 				ent->client->ps.stats[STAT_ARMOR] = 25;
 
 				if (dueltypes[duelAgainst->client->ps.clientNum] == 3 || dueltypes[duelAgainst->client->ps.clientNum] == 2)
-			{
-			ent->client->ps.stats[STAT_MAX_HEALTH] = 100;
-			ent->client->ps.stats[STAT_HEALTH] = ent->health = 100;
-			ent->client->ps.stats[STAT_ARMOR] = 100;
-			}
+				{
+					ent->client->ps.stats[STAT_MAX_HEALTH] = 100;
+					ent->client->ps.stats[STAT_HEALTH] = ent->health = 100;
+					ent->client->ps.stats[STAT_ARMOR] = 100;
+				}
 
 				if (cm_terminator_infammo.integer == 0 && client->pers.amterminator == 1){
 					int	i;
@@ -3203,28 +3207,28 @@ void ClientThink_real( gentity_t *ent ) {
 						client->ps.ammo[i] = num;
 					}
 				}
-		if (client->pers.amterminator == 1 || client->pers.amhuman == 1){
-			if (!BG_SaberInSpecialAttack(ent->client->ps.torsoAnim)
-		&& !BG_SaberInAttack(ent->client->ps.saberMove)
-		&& !BG_SaberInKata(ent->client->ps.saberMove)
-		&& !BG_InKataAnim(ent->client->ps.legsAnim)
-		&& !BG_InKataAnim(ent->client->ps.torsoAnim))
-		{
-			client->ps.weapon = WP_MELEE;
-		}
-		}
+				if (client->pers.amterminator == 1 || client->pers.amhuman == 1) {
+					if (!BG_SaberInSpecialAttack(ent->client->ps.torsoAnim)
+						&& !BG_SaberInAttack(ent->client->ps.saberMove)
+						&& !BG_SaberInKata(ent->client->ps.saberMove)
+						&& !BG_InKataAnim(ent->client->ps.legsAnim)
+						&& !BG_InKataAnim(ent->client->ps.torsoAnim))
+					{
+						client->ps.weapon = WP_MELEE;
+					}
+				}
 
-		if (client->pers.amterminator == 1){
-			//ITEMS
-			client->ps.stats[STAT_HOLDABLE_ITEMS] |= (1 << HI_BINOCULARS) | (1 << HI_SEEKER) | (1 << HI_CLOAK) | (1 << HI_EWEB) | (1 << HI_SENTRY_GUN);
-			//WEAPONS
-			client->ps.stats[STAT_WEAPONS] &= ~(1 << WP_SABER);
-			client->ps.stats[STAT_WEAPONS] |= (1 << WP_MELEE) | (1 << WP_BLASTER) | (1 << WP_DISRUPTOR) | (1 << WP_BOWCASTER)
-			| (1 << WP_REPEATER) | (1 << WP_DEMP2) | (1 << WP_FLECHETTE) | (1 << WP_ROCKET_LAUNCHER) | (1 << WP_THERMAL) | (1 << WP_DET_PACK)
-			| (1 << WP_BRYAR_OLD) | (1 << WP_CONCUSSION) | (1 << WP_TRIP_MINE) | (1 << WP_BRYAR_PISTOL);
-		}
+				if (client->pers.amterminator == 1) {
+					//ITEMS
+					client->ps.stats[STAT_HOLDABLE_ITEMS] |= (1 << HI_BINOCULARS) | (1 << HI_SEEKER) | (1 << HI_CLOAK) | (1 << HI_EWEB) | (1 << HI_SENTRY_GUN);
+					//WEAPONS
+					client->ps.stats[STAT_WEAPONS] &= ~(1 << WP_SABER);
+					client->ps.stats[STAT_WEAPONS] |= (1 << WP_MELEE) | (1 << WP_BLASTER) | (1 << WP_DISRUPTOR) | (1 << WP_BOWCASTER)
+						| (1 << WP_REPEATER) | (1 << WP_DEMP2) | (1 << WP_FLECHETTE) | (1 << WP_ROCKET_LAUNCHER) | (1 << WP_THERMAL) | (1 << WP_DET_PACK)
+						| (1 << WP_BRYAR_OLD) | (1 << WP_CONCUSSION) | (1 << WP_TRIP_MINE) | (1 << WP_BRYAR_PISTOL);
+				}
 
-		ScalePlayer(ent, client->pers.ammodelchanged3);
+			ScalePlayer(ent, client->pers.ammodelchanged3);
 
 			if (ent->client->pers.amhuman)
 				{
@@ -3232,23 +3236,17 @@ void ClientThink_real( gentity_t *ent ) {
 				client->ps.stats[STAT_WEAPONS] |= (1 << WP_MELEE);
 				}
 			else {
-			if (roar_starting_weapons.integer == 0)
+				if (roar_starting_weapons.integer == 0)
 				{
-				client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_SABER );
-				client->ps.stats[STAT_WEAPONS] &= ~(1 << WP_MELEE);
+					client->ps.stats[STAT_WEAPONS] |= (1 << WP_SABER);
+					client->ps.stats[STAT_WEAPONS] &= ~(1 << WP_MELEE);
 				}
 				else if (roar_starting_weapons.integer == 1)
-				{
-				client->ps.stats[STAT_WEAPONS] |= (1 << WP_MELEE);
-				}
+					client->ps.stats[STAT_WEAPONS] |= (1 << WP_MELEE);
 				else if (roar_starting_weapons.integer == 2)
-				{
-				client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_SABER ) | (1 << WP_MELEE);
-				}
+					client->ps.stats[STAT_WEAPONS] |= (1 << WP_SABER) | (1 << WP_MELEE);
 				if (!(g_weaponDisable.integer & (1 << WP_BRYAR_PISTOL)))
-			{
-				client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_BRYAR_PISTOL );
-			}
+					client->ps.stats[STAT_WEAPONS] |= (1 << WP_BRYAR_PISTOL);
 			}
 
 				if (g_spawnInvulnerability.integer)
