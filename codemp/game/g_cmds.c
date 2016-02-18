@@ -41,43 +41,83 @@ static int callback(void *NotUsed, int argc, char **argv, char **azColName){
 	return 0;
 }
 
-char sqlite(const char *SQLStmnt) {
+void QDECL sqlite(char *SQLStmnt, ...) {
+	va_list		argptr;
+	char		text[1024];
+
 	sqlite3 *db;
 	char *zErrMsg = 0;
 	int rc;
 	rc = sqlite3_open("clanmod.db", &db);
-	if (rc){
+	if (rc) //error connecting
 		sqlite3_close(db);
-		printf("Error connecting to clanmod.db");
-	}
-	rc = sqlite3_exec(db, SQLStmnt, callback, 0, &zErrMsg);
+
+	va_start(argptr, SQLStmnt);
+	vsprintf(text, SQLStmnt, argptr);
+	va_end(argptr);
+	rc = sqlite3_exec(db, text, callback, 0, &zErrMsg);
 	if (rc != SQLITE_OK){
 		fprintf(stderr, "SQL error: %s\n", zErrMsg);
 		sqlite3_free(zErrMsg);
 		sqlite3_close(db);
-		return "Database error";
+		G_Printf( "Database error" );
 	}
 	else {
-		sqlite3_close(db);
-		return "Database success";
+		int lastid = sqlite3_last_insert_rowid(db);
+		char sql[1024];
+		sprintf(sql, "INSERT INTO stats (user_id) VALUES ('%i')", lastid);
+		rc = sqlite3_exec(db, sql, callback, 0, &zErrMsg);
+		if (rc != SQLITE_OK) {
+			fprintf(stderr, "SQL error: %s\n", zErrMsg);
+			sqlite3_free(zErrMsg);
+			sqlite3_close(db);
+			G_Printf("Database error");
+		}
+		else {
+			sqlite3_close(db);
+			G_Printf("Database insert success");
+		}
 	}
 }
 
-int sqliteSelectUserID(const char *SQLStmnt) {
+int sqliteSelectUserID(char *SQLStmnt, ...) {
 	sqlite3_stmt *stmt;
 	sqlite3 *db;
 	char *zErrMsg = 0;
+	va_list		argptr;
+	char		text[1024];
+
+	va_start(argptr, SQLStmnt);
+	vsprintf(text, SQLStmnt, argptr);
+	va_end(argptr);
 
 	if (sqlite3_open("clanmod.db", &db) == SQLITE_OK)
 	{
-		int rc = sqlite3_prepare_v2(db, SQLStmnt, -1, &stmt, NULL);
+		G_Printf(text);
+		int rc = sqlite3_prepare_v2(db, text, -1, &stmt, NULL);
 		if (rc != SQLITE_OK)
 			fprintf(stderr, "SQL error: %s\n", zErrMsg);
 
 		rc = sqlite3_step(stmt);
+
+		if (rc != SQLITE_ROW && rc != SQLITE_DONE) {
+			sqlite3_finalize(stmt);
+			G_Printf("user ID not found");
+			return 0;
+		}
+
+		if (rc == SQLITE_DONE) {
+			sqlite3_finalize(stmt);
+			G_Printf("user ID not found");
+			return 0;
+		}
+
+		int id = sqlite3_column_int(stmt, 0);
 		sqlite3_finalize(stmt);
+		return id;
 	}
-	return sqlite3_column_int(stmt, 0);
+	else
+		return 0;
 }
 
 /*
@@ -4685,8 +4725,10 @@ void ClientCommand( int clientNum ) {
 		trap_Argv(1, pass, sizeof(pass));
 		client_id = ent->client->ps.clientNum;
 
-		if (strcmp(g_entities[client_id].client->pers.netname, "Padawan"))
+		if (strcmp(g_entities[client_id].client->pers.netname, "Padawan") == 0) {
 			trap_SendServerCommand(client_id, va("print \"Users are registered to their player names. Padawan is not allowed.\n\""));
+			return;
+		}
 
 		if ((trap_Argc() < 1) || (trap_Argc() > 2))
 		{

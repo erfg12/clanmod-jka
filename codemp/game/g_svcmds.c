@@ -3106,35 +3106,32 @@ qboolean	ConsoleCommand( void ) {
 
 	else if (Q_stricmp(cmd, "register") == 0){
 		int client_id = -1;
-		char user[MAX_STRING_CHARS];
-		char pass[MAX_STRING_CHARS];
+		char *user[MAX_STRING_CHARS];
+		char *pass[MAX_STRING_CHARS];
 
 		trap_Argv(1, user, sizeof(user));
 		trap_Argv(2, pass, sizeof(pass));
 
 		if ((trap_Argc() < 2) || (trap_Argc() > 3))
 		{
-			G_Printf("print \"Usage: /register <playername> <password>\n\"");
+			G_Printf("Usage: /register <playername> <password>");
 			return;
 		}
-
-		G_Printf (sqlite("INSERT INTO users (user, pass, ipaddress) VALUES ('%s', '%s', '%s')", user, pass, g_entities[client_id].client->sess.myip));
+		sqlite("INSERT INTO users (user, pass, ipaddress) VALUES ('%s', '%s', '127.0.0.1')", user, pass);
 	}
 	else if (Q_stricmp(cmd, "checkid") == 0){
 		int client_id = -1;
-		char user[MAX_STRING_CHARS];
-		char pass[MAX_STRING_CHARS];
+		char *user[MAX_STRING_CHARS];
 
 		trap_Argv(1, user, sizeof(user));
-		trap_Argv(2, pass, sizeof(pass));
 
 		if ((trap_Argc() < 1) || (trap_Argc() > 2))
 		{
-			trap_SendServerCommand(client_id, va("print \"Usage: /checkid <playername>\n\""));
+			G_Printf("Usage: /checkid <playername>");
 			return;
 		}
-
-		G_Printf("print \"USER ID FOUND: %i\n\"", sqliteSelectUserID("SELECT * FROM users WHERE user = '%s'", user, pass));
+		int getID = sqliteSelectUserID("SELECT * FROM users WHERE user = '%s'", user);
+		G_Printf("USER ID FOUND: %i", getID);
 	}
 
 	if (Q_stricmp (cmd, "amvstr") == 0) {
