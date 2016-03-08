@@ -2537,7 +2537,7 @@ extern void RunEmplacedWeapon( gentity_t *ent, usercmd_t **ucmd );
 		self->client->pers.netname, obit );
 
 	//increase kills/deaths (self = death+, attacker = kill+)
-	//if (level.numPlayingClients >= 2) { //maybe add this later?
+	if (level.numPlayingClients >= 2) { //remove this if we are testing
 		if (self->client->pers.userID > 0) {
 			trap_SendServerCommand(self->client->ps.clientNum, va("print \"^3Deaths increased in DB.\n\""));
 			sqliteUpdateStats("UPDATE stats SET deaths = deaths + 1 WHERE user_id = '%i'", self->client->pers.userID);
@@ -2546,7 +2546,7 @@ extern void RunEmplacedWeapon( gentity_t *ent, usercmd_t **ucmd );
 			trap_SendServerCommand(attacker->client->ps.clientNum, va("print \"^3Kills increased in DB.\n\""));
 			sqliteUpdateStats("UPDATE stats SET kills = kills + 1 WHERE user_id = '%i'", attacker->client->pers.userID);
 		}
-	//}
+	}
 
 	if ( g_austrian.integer 
 		&& (g_gametype.integer == GT_DUEL) 

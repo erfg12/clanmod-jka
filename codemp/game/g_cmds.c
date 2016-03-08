@@ -41,7 +41,7 @@ static int callback(void *NotUsed, int argc, char **argv, char **azColName){
 	return 0;
 }
 
-void QDECL sqliteRegisterUser(char *SQLStmnt, ...) {
+void sqliteRegisterUser(char *SQLStmnt, ...) {
 	va_list		argptr;
 	char		text[1024];
 
@@ -80,7 +80,7 @@ void QDECL sqliteRegisterUser(char *SQLStmnt, ...) {
 	}
 }
 
-void QDECL sqliteUpdateStats(char *SQLStmnt, ...) {
+void sqliteUpdateStats(char *SQLStmnt, ...) {
 	va_list		argptr;
 	char		text[1024];
 

@@ -3,3 +3,4 @@ rmdir /s /q "codemp\Debug"
 rmdir /s /q "codemp\ipch\debug"
 rmdir /s /q "codemp\ipch\release"
 del /S /F /AH *.suo
+del /S /F /AH *.sdf

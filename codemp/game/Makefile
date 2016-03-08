@@ -16,7 +16,7 @@ CC = gcc
 CFLAGS = -I../qcommon -I../server -I../icarus -I../ghoul2 -fPIC -DFINAL_BUILD -DMISSION_PACK -DQAGAME -D_JK2 -D__linux__ -D__GCC__ -w
 
 # Target file
-TARGET = jampgamei386.so
+TARGET = jampgamex86_64.so
 
 # Object Files
 OFILES = ai_main.o ai_util.o ai_wpnav.o AnimalNPC.o bg_g2_utils.o bg_misc.o bg_panimate.o \
@@ -31,14 +31,14 @@ OFILES = ai_main.o ai_util.o ai_wpnav.o AnimalNPC.o bg_g2_utils.o bg_misc.o bg_p
          NPC_AI_Rancor.o NPC_AI_Remote.o NPC_AI_Seeker.o NPC_AI_Sentry.o NPC_AI_Sniper.o  NPC_AI_Stormtrooper.o \
          NPC_AI_Utils.o NPC_AI_Wampa.o NPC_behavior.o NPC_combat.o NPC_goal.o NPC_misc.o NPC_move.o \
          NPC_reactions.o NPC_senses.o NPC_sounds.o NPC_spawn.o NPC_stats.o NPC_utils.o q_math.o q_shared.o \
-         SpeederNPC.o tri_coll_test.o WalkerNPC.o w_force.o w_saber.o g_Xmod.o aotctc_holocron.o g_nox_syscalls.o g_emotes.o
+         SpeederNPC.o tri_coll_test.o WalkerNPC.o w_force.o w_saber.o g_Xmod.o aotctc_holocron.o g_nox_syscalls.o g_emotes.o ../sqlite3/sqlite3.o
 
 $(TARGET): $(OFILES)
 	$(CC) -shared -o $(TARGET) $(OFILES) -lm
 	strip $(TARGET)
 
 .c.o:
-	$(CC) $(CFLAGS) -c $*.c -o $*.o
+	$(CC) -pthread $(CFLAGS) -c $*.c -o $*.o
 
 clean:
 	rm -f $(OFILES)
