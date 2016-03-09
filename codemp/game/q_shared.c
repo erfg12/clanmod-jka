@@ -4,6 +4,75 @@
 #include "q_shared.h"
 
 /*
+Q_strchrs
+Description:	Find any characters in a string. Think of it as a shorthand strchr loop.
+Mutates:		--
+Return:			first instance of any characters found
+otherwise NULL
+*/
+
+const char *Q_strchrs(const char *string, const char *search)
+{
+	const char *p = string, *s = search;
+
+	while (*p != '\0')
+	{
+		for (s = search; *s; s++)
+		{
+			if (*p == *s)
+				return p;
+		}
+		p++;
+	}
+
+	return NULL;
+}
+
+/*
+==================
+Q_StripColor
+Strips coloured strings in-place using multiple passes: "fgs^^56fds" -> "fgs^6fds" -> "fgsfds"
+This function modifies INPUT (is mutable)
+(Also strips ^8 and ^9)
+==================
+*/
+void Q_StripColor(char *text)
+{
+	qboolean doPass = qtrue;
+	char *read;
+	char *write;
+
+	while (doPass)
+	{
+		doPass = qfalse;
+		read = write = text;
+		while (*read)
+		{
+			if (Q_IsColorStringExt(read))
+			{
+				doPass = qtrue;
+				read += 2;
+			}
+			else
+			{
+				// Avoid writing the same data over itself
+				if (write != read)
+				{
+					*write = *read;
+				}
+				write++;
+				read++;
+			}
+		}
+		if (write < read)
+		{
+			// Add trailing NUL byte if string has shortened
+			*write = '\0';
+		}
+	}
+}
+
+/*
 -------------------------
 GetIDForString 
 -------------------------

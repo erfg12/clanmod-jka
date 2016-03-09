@@ -1554,7 +1554,7 @@ const char *G_GetStringEdString(char *refSection, char *refName);
 // g_client.c
 //
 char *ClientConnect( int clientNum, qboolean firstTime, qboolean isBot );
-void ClientUserinfoChanged( int clientNum );
+qboolean ClientUserinfoChanged( int clientNum );
 void ClientDisconnect( int clientNum );
 void ClientBegin( int clientNum, qboolean allowTeamReset );
 void G_BreakArm(gentity_t *ent, int arm);
@@ -1729,6 +1729,15 @@ extern	gentity_t		g_entities[MAX_GENTITIES];
 
 #define	FOFS(x) ((int)&(((gentity_t *)0)->x))
 
+typedef enum userinfoValidationBits_e {
+	// validation & (1<<(numUserinfoFields+USERINFO_VALIDATION_BLAH))
+	USERINFO_VALIDATION_SIZE = 0,
+	USERINFO_VALIDATION_SLASH,
+	USERINFO_VALIDATION_EXTASCII,
+	USERINFO_VALIDATION_CONTROLCHARS,
+	USERINFO_VALIDATION_MAX
+} userinfoValidationBits_t;
+
 extern	vmCvar_t	g_gametype;
 extern	vmCvar_t	g_dedicated;
 extern	vmCvar_t	g_developer;
@@ -1838,6 +1847,7 @@ extern	vmCvar_t	g_warmup;
 extern	vmCvar_t	g_doWarmup;
 extern	vmCvar_t	g_blood;
 extern	vmCvar_t	g_allowVote;
+extern	vmCvar_t	g_userinfoValidate;
 extern	vmCvar_t	g_teamAutoJoin;
 extern	vmCvar_t	g_teamForceBalance;
 extern	vmCvar_t	g_banIPs;

@@ -1960,7 +1960,7 @@ The game can override any of the settings and call trap_SetUserinfo
 if desired.
 ============
 */
-qboolean G_SetSaber(gentity_t *ent, int saberNum, char *saberName, qboolean siegeOverride);
+/*qboolean G_SetSaber(gentity_t *ent, int saberNum, char *saberName, qboolean siegeOverride);
 void G_ValidateSiegeClassForTeam(gentity_t *ent, int team);
 //extern void FR_NormalizeForcePowers(char *powerOut, int powerLen);
 void ClientUserinfoChanged( int clientNum ) {
@@ -2386,15 +2386,6 @@ void ClientUserinfoChanged( int clientNum ) {
 		strcpy(client->modelname, "kyle");
 		modelChanged = qtrue;
 	}
-	/*if ((struberstr(model, "jawa") == 1) && g_gametype.integer == GT_RPG){
-		client->pers.ammodelchanged3 = 76;
-	}
-	else if (((struberstr(model, "desann") == 1) || (struberstr(model, "chewbacca") == 1)) && g_gametype.integer == GT_RPG){
-		client->pers.ammodelchanged3 = 115;
-	}
-	else if ((struberstr(model, "jawa") == 0) && (struberstr(model, "desann") == 0) && (struberstr(model, "chewbacca") == 0) && g_gametype.integer == GT_RPG){
-		client->pers.ammodelchanged3 = 100;
-	}*/
 
 	if (d_perPlayerGhoul2.integer)
 	{
@@ -2437,10 +2428,10 @@ void ClientUserinfoChanged( int clientNum ) {
 	}
 
 	//RoAR mod NOTE: I think ppl want dark characters...
-	/*if ((client->ps.customRGBA[0]+client->ps.customRGBA[1]+client->ps.customRGBA[2]) < 100)
-	{ //hmm, too dark!
-		client->ps.customRGBA[0] = client->ps.customRGBA[1] = client->ps.customRGBA[2] = 255;
-	}*/
+	//if ((client->ps.customRGBA[0]+client->ps.customRGBA[1]+client->ps.customRGBA[2]) < 100)
+	//{ //hmm, too dark!
+	//	client->ps.customRGBA[0] = client->ps.customRGBA[1] = client->ps.customRGBA[2] = 255;
+	//}
 
 	client->ps.customRGBA[3]=255;
 
@@ -2449,40 +2440,6 @@ void ClientUserinfoChanged( int clientNum ) {
 	//Q_strncpyz( forcePowers, Info_ValueForKey (userinfo, "forcepowers"), sizeof( forcePowers ) );
 	//[/GameTweaks]
 
-	/*if (!(ent->r.svFlags & SVF_BOT))
-	{ // clients could have a bad forcepower string
-		char *n;
-		n = Info_ValueForKey (userinfo, "forcepowers");
-		FR_NormalizeForcePowers(n, strlen(n));
-		strcpy( force_Powers, n );
-	}
-	else
-	{
-		Q_strncpyz( force_Powers, Info_ValueForKey (userinfo, "forcepowers"), sizeof( force_Powers ) );
-	}*/
-
-	//[BugFix14]
-	//Testing to see if this fixes the problem with a bot's team getting set incorrectly.
-	team = client->sess.sessionTeam;
-	/* basejka code
-	// bots set their team a few frames later
-	if (g_gametype.integer >= GT_TEAM && g_entities[clientNum].r.svFlags & SVF_BOT) {
-		s = Info_ValueForKey( userinfo, "team" );
-		if ( !Q_stricmp( s, "red" ) || !Q_stricmp( s, "r" ) ) {
-			team = TEAM_RED;
-		} else if ( !Q_stricmp( s, "blue" ) || !Q_stricmp( s, "b" ) ) {
-			team = TEAM_BLUE;
-		} else {
-			// pick the team with the least number of players
-			team = PickTeam( clientNum );
-		}
-	}
-	else {
-		team = client->sess.sessionTeam;
-	}
-	*/
-	//[/BugFix14]
-
 	//Set the siege class
 	if (g_gametype.integer == GT_SIEGE)
 	{
@@ -2490,12 +2447,7 @@ void ClientUserinfoChanged( int clientNum ) {
 
 		//This function will see if the given class is legal for the given team.
 		//If not className will be filled in with the first legal class for this team.
-/*		if (!BG_SiegeCheckClassLegality(team, className) &&
-			Q_stricmp(client->sess.siegeClass, "none"))
-		{ //if it isn't legal pop up the class menu
-			trap_SendServerCommand(ent-g_entities, "scl");
-		}
-*/
+
 		//Now that the team is legal for sure, we'll go ahead and get an index for it.
 		client->siegeClass = BG_SiegeFindClassIndexByName(className);
 		if (client->siegeClass == -1)
@@ -2732,27 +2684,6 @@ void ClientUserinfoChanged( int clientNum ) {
 	}
 	client->ps.stats[STAT_MAX_HEALTH] = client->pers.maxHealth;
 
-/*	NOTE: all client side now
-
-	// team
-	switch( team ) {
-	case TEAM_RED:
-		ForceClientSkin(client, model, "red");
-//		ForceClientSkin(client, headModel, "red");
-		break;
-	case TEAM_BLUE:
-		ForceClientSkin(client, model, "blue");
-//		ForceClientSkin(client, headModel, "blue");
-		break;
-	}
-	// don't ever use a default skin in teamplay, it would just waste memory
-	// however bots will always join a team but they spawn in as spectator
-	if ( g_gametype.integer >= GT_TEAM && team == TEAM_SPECTATOR) {
-		ForceClientSkin(client, model, "red");
-//		ForceClientSkin(client, headModel, "red");
-	}
-*/
-
 	if (g_gametype.integer >= GT_TEAM) {
 		client->pers.teamInfo = qtrue;
 	} else {
@@ -2763,15 +2694,6 @@ void ClientUserinfoChanged( int clientNum ) {
 			client->pers.teamInfo = qfalse;
 		}
 	}
-	/*
-	s = Info_ValueForKey( userinfo, "cg_pmove_fixed" );
-	if ( !*s || atoi( s ) == 0 ) {
-		client->pers.pmoveFixed = qfalse;
-	}
-	else {
-		client->pers.pmoveFixed = qtrue;
-	}
-	*/
 
 	// team task (0 = none, 1 = offence, 2 = defence)
 	teamTask = atoi(Info_ValueForKey(userinfo, "teamtask"));
@@ -2841,6 +2763,429 @@ void ClientUserinfoChanged( int clientNum ) {
 	{
 		G_LogPrintf( "ClientUserinfoChanged: %i %s\n", clientNum, s );
 	}
+}*/
+
+qboolean G_SetSaber(gentity_t *ent, int saberNum, char *saberName, qboolean siegeOverride);
+void G_ValidateSiegeClassForTeam(gentity_t *ent, int team);
+
+typedef struct userinfoValidate_s {
+	const char		*field, *fieldClean;
+	unsigned int	minCount, maxCount;
+} userinfoValidate_t;
+
+#define UIF( x, _min, _max ) { STRING(\\) #x STRING(\\), STRING( x ), _min, _max }
+static userinfoValidate_t userinfoFields[] = {
+	UIF(cl_guid,			0, 0), // not allowed, q3fill protection
+	UIF(cl_punkbuster,		0, 0), // not allowed, q3fill protection
+	UIF(ip,				0, 1), // engine adds this at the end
+	UIF(name,				1, 1),
+	UIF(rate,				1, 1),
+	UIF(snaps,				1, 1),
+	UIF(model,				1, 1),
+	UIF(forcepowers,		1, 1),
+	UIF(color1,			1, 1),
+	UIF(color2,			1, 1),
+	UIF(handicap,			1, 1),
+	UIF(sex,				0, 1),
+	UIF(cg_predictItems,	1, 1),
+	UIF(saber1,			1, 1),
+	UIF(saber2,			1, 1),
+	UIF(char_color_red,	1, 1),
+	UIF(char_color_green,	1, 1),
+	UIF(char_color_blue,	1, 1),
+	UIF(teamtask,			0, 1), // optional
+	UIF(password,			0, 1), // optional
+	UIF(teamoverlay,		0, 1), // only registered in cgame, not sent when connecting
+};
+static const size_t numUserinfoFields = ARRAY_LEN(userinfoFields);
+
+static const char *userinfoValidateExtra[USERINFO_VALIDATION_MAX] = {
+	"Size",					// USERINFO_VALIDATION_SIZE
+	"# of slashes",			// USERINFO_VALIDATION_SLASH
+	"Extended ascii",		// USERINFO_VALIDATION_EXTASCII
+	"Control characters",	// USERINFO_VALIDATION_CONTROLCHARS
+};
+
+void Svcmd_ToggleUserinfoValidation_f(void) {
+	if (trap_Argc() == 1) {
+		int i = 0;
+		for (i = 0; i<numUserinfoFields; i++) {
+			if ((g_userinfoValidate.integer & (1 << i)))	trap_Printf(va("%2d [X] %s\n", i, userinfoFields[i].fieldClean));
+			else											trap_Printf(va("%2d [ ] %s\n", i, userinfoFields[i].fieldClean));
+		}
+		for (; i<numUserinfoFields + USERINFO_VALIDATION_MAX; i++) {
+			if ((g_userinfoValidate.integer & (1 << i)))	trap_Printf(va("%2d [X] %s\n", i, userinfoValidateExtra[i - numUserinfoFields]));
+			else											trap_Printf(va("%2d [ ] %s\n", i, userinfoValidateExtra[i - numUserinfoFields]));
+		}
+		return;
+	}
+	else {
+		char arg[8] = { 0 };
+		int index;
+
+		trap_Argv(1, arg, sizeof(arg));
+		index = atoi(arg);
+
+		if (index < 0 || index > numUserinfoFields + USERINFO_VALIDATION_MAX - 1) {
+			Com_Printf("ToggleUserinfoValidation: Invalid range: %i [0, %i]\n", index, numUserinfoFields + USERINFO_VALIDATION_MAX - 1);
+			return;
+		}
+
+		trap_Cvar_Set("g_userinfoValidate", va("%i", (1 << index) ^ (g_userinfoValidate.integer & ((1 << (numUserinfoFields + USERINFO_VALIDATION_MAX)) - 1))));
+		trap_Cvar_Update(&g_userinfoValidate);
+
+		if (index < numUserinfoFields)	Com_Printf("%s %s\n", userinfoFields[index].fieldClean, ((g_userinfoValidate.integer & (1 << index)) ? "Validated" : "Ignored"));
+		else								Com_Printf("%s %s\n", userinfoValidateExtra[index - numUserinfoFields], ((g_userinfoValidate.integer & (1 << index)) ? "Validated" : "Ignored"));
+	}
+}
+
+char *G_ValidateUserinfo(const char *userinfo) {
+	unsigned int		i = 0, count = 0;
+	size_t				length = strlen(userinfo);
+	userinfoValidate_t	*info = NULL;
+	char				key[BIG_INFO_KEY], value[BIG_INFO_VALUE];
+	const char			*s;
+	unsigned int		fieldCount[ARRAY_LEN(userinfoFields)];
+
+	memset(fieldCount, 0, sizeof(fieldCount));
+
+	// size checks
+	if (g_userinfoValidate.integer & (1 << (numUserinfoFields + USERINFO_VALIDATION_SIZE))) {
+		if (length < 1)
+			return "Userinfo too short";
+		else if (length >= MAX_INFO_STRING)
+			return "Userinfo too long";
+	}
+
+	// slash checks
+	if (g_userinfoValidate.integer & (1 << (numUserinfoFields + USERINFO_VALIDATION_SLASH))) {
+		// there must be a leading slash
+		if (userinfo[0] != '\\')
+			return "Missing leading slash";
+
+		// no trailing slashes allowed, engine will append ip\\ip:port
+		if (userinfo[length - 1] == '\\')
+			return "Trailing slash";
+
+		// format for userinfo field is: \\key\\value
+		// so there must be an even amount of slashes
+		for (i = 0, count = 0; i<length; i++) {
+			if (userinfo[i] == '\\')
+				count++;
+		}
+		if ((count & 1)) // odd
+			return "Bad number of slashes";
+	}
+
+	// extended characters are impossible to type, may want to disable
+	if (g_userinfoValidate.integer & (1 << (numUserinfoFields + USERINFO_VALIDATION_EXTASCII))) {
+		for (i = 0, count = 0; i<length; i++) {
+			if (userinfo[i] < 0)
+				count++;
+		}
+		if (count)
+			return "Extended ASCII characters found";
+	}
+
+	// disallow \n \r ; and \"
+	if (g_userinfoValidate.integer & (1 << (numUserinfoFields + USERINFO_VALIDATION_CONTROLCHARS))) {
+		if (Q_strchrs(userinfo, "\n\r;\""))
+			return "Invalid characters found";
+	}
+
+	s = userinfo;
+	while (s) {
+		Info_NextPair(&s, key, value);
+
+		if (!key[0])
+			break;
+
+		for (i = 0; i<numUserinfoFields; i++) {
+			if (!Q_stricmp(key, userinfoFields[i].fieldClean))
+				fieldCount[i]++;
+		}
+	}
+
+	// count the number of fields
+	for (i = 0, info = userinfoFields; i<numUserinfoFields; i++, info++) {
+		if (g_userinfoValidate.integer & (1 << i)) {
+			if (info->minCount && !fieldCount[i])
+				return va("%s field not found", info->fieldClean);
+			else if (fieldCount[i] > info->maxCount)
+				return va("Too many %s fields (%i/%i)", info->fieldClean, fieldCount[i], info->maxCount);
+		}
+	}
+
+	return NULL;
+}
+
+qboolean ClientUserinfoChanged(int clientNum) {
+	gentity_t *ent = g_entities + clientNum;
+	gclient_t *client = ent->client;
+	int team = TEAM_FREE, health = 100, maxHealth = 100, teamLeader;
+	const char *s = NULL;
+	char *value = NULL, userinfo[MAX_INFO_STRING], buf[MAX_INFO_STRING], oldClientinfo[MAX_INFO_STRING], model[MAX_QPATH],
+		forcePowers[DEFAULT_FORCEPOWERS_LEN], oldname[MAX_NETNAME], className[MAX_QPATH], color1[16], color2[16];
+	qboolean modelChanged = qfalse;
+	gender_t gender = GENDER_MALE;
+
+	trap_GetUserinfo(clientNum, userinfo, sizeof(userinfo));
+
+	// check for malformed or illegal info strings
+	s = G_ValidateUserinfo(userinfo);
+	if (s && *s) {
+		//G_SecurityLogPrintf("Client %d (%s) failed userinfo validation: %s [IP: %s]\n", clientNum, ent->client->pers.netname, s, client->sess.myip);
+		trap_DropClient(clientNum, va("Failed userinfo validation: %s", s));
+		G_LogPrintf("Userinfo: %s\n", userinfo);
+		return qfalse;
+	}
+
+	// check for local client
+	s = Info_ValueForKey(userinfo, "ip");
+	if (!strcmp(s, "localhost") && !(ent->r.svFlags & SVF_BOT))
+		client->pers.localClient = qtrue;
+
+	// check the item prediction
+	s = Info_ValueForKey(userinfo, "cg_predictItems");
+	if (!atoi(s))	client->pers.predictItemPickup = qfalse;
+	else				client->pers.predictItemPickup = qtrue;
+
+	// set name
+	Q_strncpyz(oldname, client->pers.netname, sizeof(oldname));
+	s = Info_ValueForKey(userinfo, "name");
+	ClientCleanName(s, client->pers.netname, sizeof(client->pers.netname));
+	Q_strncpyz(client->pers.netname, client->pers.netname, sizeof(client->pers.netname));
+	Q_StripColor(client->pers.netname);
+
+	if (client->sess.sessionTeam == TEAM_SPECTATOR && client->sess.spectatorState == SPECTATOR_SCOREBOARD) {
+		Q_strncpyz(client->pers.netname, "scoreboard", sizeof(client->pers.netname));
+		Q_strncpyz(client->pers.netname, "scoreboard", sizeof(client->pers.netname));
+	}
+
+	if (client->pers.connected == CON_CONNECTED && strcmp(oldname, client->pers.netname)) {
+		if (client->pers.netnameTime > level.time) {
+			trap_SendServerCommand(clientNum, va("print \"%s\n\"", G_GetStringEdString("MP_SVGAME", "NONAMECHANGE")));
+
+			Info_SetValueForKey(userinfo, "name", oldname);
+			trap_SetUserinfo(clientNum, userinfo);
+			Q_strncpyz(client->pers.netname, oldname, sizeof(client->pers.netname));
+			Q_strncpyz(client->pers.netname, oldname, sizeof(client->pers.netname));
+			Q_StripColor(client->pers.netname);
+		}
+		else {
+			trap_SendServerCommand(-1, va("print \"%s" S_COLOR_WHITE " %s %s\n\"", oldname, G_GetStringEdString("MP_SVGAME", "PLRENAME"), client->pers.netname));
+			//G_LogPrintf("ClientRename: %i [%s] (%s) \"%s^7\" -> \"%s^7\"\n", clientNum, ent->client->sess.myip, ent->client->pers.guid, oldname, ent->client->pers.netname);
+			client->pers.netnameTime = level.time + 5000;
+		}
+	}
+
+	// set model
+	Q_strncpyz(model, Info_ValueForKey(userinfo, "model"), sizeof(model));
+
+	if (d_perPlayerGhoul2.integer&& Q_stricmp(model, client->modelname)) {
+		Q_strncpyz(client->modelname, model, sizeof(client->modelname));
+		modelChanged = qtrue;
+	}
+
+	client->ps.customRGBA[0] = (value = Info_ValueForKey(userinfo, "char_color_red")) ? Com_Clampi(0, 255, atoi(value)) : 255;
+	client->ps.customRGBA[1] = (value = Info_ValueForKey(userinfo, "char_color_green")) ? Com_Clampi(0, 255, atoi(value)) : 255;
+	client->ps.customRGBA[2] = (value = Info_ValueForKey(userinfo, "char_color_blue")) ? Com_Clampi(0, 255, atoi(value)) : 255;
+
+	//Prevent skins being too dark
+	// RoAR Mod
+	//if (g_charRestrictRGB.integer && ((client->ps.customRGBA[0] + client->ps.customRGBA[1] + client->ps.customRGBA[2]) < 100))
+	//	client->ps.customRGBA[0] = client->ps.customRGBA[1] = client->ps.customRGBA[2] = 255;
+
+	client->ps.customRGBA[3] = 255;
+
+	Q_strncpyz(forcePowers, Info_ValueForKey(userinfo, "forcepowers"), sizeof(forcePowers));
+
+	// update our customRGBA for team colors.
+	if (g_gametype.integer >= GT_TEAM && g_gametype.integer != GT_SIEGE && !g_trueJedi.integer) {
+		char skin[MAX_QPATH] = { 0 };
+		vec3_t colorOverride = { 0.0f };
+
+		VectorClear(colorOverride);
+
+		BG_ValidateSkinForTeam(model, skin, client->sess.sessionTeam, colorOverride);
+		if (colorOverride[0] != 0.0f || colorOverride[1] != 0.0f || colorOverride[2] != 0.0f)
+			VectorScaleM(colorOverride, 255.0f, client->ps.customRGBA);
+	}
+
+	// bots set their team a few frames later
+	if (g_gametype.integer >= GT_TEAM && g_entities[clientNum].r.svFlags & SVF_BOT) {
+		s = Info_ValueForKey(userinfo, "team");
+		if (!Q_stricmp(s, "red") || !Q_stricmp(s, "r"))
+			team = TEAM_RED;
+		else if (!Q_stricmp(s, "blue") || !Q_stricmp(s, "b"))
+			team = TEAM_BLUE;
+		else
+			team = PickTeam(clientNum); // pick the team with the least number of players
+	}
+	else
+		team = client->sess.sessionTeam;
+
+	//Testing to see if this fixes the problem with a bot's team getting set incorrectly.
+	team = client->sess.sessionTeam;
+
+	//Set the siege class
+	if (g_gametype.integer == GT_SIEGE) {
+		Q_strncpyz(className, client->sess.siegeClass, sizeof(className));
+
+		//Now that the team is legal for sure, we'll go ahead and get an index for it.
+		client->siegeClass = BG_SiegeFindClassIndexByName(className);
+		if (client->siegeClass == -1) {
+			// ok, get the first valid class for the team you're on then, I guess.
+			BG_SiegeCheckClassLegality(team, className);
+			Q_strncpyz(client->sess.siegeClass, className, sizeof(client->sess.siegeClass));
+			client->siegeClass = BG_SiegeFindClassIndexByName(className);
+		}
+		else {
+			// otherwise, make sure the class we are using is legal.
+			G_ValidateSiegeClassForTeam(ent, team);
+			Q_strncpyz(className, client->sess.siegeClass, sizeof(className));
+		}
+
+		if (client->siegeClass != -1) {
+			// Set the sabers if the class dictates
+			siegeClass_t *scl = &bgSiegeClasses[client->siegeClass];
+
+			G_SetSaber(ent, 0, scl->saber1[0] ? scl->saber1 : DEFAULT_SABER, qtrue);
+			G_SetSaber(ent, 1, scl->saber2[0] ? scl->saber2 : "none", qtrue);
+
+			//make sure the saber models are updated
+			G_SaberModelSetup(ent);
+
+			if (scl->forcedModel[0]) {
+				// be sure to override the model we actually use
+				Q_strncpyz(model, scl->forcedModel, sizeof(model));
+				if (d_perPlayerGhoul2.integer && Q_stricmp(model, client->modelname)) {
+					Q_strncpyz(client->modelname, model, sizeof(client->modelname));
+					modelChanged = qtrue;
+				}
+			}
+
+			if (G_PlayerHasCustomSkeleton(ent))
+			{//force them to use their class model on the server, if the class dictates
+				if (Q_stricmp(model, client->modelname) || ent->localAnimIndex == 0)
+				{
+					Q_strncpyz(client->modelname, model, sizeof(client->modelname));
+					modelChanged = qtrue;
+				}
+			}
+		}
+	}
+	else
+		Q_strncpyz(className, "none", sizeof(className));
+
+	// only set the saber name on the first connect.
+	//	it will be read from userinfo on ClientSpawn and stored in client->pers.saber1/2
+	/*if (!VALIDSTRING(client->pers.saber1) || !VALIDSTRING(client->pers.saber2)) {
+		G_SetSaber(ent, 0, Info_ValueForKey(userinfo, "saber1"), qfalse);
+		G_SetSaber(ent, 1, Info_ValueForKey(userinfo, "saber2"), qfalse);
+	}*/
+
+	// set max health
+	if (g_gametype.integer == GT_SIEGE && client->siegeClass != -1) {
+		siegeClass_t *scl = &bgSiegeClasses[client->siegeClass];
+
+		if (scl->maxhealth)
+			maxHealth = scl->maxhealth;
+
+		health = maxHealth;
+	}
+	else
+		health = Com_Clampi(1, 100, atoi(Info_ValueForKey(userinfo, "handicap")));
+
+	client->pers.maxHealth = health;
+	if (client->pers.maxHealth < 1 || client->pers.maxHealth > maxHealth)
+		client->pers.maxHealth = 100;
+	client->ps.stats[STAT_MAX_HEALTH] = client->pers.maxHealth;
+
+	if (g_gametype.integer >= GT_TEAM)
+		client->pers.teamInfo = qtrue;
+	else {
+		s = Info_ValueForKey(userinfo, "teamoverlay");
+		if (!*s || atoi(s) != 0)
+			client->pers.teamInfo = qtrue;
+		else
+			client->pers.teamInfo = qfalse;
+	}
+
+	// team task (0 = none, 1 = offence, 2 = defence)
+	//	teamTask = atoi(Info_ValueForKey(userinfo, "teamtask"));
+	// team Leader (1 = leader, 0 is normal player)
+	teamLeader = client->sess.teamLeader;
+
+	// colors
+	Q_strncpyz(color1, Info_ValueForKey(userinfo, "color1"), sizeof(color1));
+	Q_strncpyz(color2, Info_ValueForKey(userinfo, "color2"), sizeof(color2));
+
+	// gender hints
+	s = Info_ValueForKey(userinfo, "sex");
+	if (!Q_stricmp(s, "female"))
+		gender = GENDER_FEMALE;
+	else
+		gender = GENDER_MALE;
+
+	s = Info_ValueForKey(userinfo, "snaps");
+	//if (atoi(s) < sv_fps.integer)
+	//	trap_SendServerCommand(clientNum, va("print \"" S_COLOR_YELLOW "Recommend setting /snaps %d or higher to match this server's sv_fps\n\"", sv_fps.integer));
+
+	// send over a subset of the userinfo keys so other clients can
+	// print scoreboards, display models, and play custom sounds
+	buf[0] = '\0';
+	Q_strcat(buf, sizeof(buf), va("n\\%s\\", client->pers.netname));
+	Q_strcat(buf, sizeof(buf), va("t\\%i\\", client->sess.sessionTeam));
+	Q_strcat(buf, sizeof(buf), va("model\\%s\\", model));
+	if (gender == GENDER_FEMALE)	Q_strcat(buf, sizeof(buf), va("ds\\%c\\", 'f'));
+	else							Q_strcat(buf, sizeof(buf), va("ds\\%c\\", 'm'));
+	//Q_strcat(buf, sizeof(buf), va("st\\%s\\", client->pers.saber1));
+	//Q_strcat(buf, sizeof(buf), va("st2\\%s\\", client->pers.saber2));
+	Q_strcat(buf, sizeof(buf), va("c1\\%s\\", color1));
+	Q_strcat(buf, sizeof(buf), va("c2\\%s\\", color2));
+	Q_strcat(buf, sizeof(buf), va("hc\\%i\\", client->pers.maxHealth));
+	if (ent->r.svFlags & SVF_BOT)
+		Q_strcat(buf, sizeof(buf), va("skill\\%s\\", Info_ValueForKey(userinfo, "skill")));
+	if (g_gametype.integer == GT_DUEL || g_gametype.integer == GT_POWERDUEL) {
+		Q_strcat(buf, sizeof(buf), va("w\\%i\\", client->sess.wins));
+		Q_strcat(buf, sizeof(buf), va("l\\%i\\", client->sess.losses));
+	}
+	if (g_gametype.integer == GT_POWERDUEL)
+		Q_strcat(buf, sizeof(buf), va("dt\\%i\\", client->sess.duelTeam));
+	if (g_gametype.integer >= GT_TEAM) {
+		//	Q_strcat( buf, sizeof( buf ), va( "tt\\%d\\", teamTask ) );
+		Q_strcat(buf, sizeof(buf), va("tl\\%d\\", teamLeader));
+	}
+	if (g_gametype.integer == GT_SIEGE) {
+		Q_strcat(buf, sizeof(buf), va("siegeclass\\%s\\", className));
+		Q_strcat(buf, sizeof(buf), va("sdt\\%i\\", className));
+	}
+
+	trap_GetConfigstring(CS_PLAYERS + clientNum, oldClientinfo, sizeof(oldClientinfo));
+	trap_SetConfigstring(CS_PLAYERS + clientNum, buf);
+
+	// only going to be true for allowable server-side custom skeleton cases
+	if (modelChanged) {
+		// update the server g2 instance if appropriate
+		char *modelname = Info_ValueForKey(userinfo, "model");
+		SetupGameGhoul2Model(ent, modelname, NULL);
+
+		if (ent->ghoul2 && ent->client)
+			ent->client->renderInfo.lastG2 = NULL; //update the renderinfo bolts next update.
+
+		client->torsoAnimExecute = client->legsAnimExecute = -1;
+		client->torsoLastFlip = client->legsLastFlip = qfalse;
+	}
+
+	if (g_logClientInfo.integer) {
+		if (strcmp(oldClientinfo, buf))
+			G_LogPrintf("ClientUserinfoChanged: %i %s\n", clientNum, buf);
+		else
+			G_LogPrintf("ClientUserinfoChanged: %i <no change>\n", clientNum);
+	}
+
+	return qtrue;
 }
 
 void Update_Server_Votes (int clientnum)

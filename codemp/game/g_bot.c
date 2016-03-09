@@ -1046,7 +1046,7 @@ static void G_AddBot(const char *name, float skill, const char *team, int delay,
 	// get the botinfo from bots.txt
 	botinfo = G_GetBotInfoByName(name);
 	if (!botinfo) {
-		trap_Printf(S_COLOR_RED "Error: Bot '%s' not defined\n", name);
+		trap_Printf( va(S_COLOR_RED "Error: Bot '%s' not defined\n", name));
 		trap_BotFreeClient(clientNum);
 		return;
 	}
@@ -1204,8 +1204,8 @@ static void G_AddBot(const char *name, float skill, const char *team, int delay,
 		bot->client->ps.persistant[PERS_TEAM] = bot->client->sess.sessionTeam;
 
 		G_ReadSessionData(bot->client);
-		//if (!ClientUserinfoChanged(clientNum))
-		//	return;
+		if (!ClientUserinfoChanged(clientNum))
+			return;
 	}
 
 	if (g_gametype.integer == GT_DUEL ||
