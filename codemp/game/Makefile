@@ -13,7 +13,7 @@ CC = gcc
 # -w ( disable warnings )
 # -I<include path>  used to include headers
 # -fPIC ( this flag is necessary to build shared libraries )
-CFLAGS = -I../qcommon -I../server -I../icarus -I../ghoul2 -fPIC -DFINAL_BUILD -DMISSION_PACK -DQAGAME -D_JK2 -D__linux__ -D__GCC__ -w
+CFLAGS = -DSQLITE_THREADSAFE=0 -I../qcommon -I../server -I../icarus -I../ghoul2 -fPIC -DFINAL_BUILD -DMISSION_PACK -DQAGAME -D_JK2 -D__linux__ -D__GCC__ -w
 
 # Target file
 TARGET = jampgamex86_64.so
@@ -34,11 +34,11 @@ OFILES = ai_main.o ai_util.o ai_wpnav.o AnimalNPC.o bg_g2_utils.o bg_misc.o bg_p
          SpeederNPC.o tri_coll_test.o WalkerNPC.o w_force.o w_saber.o g_Xmod.o aotctc_holocron.o g_nox_syscalls.o g_emotes.o ../sqlite3/sqlite3.o
 
 $(TARGET): $(OFILES)
-	$(CC) -shared -o $(TARGET) $(OFILES) -lm
-	strip $(TARGET)
+	$(CC) -g -shared -o $(TARGET) $(OFILES) -lm
+	
 
 .c.o:
-	$(CC) -pthread $(CFLAGS) -c $*.c -o $*.o
+	$(CC) $(CFLAGS) -c $*.c -o $*.o -ldl
 
 clean:
 	rm -f $(OFILES)
