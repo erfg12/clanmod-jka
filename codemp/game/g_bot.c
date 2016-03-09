@@ -789,7 +789,7 @@ qboolean G_BotConnect( int clientNum, qboolean restart ) {
 G_AddBot
 ===============
 */
-/*static void G_AddBot( const char *name, float skill, const char *team, int delay, char *altname) {
+static void G_AddBot( const char *name, float skill, const char *team, int delay, char *altname) {
 	int				clientNum;
 	char			*botinfo;
 	gentity_t		*bot;
@@ -841,6 +841,15 @@ G_AddBot
 	}
 	Info_SetValueForKey( userinfo, key, model );
 
+/*	key = "headmodel";
+	headmodel = Info_ValueForKey( botinfo, key );
+	if ( !*headmodel ) {
+		headmodel = model;
+	}
+	Info_SetValueForKey( userinfo, key, headmodel );
+	key = "team_headmodel";
+	Info_SetValueForKey( userinfo, key, headmodel );
+*/
 	key = "gender";
 	s = Info_ValueForKey( botinfo, key );
 	if ( !*s ) {
@@ -1020,223 +1029,6 @@ G_AddBot
 		}
 
 		AddBotToSpawnQueue( clientNum, delay );
-	}
-}*/
-
-/*
-===============
-G_AddBot
-===============
-*/
-static void G_AddBot(const char *name, float skill, const char *team, int delay, char *altname) {
-	gentity_t		*bot = NULL;
-	int				clientNum, preTeam = TEAM_FREE;
-	char			userinfo[MAX_INFO_STRING] = { 0 },
-		*botinfo = NULL, *key = NULL, *s = NULL, *botname = NULL, *model = NULL;
-
-	// have the server allocate a client slot
-	clientNum = trap_BotAllocateClient();
-	if (clientNum == -1) {
-		//		trap->Print( S_COLOR_RED "Unable to add bot.  All player slots are in use.\n" );
-		//		trap->Print( S_COLOR_RED "Start server with more 'open' slots.\n" );
-		trap_SendServerCommand(-1, va("print \"%s\n\"", G_GetStringEdString("MP_SVGAME", "UNABLE_TO_ADD_BOT")));
-		return;
-	}
-
-	// get the botinfo from bots.txt
-	botinfo = G_GetBotInfoByName(name);
-	if (!botinfo) {
-		trap_Printf( va(S_COLOR_RED "Error: Bot '%s' not defined\n", name));
-		trap_BotFreeClient(clientNum);
-		return;
-	}
-
-	// create the bot's userinfo
-	userinfo[0] = '\0';
-
-	botname = Info_ValueForKey(botinfo, "funname");
-	if (!botname[0])
-		botname = Info_ValueForKey(botinfo, "name");
-	// check for an alternative name
-	if (altname && altname[0])
-		botname = altname;
-
-	Info_SetValueForKey(userinfo, "name", botname);
-	Info_SetValueForKey(userinfo, "rate", "25000");
-	Info_SetValueForKey(userinfo, "snaps", "20");
-	Info_SetValueForKey(userinfo, "ip", "localhost");
-	Info_SetValueForKey(userinfo, "skill", va("%.2f", skill));
-
-	if (skill >= 1 && skill < 2)		Info_SetValueForKey(userinfo, "handicap", "50");
-	else if (skill >= 2 && skill < 3)		Info_SetValueForKey(userinfo, "handicap", "70");
-	else if (skill >= 3 && skill < 4)		Info_SetValueForKey(userinfo, "handicap", "90");
-	else									Info_SetValueForKey(userinfo, "handicap", "100");
-
-	key = "model";
-	model = Info_ValueForKey(botinfo, key);
-	if (!*model)	model = DEFAULT_MODEL"/default";
-	Info_SetValueForKey(userinfo, key, model);
-
-	key = "sex";
-	s = Info_ValueForKey(botinfo, key);
-	if (!*s)	s = Info_ValueForKey(botinfo, "gender");
-	if (!*s)	s = "male";
-	Info_SetValueForKey(userinfo, key, s);
-
-	key = "color1";
-	s = Info_ValueForKey(botinfo, key);
-	if (!*s)	s = "4";
-	Info_SetValueForKey(userinfo, key, s);
-
-	key = "color2";
-	s = Info_ValueForKey(botinfo, key);
-	if (!*s)	s = "4";
-	Info_SetValueForKey(userinfo, key, s);
-
-	key = "saber1";
-	s = Info_ValueForKey(botinfo, key);
-	if (!*s)	s = DEFAULT_SABER;
-	Info_SetValueForKey(userinfo, key, s);
-
-	key = "saber2";
-	s = Info_ValueForKey(botinfo, key);
-	if (!*s)	s = "none";
-	Info_SetValueForKey(userinfo, key, s);
-
-	key = "forcepowers";
-	s = Info_ValueForKey(botinfo, key);
-	if (!*s)	s = DEFAULT_FORCEPOWERS;
-	Info_SetValueForKey(userinfo, key, s);
-
-	key = "cg_predictItems";
-	s = Info_ValueForKey(botinfo, key);
-	if (!*s)	s = "1";
-	Info_SetValueForKey(userinfo, key, s);
-
-	key = "char_color_red";
-	s = Info_ValueForKey(botinfo, key);
-	if (!*s)	s = "255";
-	Info_SetValueForKey(userinfo, key, s);
-
-	key = "char_color_green";
-	s = Info_ValueForKey(botinfo, key);
-	if (!*s)	s = "255";
-	Info_SetValueForKey(userinfo, key, s);
-
-	key = "char_color_blue";
-	s = Info_ValueForKey(botinfo, key);
-	if (!*s)	s = "255";
-	Info_SetValueForKey(userinfo, key, s);
-
-	key = "teamtask";
-	s = Info_ValueForKey(botinfo, key);
-	if (!*s)	s = "0";
-	Info_SetValueForKey(userinfo, key, s);
-
-	key = "personality";
-	s = Info_ValueForKey(botinfo, key);
-	if (!*s)	s = "botfiles/default.jkb";
-	Info_SetValueForKey(userinfo, key, s);
-
-	// initialize the bot settings
-	if (!team || !*team) {
-		if (g_gametype.integer >= GT_TEAM) {
-			if (PickTeam(clientNum) == TEAM_RED)
-				team = "red";
-			else
-				team = "blue";
-		}
-		else
-			team = "red";
-	}
-	Info_SetValueForKey(userinfo, "team", team);
-
-	bot = &g_entities[clientNum];
-	//	bot->r.svFlags |= SVF_BOT;
-	//	bot->inuse = qtrue;
-
-	// register the userinfo
-	trap_SetUserinfo(clientNum, userinfo);
-
-	if (g_gametype.integer >= GT_TEAM)
-	{
-		if (team && !Q_stricmp(team, "red"))
-			bot->client->sess.sessionTeam = TEAM_RED;
-		else if (team && !Q_stricmp(team, "blue"))
-			bot->client->sess.sessionTeam = TEAM_BLUE;
-		else
-			bot->client->sess.sessionTeam = PickTeam(-1);
-	}
-
-	if (g_gametype.integer == GT_SIEGE)
-	{
-		bot->client->sess.siegeDesiredTeam = bot->client->sess.sessionTeam;
-		bot->client->sess.sessionTeam = TEAM_SPECTATOR;
-	}
-
-	preTeam = bot->client->sess.sessionTeam;
-
-	// have it connect to the game as a normal client
-	if (ClientConnect(clientNum, qtrue, qtrue))
-		return;
-
-	if (bot->client->sess.sessionTeam != preTeam)
-	{
-		trap_GetUserinfo(clientNum, userinfo, sizeof(userinfo));
-
-		if (bot->client->sess.sessionTeam == TEAM_SPECTATOR)
-			bot->client->sess.sessionTeam = preTeam;
-
-		if (bot->client->sess.sessionTeam == TEAM_RED)
-			team = "Red";
-		else
-		{
-			if (g_gametype.integer == GT_SIEGE)
-				team = (bot->client->sess.sessionTeam == TEAM_BLUE) ? "Blue" : "s";
-			else
-				team = "Blue";
-		}
-
-		Info_SetValueForKey(userinfo, "team", team);
-
-		trap_SetUserinfo(clientNum, userinfo);
-
-		bot->client->ps.persistant[PERS_TEAM] = bot->client->sess.sessionTeam;
-
-		G_ReadSessionData(bot->client);
-		if (!ClientUserinfoChanged(clientNum))
-			return;
-	}
-
-	if (g_gametype.integer == GT_DUEL ||
-		g_gametype.integer == GT_POWERDUEL)
-	{
-		int loners = 0;
-		int doubles = 0;
-
-		bot->client->sess.duelTeam = 0;
-		G_PowerDuelCount(&loners, &doubles, qtrue);
-
-		if (!doubles || loners > (doubles / 2))
-		{
-			bot->client->sess.duelTeam = DUELTEAM_DOUBLE;
-		}
-		else
-		{
-			bot->client->sess.duelTeam = DUELTEAM_LONE;
-		}
-
-		bot->client->sess.sessionTeam = TEAM_SPECTATOR;
-		SetTeam(bot, "s");
-	}
-	else
-	{
-		if (delay == 0) {
-			ClientBegin(clientNum, qfalse);
-			return;
-		}
-
-		AddBotToSpawnQueue(clientNum, delay);
 	}
 }
 
