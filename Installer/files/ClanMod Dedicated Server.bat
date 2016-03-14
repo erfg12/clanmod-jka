@@ -1,1 +1,0 @@
-start "Clan Mod Server (HIGH)" /HIGH jampded.exe +set dedicated 2 +exec server.cfg +set net_port 29070 +exec bots.cfg +set fs_game clanmod
