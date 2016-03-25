@@ -2537,12 +2537,12 @@ extern void RunEmplacedWeapon( gentity_t *ent, usercmd_t **ucmd );
 		self->client->pers.netname, obit );
 
 	//increase kills/deaths (self = death+, attacker = kill+)
-	if (level.numPlayingClients >= 2) { //remove this if we are testing
-		if (self->client->pers.userID > 0) {
+	if (level.numPlayingClients >= 2) {
+		if (self && self->client && self->s.eType != ET_NPC && self->client->pers.userID > 0) {
 			trap_SendServerCommand(self->client->ps.clientNum, va("print \"^3Deaths increased in DB.\n\""));
 			sqliteUpdateStats("UPDATE stats SET deaths = deaths + 1 WHERE user_id = '%i'", self->client->pers.userID);
 		}
-		if (attacker->client->pers.userID > 0) {
+		if (attacker && attacker->client && attacker->s.eType != ET_NPC && attacker->client->pers.userID > 0) {
 			trap_SendServerCommand(attacker->client->ps.clientNum, va("print \"^3Kills increased in DB.\n\""));
 			sqliteUpdateStats("UPDATE stats SET kills = kills + 1 WHERE user_id = '%i'", attacker->client->pers.userID);
 		}
@@ -2560,7 +2560,7 @@ extern void RunEmplacedWeapon( gentity_t *ent, usercmd_t **ucmd );
 		{
 			//todo: TEST THIS
 			//duel wins/loses for GT_DUEL gametype
-			if (self->client->pers.userID > 0) {
+			if (self && self->client && self->client->pers.userID > 0) {
 				trap_SendServerCommand(self->client->ps.clientNum, va("print \"^3Duel Loses increased in DB.\n\""));
 				sqliteUpdateStats("UPDATE stats SET duel_loses = duel_loses + 1 WHERE user_id = '%i'", self->client->pers.userID);
 			}

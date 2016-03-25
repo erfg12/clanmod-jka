@@ -2001,7 +2001,7 @@ void ClientUserinfoChanged( int clientNum ) {
 	qboolean changedSaber = qfalse;
 	int rejectedSaberChange = 0;
 	char *time;
-	//time = timestring ( );
+	time = timestring ( );
 
 	ent = g_entities + clientNum;
 	client = ent->client;
@@ -3058,6 +3058,7 @@ void ClientBegin( int clientNum, qboolean allowTeamReset ) {
 	char		userinfo[MAX_INFO_VALUE], *modelname;
 
 	ent = g_entities + clientNum;
+	ent->client->pers.userID = 0; //set this as early as possible
 
 	if ((ent->r.svFlags & SVF_BOT) && g_gametype.integer >= GT_TEAM)
 	{
@@ -4618,7 +4619,7 @@ void ClientSpawn(gentity_t *ent) {
 	qboolean			changedSaber = qfalse;
 	qboolean			inSiegeWithClass = qfalse;
 
-	index = ent - g_entities;
+	index = ent-g_entities;
 	client = ent->client;
 
 	//first we want the userinfo so we can see if we should update this client's saber -rww
@@ -5506,7 +5507,7 @@ void ClientSpawn(gentity_t *ent) {
 	// initialize animations and other things
 	client->ps.commandTime = level.time - 100;
 	ent->client->pers.cmd.serverTime = level.time;
-	ClientThink(ent - g_entities, NULL);
+	ClientThink(ent-g_entities, NULL);
 
 	// positively link the client, even if the command times are weird
 	if (ent->client->sess.sessionTeam != TEAM_SPECTATOR) {

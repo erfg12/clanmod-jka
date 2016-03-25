@@ -1961,14 +1961,7 @@ extern vmCvar_t		roar_allow_black_names;
 extern vmCvar_t		roar_console_motd;
 extern vmCvar_t		d_slowmodeath;
 
-//RoAR mod: BADWORD FILTER
-extern vmCvar_t		cm_badword1;
-extern vmCvar_t		cm_badword2;
-extern vmCvar_t		cm_badword3;
-extern vmCvar_t		cm_badword4;
-extern vmCvar_t		cm_badword5;
-extern vmCvar_t		cm_precoded_badwords;
-//END
+extern vmCvar_t		cm_badwords;
 
 extern vmCvar_t		roar_FPGRIPspeed;
 extern vmCvar_t		roar_BotFakePings;
@@ -2034,10 +2027,7 @@ extern vmCvar_t		roar_silence_off_saying;
 extern vmCvar_t		roar_silence_on_ALL_saying;
 extern vmCvar_t		roar_silence_off_ALL_saying;
 
-extern vmCvar_t		roar_silence_insult_1;
-extern vmCvar_t		roar_silence_insult_2;
-extern vmCvar_t		roar_silence_insult_3;
-extern vmCvar_t		roar_silence_insult_4;
+extern vmCvar_t		cm_insults;
 
 extern vmCvar_t		cm_noPadawanNames;
 extern vmCvar_t		cm_newName;

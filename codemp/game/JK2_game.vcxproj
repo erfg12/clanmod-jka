@@ -441,6 +441,7 @@
     <ClCompile Include="q_math.c" />
     <ClCompile Include="q_shared.c" />
     <ClCompile Include="SpeederNPC.c" />
+    <ClCompile Include="timestamp.c" />
     <ClCompile Include="tri_coll_test.c" />
     <ClCompile Include="WalkerNPC.c" />
     <ClCompile Include="w_force.c" />
@@ -497,6 +498,7 @@
     <ClInclude Include="surfaceflags.h" />
     <ClInclude Include="syn.h" />
     <ClInclude Include="teams.h" />
+    <ClInclude Include="timestamp.h" />
     <ClInclude Include="w_saber.h" />
   </ItemGroup>
   <ItemGroup>

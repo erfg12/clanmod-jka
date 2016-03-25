@@ -243,14 +243,7 @@ vmCvar_t		x_cstime;
 vmCvar_t		roar_allow_black_names;
 vmCvar_t	mod_pushall;
 
-//RoAR mod: BADWORD FILTER
-vmCvar_t		cm_badword1;
-vmCvar_t		cm_badword2;
-vmCvar_t		cm_badword3;
-vmCvar_t		cm_badword4;
-vmCvar_t		cm_badword5;
-vmCvar_t		cm_precoded_badwords;
-//END
+vmCvar_t		cm_badwords;
 
 vmCvar_t	m_v1;
 vmCvar_t	m_v2;
@@ -370,10 +363,7 @@ vmCvar_t		roar_silence_off_saying;
 vmCvar_t		roar_silence_on_ALL_saying;
 vmCvar_t		roar_silence_off_ALL_saying;
 
-vmCvar_t		roar_silence_insult_1;
-vmCvar_t		roar_silence_insult_2;
-vmCvar_t		roar_silence_insult_3;
-vmCvar_t		roar_silence_insult_4;
+vmCvar_t		cm_insults;
 
 vmCvar_t		cm_noPadawanNames;
 vmCvar_t		cm_newName;
@@ -562,17 +552,14 @@ static cvarTable_t		gameCvarTable[] = {
 	{ &roar_silence_on_ALL_saying,		"cm_silence_on_ALL_saying",		"Everyone has been ^1SILENCED!",		CVAR_ARCHIVE,					0, qfalse },
 	{ &roar_silence_off_ALL_saying,		"cm_silence_off_ALL_saying",	"Everyone may now talk",		CVAR_ARCHIVE,					0, qfalse },
 
-	{ &roar_silence_insult_1,			"cm_silence_insult_1",			"I'm stupid!",		CVAR_ARCHIVE,					0, qfalse },
-	{ &roar_silence_insult_2,			"cm_silence_insult_2",			"I'm a moron!",		CVAR_ARCHIVE,					0, qfalse },
-	{ &roar_silence_insult_3,			"cm_silence_insult_3",			"I'm a noob!",		CVAR_ARCHIVE,					0, qfalse },
-	{ &roar_silence_insult_4,			"cm_silence_insult_4",			"I look as stupid as I am!",		CVAR_ARCHIVE,					0, qfalse },
+	{ &cm_insults,						"cm_insults",					"I cannot think for myself.,My mommy says I'm special.,I deserve this.,I'm dumb.",		CVAR_ARCHIVE,		0, qfalse },
 
 	{ &roar_insult_silence_on_saying,			"cm_insult_silence_on_saying",			"is insulting himself",		CVAR_ARCHIVE,					0, qfalse },
 	{ &roar_insult_silence_off_saying,			"cm_insult_silence_off_saying",			"is no longer insulting himself",		CVAR_ARCHIVE,					0, qfalse },
 
-	{ &roar_disable_slideOnHeads,			"cm_disable_slideOnHeads",			"0",		CVAR_ARCHIVE,					0, qfalse },
+	{ &roar_disable_slideOnHeads,			"cm_slideOnHeads",			"0",		CVAR_ARCHIVE,					0, qfalse },
 
-	{ &roar_allow_chatColors,			"cm_allow_chatColors",			"1",		CVAR_ARCHIVE,					0, qfalse },
+	{ &roar_allow_chatColors,			"cm_chatColors",			"1",		CVAR_ARCHIVE,					0, qfalse },
 
 	{ &cm_AllowKnockDownPull,			"cm_AllowKnockDownPull",			"0",		CVAR_ARCHIVE,					0, qfalse },
 	
@@ -600,23 +587,21 @@ static cvarTable_t		gameCvarTable[] = {
 
 	{ &roar_grip_open_saber,			"cm_gripOpenSaber",			"0",		CVAR_ARCHIVE,					0, qtrue },
 
-	{ &roar_allow_jetpack_command,			"cm_allow_jetpack_command",			"1",		CVAR_ARCHIVE,			0, qtrue },
-	{ &cm_allow_report_command,			"cm_allow_report_command",			"1",		CVAR_ARCHIVE,			0, qtrue },
-	{ &roar_allow_dropsaber_command,			"cm_allow_drop_command",			"1",		CVAR_ARCHIVE,			0, qtrue },
-	{ &roar_chat_protection,			"cm_chat_protection",			"1",		CVAR_ARCHIVE,			0, qtrue },
-	{ &roar_enable_ForceDuel,			"cm_enable_ForceDuel",			"1",		CVAR_ARCHIVE,			0, qtrue },
+	{ &roar_allow_jetpack_command,			"cm_jetpack",			"1",		CVAR_ARCHIVE,			0, qtrue },
+	{ &cm_allow_report_command,			"cm_report",			"1",		CVAR_ARCHIVE,			0, qtrue },
+	{ &roar_allow_dropsaber_command,			"cm_drop",			"1",		CVAR_ARCHIVE,			0, qtrue },
+	{ &roar_chat_protection,			"cm_chatProtection",			"1",		CVAR_ARCHIVE,			0, qtrue },
 
-	{ &roar_idle_AutoProtect_timer,			"cm_AutoProtect_timer",			"30",		CVAR_ARCHIVE,					0, qtrue },
+	{ &roar_idle_AutoProtect_timer,			"cm_AutoProtectTimer",			"30",		CVAR_ARCHIVE,					0, qtrue },
 
-	{ &roar_enable_TrainingDuel,			"cm_enable_TrainingDuel",			"1",		CVAR_ARCHIVE,			0, qtrue },
-
-	{ &roar_enable_MeleeDuel,			"cm_enable_MeleeDuel",			"1",		CVAR_ARCHIVE,			0, qtrue },
-
-	{ &roar_enable_NormalDuel,			"cm_enable_NormalDuel",			"1",		CVAR_ARCHIVE,			0, qtrue },
+	{ &roar_enable_TrainingDuel,		"cm_TrainingDuels",			"1",		CVAR_ARCHIVE,			0, qtrue },
+	{ &roar_enable_ForceDuel,			"cm_ForceDuels",			"1",		CVAR_ARCHIVE,			0, qtrue },
+	{ &roar_enable_MeleeDuel,			"cm_MeleeDuels",			"1",		CVAR_ARCHIVE,			0, qtrue },
+	{ &roar_enable_NormalDuel,			"cm_Duels",			"1",		CVAR_ARCHIVE,			0, qtrue },
 	{ &roar_duel_begin_autobow,			"cm_autobow",			"1",		CVAR_ARCHIVE,			0, qtrue },
 
 	{ &cm_spillpassword,			"cm_spillpassword",			"0",		CVAR_ARCHIVE,			0, qtrue },
-	{ &roar_allow_KnockMeDown_command,			"cm_allow_KnockMeDown_command",			"0",		CVAR_ARCHIVE,			0, qtrue },
+	{ &roar_allow_KnockMeDown_command,			"cm_KnockMeDown",			"0",		CVAR_ARCHIVE,			0, qtrue },
 
 	{ &cm_customSaberDmgs,			"cm_customSaberDmgs",			"0",		CVAR_ARCHIVE,			0, qtrue },
 
@@ -634,8 +619,8 @@ static cvarTable_t		gameCvarTable[] = {
 	{ &x_cstime,			"cm_motd_time",		"5",	CVAR_ARCHIVE,					0, qtrue },
 	{ &roar_allow_black_names,	"cm_blacknames",		"1",	CVAR_ARCHIVE,					0, qtrue },
 	{ &roar_console_motd,	"cm_console_motd",		"^1Type in /HELP to see a list of all the commands.",	CVAR_ARCHIVE,					0, qtrue },
-	{ &roar_starting_weapons,	"cm_starting_weapons",		"0",	CVAR_ARCHIVE,					0, qtrue },
-	{ &roar_allow_samePlayerNames,	"cm_allow_samePlayerNames",		"0",	CVAR_ARCHIVE,					0, qtrue },
+	{ &roar_starting_weapons,	"cm_startWeapons",		"0",	CVAR_ARCHIVE,					0, qtrue },
+	{ &roar_allow_samePlayerNames,	"cm_samePlayerNames",		"0",	CVAR_ARCHIVE,					0, qtrue },
 	{ &cm_empower_infforce,	"cm_empower_infforce",		"0",	CVAR_ARCHIVE,					0, qtrue },
 	{ &cm_terminator_infammo,	"cm_terminator_infammo",		"0",	CVAR_ARCHIVE,					0, qtrue },
 	{ &cm_forcekickflip,	"cm_forcekickflip",		"0",	CVAR_ARCHIVE,					0, qtrue },
@@ -674,12 +659,7 @@ static cvarTable_t		gameCvarTable[] = {
 	{ &cm_password_latch,			"cm_password_latch",			"0",		CVAR_ARCHIVE,					0, qfalse },
 
 	//RoAR mod: BADWORD FILTER
-	{ &cm_badword1,			"cm_badword1",			"",		CVAR_ARCHIVE,					0, qfalse },
-	{ &cm_badword2,			"cm_badword2",			"",		CVAR_ARCHIVE,					0, qfalse },
-	{ &cm_badword3,			"cm_badword3",			"",		CVAR_ARCHIVE,					0, qfalse },
-	{ &cm_badword4,			"cm_badword4",			"",		CVAR_ARCHIVE,					0, qfalse },
-	{ &cm_badword5,			"cm_badword5",			"",		CVAR_ARCHIVE,					0, qfalse },
-	{ &cm_precoded_badwords,			"cm_precoded_badwords",			"0",		CVAR_ARCHIVE,					0, qfalse },
+	{ &cm_badwords,			"cm_badwords",			"",		CVAR_ARCHIVE,					0, qfalse },
 	//END
 	//RoAR mod END
 
@@ -952,7 +932,7 @@ static cvarTable_t		gameCvarTable[] = {
 
 	//============================grapplemod===================
 	{ &m_grapple_shoot_speed, "m_grapple_shootspeed", "800", CVAR_ARCHIVE, 0 , qtrue }, //// grapple speed 
-	{ &m_enable_grapple, "m_enable_grapple", "1", CVAR_ARCHIVE, 0, qtrue },
+	{ &m_enable_grapple, "m_grapple", "1", CVAR_ARCHIVE, 0, qtrue },
 	{ &saberChangeProtectTime, "cm_saberChangeProtectTime", "500", CVAR_ARCHIVE, 0 , qtrue },
 	{ &hookChangeProtectTime, "cm_hookFloodTime", "0", CVAR_ARCHIVE, 0 , qtrue },
 	//============================grapplemod===================

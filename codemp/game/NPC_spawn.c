@@ -868,7 +868,7 @@ void NPC_Begin (gentity_t *ent)
 		{
 			if ( ent->wait < 0 )
 			{//remove yourself
-				G_DebugPrint( WL_DEBUG, "%d %s could not spawn, firing target3 (%s) and removing self\n", ent - g_entities, ent->targetname, ent->target3 );
+				G_DebugPrint( WL_DEBUG, "%d %s could not spawn, firing target3 (%s) and removing self\n", ent-g_entities, ent->targetname, ent->target3 );
 				//Fire off our target3
 				G_UseTargets2( ent, ent, ent->target3 );
 

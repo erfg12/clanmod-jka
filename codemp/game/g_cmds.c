@@ -185,7 +185,7 @@ char *sqliteGetName(char *SQLStmnt, ...) {
 		return data;
 	}
 	else
-		return "";
+		return "ERROR CANT OPEN DB FILE";
 }
 
 char *replace_str(char *str, char *orig, char *rep)
@@ -202,6 +202,54 @@ char *replace_str(char *str, char *orig, char *rep)
 	sprintf(buffer + (p - str), "%s%s", rep, p + strlen(orig));
 
 	return buffer;
+}
+
+char** str_split(char* a_str, const char a_delim)
+{
+	char** result = 0;
+	size_t count = 0;
+	char* tmp = a_str;
+	char* last_comma = 0;
+	char delim[2];
+	delim[0] = a_delim;
+	delim[1] = 0;
+
+	/* Count how many elements will be extracted. */
+	while (*tmp)
+	{
+		if (a_delim == *tmp)
+		{
+			count++;
+			last_comma = tmp;
+		}
+		tmp++;
+	}
+
+	/* Add space for trailing token. */
+	count += last_comma < (a_str + strlen(a_str) - 1);
+
+	/* Add space for terminating null string so caller
+	knows where the list of returned strings ends. */
+	count++;
+
+	result = malloc(sizeof(char*) * count);
+
+	if (result)
+	{
+		size_t idx = 0;
+		char* token = strtok(a_str, delim);
+
+		while (token)
+		{
+			assert(idx < count);
+			*(result + idx++) = strdup(token);
+			token = strtok(0, delim);
+		}
+		assert(idx == count - 1);
+		*(result + idx) = 0;
+	}
+
+	return result;
 }
 
 char *cleanName(char *name) {
@@ -272,6 +320,8 @@ char *sqliteGetStats(char *SQLStmnt, ...) {
 		//todo: add more later
 		return data;
 	}
+	else
+		return "ERROR CANT OPEN DB FILE";
 }
 
 char *sqliteGetLeaders(char *SQLStmnt, ...) {
@@ -300,6 +350,8 @@ char *sqliteGetLeaders(char *SQLStmnt, ...) {
 
 		return data;
 	}
+	else
+		return "ERROR CANT OPEN DB FILE";
 }
 
 /*
@@ -1361,7 +1413,7 @@ void StopFollowing( gentity_t *ent ) {
 	ent->client->sess.spectatorState = SPECTATOR_FREE;
 	ent->client->ps.pm_flags &= ~PMF_FOLLOW;
 	ent->r.svFlags &= ~SVF_BOT;
-	ent->client->ps.clientNum = ent - g_entities;
+	ent->client->ps.clientNum = ent-g_entities;
 	ent->client->ps.weapon = WP_NONE;
 	//[BugFix38]
 	G_LeaveVehicle( ent, qfalse ); // clears m_iVehicleNum as well
@@ -1990,6 +2042,17 @@ static void G_SayTo( gentity_t *ent, gentity_t *other, int mode, int color, cons
 }
 #define EC		"\x19"
 
+char *strsep(char **stringp, const char *delim) {
+	if (*stringp == NULL) { return NULL; }
+	char *token_start = *stringp;
+	*stringp = strpbrk(token_start, delim);
+	if (*stringp) {
+		**stringp = '\0';
+		(*stringp)++;
+	}
+	return token_start;
+}
+
 void G_Say( gentity_t *ent, gentity_t *target, int mode, const char *chatText ) {
 	int			j;
 	gentity_t	*other;
@@ -2146,57 +2209,18 @@ void G_Say( gentity_t *ent, gentity_t *target, int mode, const char *chatText ) 
 	}
 
 	//RoAR mod: BADWORD FILTER
-	//pre-coded words
-	if (cm_precoded_badwords.integer >= 1) {
-	if (Q_stristr(text, "nigger")){
-			trap_SendServerCommand( ent-g_entities, va("print \"Nigger is a badword.\n\"" ) );
-			return;
-	} if (Q_stristr(text, "bitch")){
-			trap_SendServerCommand( ent-g_entities, va("print \"Bitch is a badword.\n\"" ) );
-			return;
-	} if (Q_stristr(text, "asshole")){
-			trap_SendServerCommand( ent-g_entities, va("print \"Asshole is a badword.\n\"" ) );
-			return;
-	} if (Q_stristr(text, "vagina")){
-			trap_SendServerCommand( ent-g_entities, va("print \"Vagina is a badword.\n\"" ) );
-			return;
-	} if (Q_stristr(text, "pussy")){
-			trap_SendServerCommand( ent-g_entities, va("print \"Pussy is a badword.\n\"" ) );
-			return;
-	} if (Q_stristr(text, "penis")){
-			trap_SendServerCommand( ent-g_entities, va("print \"Penis is a badword.\n\"" ) );
-			return;
-	} if (Q_stristr(text, "fuck")){
-			trap_SendServerCommand( ent-g_entities, va("print \"Fuck is a badword.\n\"" ) );
-			return;
-	} }
-
-	//custom make ur own!
-	if (*cm_badword1.string && cm_badword1.string[0]){
-		if (Q_stristr(text, cm_badword1.string)){
-			trap_SendServerCommand( ent-g_entities, va("print \"%s is a bad word.\n\"", cm_badword1.string ) );
-			return;
+	// this whole thing needs testing
+	if (*cm_badwords.string && cm_badwords.string[0]) {
+		const char *my_str_literal = cm_badwords.string;
+		char *str = strdup(my_str_literal);  // We own str's memory now.
+		char *token;
+		while ((token = strsep(&str, ";"))) {
+			if (strstr(text, token) != NULL) {
+				trap_SendServerCommand(ent-g_entities, va("print \"You said bad word: %s\n\"", token));
+				return;
+			}
 		}
-	} if (*cm_badword2.string && cm_badword2.string[0]){
-		if (Q_stristr(text, cm_badword2.string)){
-			trap_SendServerCommand( ent-g_entities, va("print \"%s is a bad word.\n\"", cm_badword2.string ) );
-			return;
-		}
-	} if (*cm_badword3.string && cm_badword3.string[0]){
-		if (Q_stristr(text, cm_badword3.string)){
-			trap_SendServerCommand( ent-g_entities, va("print \"%s is a bad word.\n\"", cm_badword3.string ) );
-			return;
-		}
-	} if (*cm_badword4.string && cm_badword4.string[0]){
-		if (Q_stristr(text, cm_badword4.string)){
-			trap_SendServerCommand( ent-g_entities, va("print \"%s is a bad word.\n\"", cm_badword4.string ) );
-			return;
-		}
-	} if (*cm_badword5.string && cm_badword5.string[0]){
-		if (Q_stristr(text, cm_badword5.string)){
-			trap_SendServerCommand( ent-g_entities, va("print \"%s is a bad word.\n\"", cm_badword5.string ) );
-			return;
-		}
+		free(str);
 	}
 	//END
 
@@ -4419,6 +4443,40 @@ qboolean TryGrapple(gentity_t *ent)
 qboolean saberKnockOutOfHand(gentity_t *saberent, gentity_t *saberOwner, vec3_t velocity);
 //#endif
 
+void sayInsult(gentity_t *ent) {
+	char** tokens;
+
+	int totalTokens = 0;
+	const char *my_str_literal = cm_insults.string;
+	char *str = strdup(my_str_literal);  // We own str's memory now.
+
+	tokens = str_split(&str, ';');
+
+	if (tokens)
+	{
+		int i;
+		for (i = 0; *(tokens + i); i++)
+		{
+			totalTokens++;
+			free(*(tokens + i));
+		}
+		free(tokens);
+	}
+
+	int RandIndex = rand() % totalTokens;
+	G_Say(ent, NULL, SAY_ALL, tokens[RandIndex]);
+
+	/*int r = rand() % 100;
+	if (r <= 25)
+		G_Say(ent, NULL, SAY_ALL, roar_silence_insult_1.string);
+	else if (r <= 50)
+		G_Say(ent, NULL, SAY_ALL, roar_silence_insult_2.string);
+	else if (r <= 75)
+		G_Say(ent, NULL, SAY_ALL, roar_silence_insult_3.string);
+	else if (r <= 100)
+		G_Say(ent, NULL, SAY_ALL, roar_silence_insult_4.string);*/
+}
+
 /*
 =================
 ClientCommand
@@ -4460,24 +4518,7 @@ void ClientCommand( int clientNum ) {
 		}
 		if ( ent->client->pers.silent2 )
 		{
-			int r = rand()%100;
-
-			if (r <= 25)
-			{
-				G_Say( ent, NULL, SAY_ALL, roar_silence_insult_1.string );
-			}
-			else if (r <= 50)
-			{
-				G_Say( ent, NULL, SAY_ALL, roar_silence_insult_2.string );
-			}
-			else if (r <= 75)
-			{
-				G_Say( ent, NULL, SAY_ALL, roar_silence_insult_3.string );
-			}
-			else if (r <= 100)
-			{
-				G_Say( ent, NULL, SAY_ALL, roar_silence_insult_4.string );
-			}
+			sayInsult(ent);
 			return;
 		}
 		Cmd_Say_f (ent, SAY_ALL, qfalse);
@@ -4496,26 +4537,9 @@ void ClientCommand( int clientNum ) {
 			trap_SendServerCommand(ent-g_entities,"cp \"You are being punished!\n\"");
 			return;
 		}
-				if ( ent->client->pers.silent2 )
+		if ( ent->client->pers.silent2 )
 		{
-			int r = rand()%100;
-
-			if (r <= 25)
-			{
-				G_Say( ent, NULL, SAY_ALL, roar_silence_insult_1.string );
-			}
-			else if (r <= 50)
-			{
-				G_Say( ent, NULL, SAY_ALL, roar_silence_insult_2.string );
-			}
-			else if (r <= 75)
-			{
-				G_Say( ent, NULL, SAY_ALL, roar_silence_insult_3.string );
-			}
-			else if (r <= 100)
-			{
-				G_Say( ent, NULL, SAY_ALL, roar_silence_insult_4.string );
-			}
+			sayInsult(ent);
 			return;
 		}
 		if (g_gametype.integer < GT_TEAM)
@@ -4560,24 +4584,7 @@ void ClientCommand( int clientNum ) {
 		}
 		if ( ent->client->pers.silent2 )
 		{
-			int r = rand()%100;
-
-			if (r <= 25)
-			{
-				G_Say( ent, NULL, SAY_ALL, roar_silence_insult_1.string );
-			}
-			else if (r <= 50)
-			{
-				G_Say( ent, NULL, SAY_ALL, roar_silence_insult_2.string );
-			}
-			else if (r <= 75)
-			{
-				G_Say( ent, NULL, SAY_ALL, roar_silence_insult_3.string );
-			}
-			else if (r <= 100)
-			{
-				G_Say( ent, NULL, SAY_ALL, roar_silence_insult_4.string );
-			}
+			sayInsult(ent);
 			return;
 		}
 		Cmd_Tell_f ( ent );
@@ -4824,7 +4831,7 @@ void ClientCommand( int clientNum ) {
 			trap_SendServerCommand( ent-g_entities, "print \"^3===^1SLEEP ADMIN COMMAND^3===\n\n^1DESCRIPTION: ^3Make a character fall on the ground, and unable to get up.\n\n^5/Sleep (client ID)  <--- Sleep a single person by their ID (type in /WHO to see everyones ID)\n/Sleep (client name)  <--- Sleep a single person by their name\nYou can also use... /amsleep\n\n\"" );
 		}
 		else if ((Q_stricmp(arg1, "slap") == 0) || (Q_stricmp(arg1, "amslap") == 0)){
-			trap_SendServerCommand(ent - g_entities, "print \"^3===^1SLAP ADMIN COMMAND^3===\n\n^1DESCRIPTION: ^3Slap a player in to the air.\n\n^5/Slap (client ID)  <--- Slap a single person by their ID (type in /WHO to see everyones ID)\n/Slap (client name)  <--- Slap a single person by their name\nYou can also use... /amslap\n\n\"");
+			trap_SendServerCommand(ent-g_entities, "print \"^3===^1SLAP ADMIN COMMAND^3===\n\n^1DESCRIPTION: ^3Slap a player in to the air.\n\n^5/Slap (client ID)  <--- Slap a single person by their ID (type in /WHO to see everyones ID)\n/Slap (client name)  <--- Slap a single person by their name\nYou can also use... /amslap\n\n\"");
 		}
 		else if(( Q_stricmp( arg1, "changemode" ) == 0 ) || (Q_stricmp(arg1, "amchangemode") == 0)){
 			trap_SendServerCommand( ent-g_entities, "print \"^3===^1CHANGEMODE ADMIN COMMAND^3===\n\n^1DESCRIPTION: ^3Change the mode in FFA gametypes.\n\n^2Usage: /ChangeMode (mode)\n^5MODES = ClanMatch, ClanMeeting, and Clear\nYou can also use... /amChangeMode\n\n\"" );
@@ -4934,7 +4941,7 @@ void ClientCommand( int clientNum ) {
 
 		if ((trap_Argc() < 1) || (trap_Argc() > 2))
 		{
-			trap_SendServerCommand(client_id, va("print \"Usage: /register <password>\n\""));
+			trap_SendServerCommand(client_id, va("print \"Usage: /cmregister <password>\n\""));
 			return;
 		}
 
@@ -4962,7 +4969,7 @@ void ClientCommand( int clientNum ) {
 
 		if ((trap_Argc() < 1) || (trap_Argc() > 2))
 		{
-			trap_SendServerCommand(client_id, va("print \"Usage: /login <password>\n\""));
+			trap_SendServerCommand(client_id, va("print \"Usage: /cmlogin <password>\n\""));
 			return;
 		}
 
@@ -5004,7 +5011,7 @@ void ClientCommand( int clientNum ) {
 	}
 	else if (Q_stricmp (cmd, "commands") == 0)
 	{
-	trap_SendServerCommand( ent-g_entities, "print \"^3===^1COMMANDS^3===\n\n/jetpack <--- put on a jetpack\n/knockmedown <--- knock yourself down\n/drop <--- drop your saber or current weapon\n/showmotd <--- see the MOTD\n/freezemotd <--- show MOTD for infinite time\n/HideMOTD <--- hide the MOTD\n/engage_forceduel <--- duel with force powers\n/engage_meleeduel <--- duel with only melee moves (requires plugin)\n/engage_trainingduel <--- engage in a private training session\n/endduel <--- end training duel session\n/who <--- show all clients + their status\n/chatcolor <--- SAY_ALL in a different color\n/togglechat <--- toggle teamchat mode\n+button12 <--- grappling hook\n/ignore (client) <--- ignore a clients chat text\n/clansay <--- speak to clan members\n/adminsay <--- speak to admins\n/report <--- report something to an admin\n/refuseduels <--- toggle refusing duels on/off\n/telemark <--- mark your origin and yaw for /teleport\n/servertime <--- view the server's time\n/saber <--- change your saber(s)\n/cmlogin <--- login to the local DB\n/cmregister <--- register your player name\n/cmstats <--- check your DB stats\n\n\"" );
+		trap_SendServerCommand( ent-g_entities, "print \"^3===^1COMMANDS^3===\n\n/jetpack <--- put on a jetpack\n/knockmedown <--- knock yourself down\n/drop <--- drop your saber or current weapon\n/showmotd <--- see the MOTD\n/freezemotd <--- show MOTD for infinite time\n/HideMOTD <--- hide the MOTD\n/engage_forceduel <--- duel with force powers\n/engage_meleeduel <--- duel with only melee moves (requires plugin)\n/engage_trainingduel <--- engage in a private training session\n/endduel <--- end training duel session\n/who <--- show all clients + their status\n/chatcolor <--- SAY_ALL in a different color\n/togglechat <--- toggle teamchat mode\n+button12 <--- grappling hook\n/ignore (client) <--- ignore a clients chat text\n/clansay <--- speak to clan members\n/adminsay <--- speak to admins\n/report <--- report something to an admin\n/refuseduels <--- toggle refusing duels on/off\n/telemark <--- mark your origin and yaw for /teleport\n/servertime <--- view the server's time\n/saber <--- change your saber(s)\n/cmlogin <--- login to the local DB\n/cmregister <--- register your player name\n/cmstats <--- check your DB stats\n\n\"" );
 	}
 	//RoAR mod NOTE: Sorry RPG mode. You stunk.
 		/*else if (Q_stricmp (cmd, "RPGcommands") == 0)
@@ -5040,62 +5047,61 @@ void ClientCommand( int clientNum ) {
 			trap_SendServerCommand( ent-g_entities, va("print \"^7TEAM CHAT MODE: ^5TEAM\n\"" ) );
 		}
 	}
-		
-		else if ((Q_stricmp(cmd, "chatcolor") == 0) || (Q_stricmp(cmd, "amchatcolor") == 0)){
+	else if ((Q_stricmp(cmd, "chatcolor") == 0) || (Q_stricmp(cmd, "amchatcolor") == 0)) {
 		char	cmd[1024];
-		trap_Argv( 1, cmd, 1024 );
-		if (roar_allow_chatColors.integer == 0){
-		trap_SendServerCommand( ent-g_entities, va("print \"^3Chat colors are disabled.\n\"") );
-		return;
+		trap_Argv(1, cmd, 1024);
+		if (roar_allow_chatColors.integer == 0) {
+			trap_SendServerCommand(ent - g_entities, va("print \"^3Chat colors are disabled.\n\""));
+			return;
 		}
-	else if ( !cmd[0] )
-	{
-		trap_SendServerCommand( ent-g_entities, va("print \"^3COLORS = RED, GREEN, YELLOW, BLUE, CYAN, PURPLE, WHITE, and BLACK\n\"") );
-	}
-	else if ( Q_stricmp( cmd, "red" ) == 0 )
-	{
-		trap_SendServerCommand( ent-g_entities, va("print \"^3CHAT COLOR CHANGED TO ^1RED\n\"") );
-		strcpy(ent->client->pers.chatcolor, "red");
-	}
-	else if ( Q_stricmp( cmd, "green" ) == 0 )
-	{
-		trap_SendServerCommand( ent-g_entities, va("print \"^3CHAT COLOR CHANGED TO ^2GREEN\n\"") );
-		strcpy(ent->client->pers.chatcolor, "green");
-	}
-	else if ( Q_stricmp( cmd, "yellow" ) == 0 )
-	{
-		trap_SendServerCommand( ent-g_entities, va("print \"^3CHAT COLOR CHANGED TO ^3YELLOW\n\"") );
-		strcpy(ent->client->pers.chatcolor, "yellow");
-	}
-	else if ( Q_stricmp( cmd, "blue" ) == 0 )
-	{
-		trap_SendServerCommand( ent-g_entities, va("print \"^3CHAT COLOR CHANGED TO ^4BLUE\n\"") );
-		strcpy(ent->client->pers.chatcolor, "blue");
-	}
-	else if ( Q_stricmp( cmd, "cyan" ) == 0 )
-	{
-		trap_SendServerCommand( ent-g_entities, va("print \"^3CHAT COLOR CHANGED TO ^5CYAN\n\"") );
-		strcpy(ent->client->pers.chatcolor, "cyan");
-	}
-	else if ( Q_stricmp( cmd, "purple" ) == 0 )
-	{
-		trap_SendServerCommand( ent-g_entities, va("print \"^3CHAT COLOR CHANGED TO ^6PURPLE\n\"") );
-		strcpy(ent->client->pers.chatcolor, "purple");
-	}
-	else if ( Q_stricmp( cmd, "white" ) == 0 )
-	{
-		trap_SendServerCommand( ent-g_entities, va("print \"^3CHAT COLOR CHANGED TO ^7WHITE\n\"") );
-		strcpy(ent->client->pers.chatcolor, "white");
-	}
-	else if ( Q_stricmp( cmd, "black" ) == 0 )
-	{
-		trap_SendServerCommand( ent-g_entities, va("print \"^3CHAT COLOR CHANGED TO ^0BLACK\n\"") );
-		strcpy(ent->client->pers.chatcolor, "black");
-	}
-	//if (ent->client->ojpClientPlugIn10 == qtrue){
-	trap_SendServerCommand(ent-g_entities, va("cvar c_chatcolor %s", cmd));
-	//}
+		else if (!cmd[0])
+		{
+			trap_SendServerCommand(ent - g_entities, va("print \"^3COLORS = RED, GREEN, YELLOW, BLUE, CYAN, PURPLE, WHITE, and BLACK\n\""));
 		}
+		else if (Q_stricmp(cmd, "red") == 0)
+		{
+			trap_SendServerCommand(ent - g_entities, va("print \"^3CHAT COLOR CHANGED TO ^1RED\n\""));
+			strcpy(ent->client->pers.chatcolor, "red");
+		}
+		else if (Q_stricmp(cmd, "green") == 0)
+		{
+			trap_SendServerCommand(ent - g_entities, va("print \"^3CHAT COLOR CHANGED TO ^2GREEN\n\""));
+			strcpy(ent->client->pers.chatcolor, "green");
+		}
+		else if (Q_stricmp(cmd, "yellow") == 0)
+		{
+			trap_SendServerCommand(ent - g_entities, va("print \"^3CHAT COLOR CHANGED TO ^3YELLOW\n\""));
+			strcpy(ent->client->pers.chatcolor, "yellow");
+		}
+		else if (Q_stricmp(cmd, "blue") == 0)
+		{
+			trap_SendServerCommand(ent - g_entities, va("print \"^3CHAT COLOR CHANGED TO ^4BLUE\n\""));
+			strcpy(ent->client->pers.chatcolor, "blue");
+		}
+		else if (Q_stricmp(cmd, "cyan") == 0)
+		{
+			trap_SendServerCommand(ent - g_entities, va("print \"^3CHAT COLOR CHANGED TO ^5CYAN\n\""));
+			strcpy(ent->client->pers.chatcolor, "cyan");
+		}
+		else if (Q_stricmp(cmd, "purple") == 0)
+		{
+			trap_SendServerCommand(ent - g_entities, va("print \"^3CHAT COLOR CHANGED TO ^6PURPLE\n\""));
+			strcpy(ent->client->pers.chatcolor, "purple");
+		}
+		else if (Q_stricmp(cmd, "white") == 0)
+		{
+			trap_SendServerCommand(ent - g_entities, va("print \"^3CHAT COLOR CHANGED TO ^7WHITE\n\""));
+			strcpy(ent->client->pers.chatcolor, "white");
+		}
+		else if (Q_stricmp(cmd, "black") == 0)
+		{
+			trap_SendServerCommand(ent - g_entities, va("print \"^3CHAT COLOR CHANGED TO ^0BLACK\n\""));
+			strcpy(ent->client->pers.chatcolor, "black");
+		}
+		//if (ent->client->ojpClientPlugIn10 == qtrue){
+		trap_SendServerCommand(ent - g_entities, va("cvar c_chatcolor %s", cmd));
+		//}
+	}
 	else if ((Q_stricmp (cmd, "engage_forceduel") == 0) || (Q_stricmp(cmd, "engage_fullforceduel") == 0))
 		{
 			if (g_forcePowerDisable.integer == 262143){
@@ -5103,9 +5109,8 @@ void ClientCommand( int clientNum ) {
 				return;
 			}
 
-			if (roar_enable_ForceDuel.integer == 1){
+			if (roar_enable_ForceDuel.integer == 1)
 				Cmd_EngageDuel_f( ent, 1 );
-			}
 			else {
 				trap_SendServerCommand( ent-g_entities, va("print \"^7Force duels disabled on this server!\n\"" ) );
 				return;
@@ -5124,9 +5129,7 @@ void ClientCommand( int clientNum ) {
 	else if (Q_stricmp (cmd, "engage_trainingduel") == 0 )
 		{
 			if (roar_enable_TrainingDuel.integer == 1)
-			{
 				Cmd_EngageDuel_f( ent, 2 );
-			}
 			else {
 				trap_SendServerCommand( ent-g_entities, va("print \"^7Training duels disabled on this server!\n\"" ) );
 				return;
@@ -5135,9 +5138,7 @@ void ClientCommand( int clientNum ) {
 	else if (Q_stricmp (cmd, "engage_meleeduel") == 0 )
 		{
 			if (roar_enable_MeleeDuel.integer == 1)
-			{
-			Cmd_EngageDuel_f( ent, 3 );
-			}
+				Cmd_EngageDuel_f( ent, 3 );
 			else {
 				trap_SendServerCommand( ent-g_entities, va("print \"^7Melee duels disabled on this server!\n\"" ) );
 				return;
@@ -5145,8 +5146,7 @@ void ClientCommand( int clientNum ) {
 		}
 	else if (Q_stricmp(cmd, "servertime") == 0) {
 		char *time;
-
-		//time = timestring ( );
+		time = timestring ( );
 		trap_SendServerCommand( ent-g_entities, va("print \"%s\n\"", time ) );
 		trap_SendServerCommand( ent-g_entities, va("cp \"%s\n\"", time ) );
 	}
@@ -5174,21 +5174,18 @@ void ClientCommand( int clientNum ) {
 		if (trap_Argc() == 2) {
 			Info_SetValueForKey( userinfo, "saber1", saber1 );
 			Info_SetValueForKey( userinfo, "saber2", "none" );
-			if (ent->client->pers.plugindetect == qtrue) {
+			if (ent->client->pers.plugindetect == qtrue)
 				trap_SendServerCommand(clientNum, va("cvar saber2 none"));
-			}
 		}
 
 		if (trap_Argc() == 3) {
 			Info_SetValueForKey( userinfo, "saber1", saber1 );
 			Info_SetValueForKey( userinfo, "saber2", saber2 );
-			if (ent->client->pers.plugindetect == qtrue) {
+			if (ent->client->pers.plugindetect == qtrue)
 				trap_SendServerCommand(clientNum, va("cvar saber2 %s", saber2));
-			}
 		}
-		if (ent->client->pers.plugindetect == qtrue) {
+		if (ent->client->pers.plugindetect == qtrue)
 			trap_SendServerCommand(clientNum, va("cvar saber1 %s", saber1));
-		}
 		trap_SetUserinfo(clientNum, userinfo); 
 		ClientUserinfoChanged(clientNum); 
 	}
@@ -5209,16 +5206,15 @@ void ClientCommand( int clientNum ) {
 
 		trap_Argv( 1, password, sizeof( password ) ); // password
 		
-		if (strcmp(password, cm_clanPassword.string) == 0){
-		ent->client->pers.iamclan = qtrue;
-		ent->r.svFlags |= SVF_CLANSAY;
-		G_LogPrintf("%s %s\n", ent->client->pers.netname, roar_ClanLogin_saying.string);
-		trap_SendServerCommand( -1, va("print \"%s ^7%s\n\"", ent->client->pers.netname, roar_ClanLogin_saying.string ));
-		trap_SendServerCommand(ent-g_entities, va("cvar c_Clanpassword %s", password));
+		if (strcmp(password, cm_clanPassword.string) == 0) {
+			ent->client->pers.iamclan = qtrue;
+			ent->r.svFlags |= SVF_CLANSAY;
+			G_LogPrintf("%s %s\n", ent->client->pers.netname, roar_ClanLogin_saying.string);
+			trap_SendServerCommand(-1, va("print \"%s ^7%s\n\"", ent->client->pers.netname, roar_ClanLogin_saying.string));
+			trap_SendServerCommand(ent - g_entities, va("cvar c_Clanpassword %s", password));
 		}
-		else {
+		else
 			trap_SendServerCommand( clientNum, "print \"Incorrect password.\n\"" ); 
-		}
 	}
 	else if ((Q_stricmp(cmd, "adminlogin") == 0 ) || (Q_stricmp(cmd, "amlogin") == 0 ))
 	{
@@ -5281,13 +5277,11 @@ void ClientCommand( int clientNum ) {
 			ent->client->pers.iamanadmin = 5;
 			ent->r.svFlags |= SVF_ADMIN;
 			G_LogPrintf("%s %s\n", ent->client->pers.netname, ent->client->pers.login);
-		trap_SendServerCommand( -1, va("print \"%s ^7%s\n\"", ent->client->pers.netname, ent->client->pers.login ));
-		} else {
+			trap_SendServerCommand( -1, va("print \"%s ^7%s\n\"", ent->client->pers.netname, ent->client->pers.login ));
+		} else
 			trap_SendServerCommand( ent-g_entities, va("print \"Incorrect password.\n\"" ));
-		}
-		if (ent->client->pers.plugindetect == qtrue) {
+		if (ent->client->pers.plugindetect == qtrue)
 			trap_SendServerCommand(ent-g_entities, va("cvar c_Adminpassword %s", password));
-		}
 	}
 
 		else if ((Q_stricmp(cmd, "telemark") == 0) || (Q_stricmp(cmd, "amtelemark") == 0))
@@ -5335,7 +5329,7 @@ void ClientCommand( int clientNum ) {
 			}
 		}
 		else if ((Q_stricmp(cmd, "KnockMeDown") == 0) || (Q_stricmp(cmd, "amKnockMeDown") == 0))
-	{
+		{
 		if (ent->client->ps.weaponTime > 0)
 		{ //weapon busy
 			return;
@@ -5411,67 +5405,67 @@ void ClientCommand( int clientNum ) {
 			ent->client->csTimeLeft = 0;
 			strcpy(ent->client->csMessage, G_NewString(va(" \n" )));
 		}
-			else if (Q_stricmp(cmd, "showmotd") == 0 )
+			else if (Q_stricmp(cmd, "showmotd") == 0)
 			{
-				trap_SendServerCommand( ent-g_entities, va("print \"^7Showing MOTD...\n\"" ) );
-		strcpy(ent->client->csMessage, G_NewString(va("^0*^1%s^0*\n^7%s", GAMEVERSION, roar_motd_line.string )));
-		ent->client->csTimeLeft = x_cstime.integer;
+				trap_SendServerCommand(ent - g_entities, va("print \"^7Showing MOTD...\n\""));
+				strcpy(ent->client->csMessage, G_NewString(va("^0*^1%s^0*\n^7%s", GAMEVERSION, roar_motd_line.string)));
+				ent->client->csTimeLeft = x_cstime.integer;
 			}
-			else if (Q_stricmp(cmd, "freezemotd") == 0 )
+			else if (Q_stricmp(cmd, "freezemotd") == 0)
 			{
-			trap_SendServerCommand( ent-g_entities, va("print \"^7Freezing MOTD... ^3(TYPE IN !hidemotd OR /hidemotd TO HIDE IT!)\n\"" ) );
-		strcpy(ent->client->csMessage, G_NewString(va("^0*^1%s^0*\n^7%s", GAMEVERSION, roar_motd_line.string )));
-		ent->client->csTimeLeft = Q3_INFINITE;
+				trap_SendServerCommand(ent - g_entities, va("print \"^7Freezing MOTD... ^3(TYPE IN !hidemotd OR /hidemotd TO HIDE IT!)\n\""));
+				strcpy(ent->client->csMessage, G_NewString(va("^0*^1%s^0*\n^7%s", GAMEVERSION, roar_motd_line.string)));
+				ent->client->csTimeLeft = Q3_INFINITE;
 			}
-		// MJN - Ignore // FULL CREDIT TO MJN!
-	else if (Q_stricmp ( cmd, "ignore" ) == 0 ){
-	int ignoree = -1;
-	qboolean ignore;
-	char   name[MAX_STRING_CHARS];
-	if( trap_Argc() != 2 ){
-		trap_SendServerCommand( ent-g_entities, "print \"Usage: ignore <client>\n\"");
-		return;
-	}
-	trap_Argv( 1, name, sizeof( name ) );
-	ignoree = G_ClientNumberFromArg( name );
-         if (ignoree == -1) 
-         {
-            trap_SendServerCommand( ent-g_entities, va("print \"Can't find client ID for %s\n\"", name ) ); 
-            return; 
-         }
-         if (ignoree == -2) 
-         {
-            trap_SendServerCommand( ent-g_entities, va("print \"Ambiguous client ID for %s\n\"", name ) ); 
-            return;
-         }
-		 if (ignoree >= MAX_CLIENTS || ignoree < 0)
-         { 
-            trap_SendServerCommand( ent-g_entities, va("print \"Bad client ID for %s\n\"", name ) ); 
-            return; 
-         }
-         if (!g_entities[ignoree].inuse) 
-         {
-            trap_SendServerCommand( ent-g_entities, va("print \"Client %s is not active\n\"", name ) ); 
-            return; 
-         }
-	ignore = G_IsClientChatIgnored ( ent->client->ps.clientNum, ignoree ) ? qfalse : qtrue;
-	if ( ignoree == ent->client->ps.clientNum )
-		{
-			trap_SendServerCommand( ent-g_entities, va("print \"You cant ignore yourself.\n\""));
-			return;
-		}
-	G_IgnoreClientChat ( ent->client->ps.clientNum, ignoree, ignore);
-	if ( ignore )
-		{
-			trap_SendServerCommand( ent-g_entities, va("print \"%s ^7is now being ignored.\n\"", g_entities[ignoree].client->pers.netname));
-			trap_SendServerCommand( ignoree, va("print \"%s ^7is now ignoring you.\n\"", ent->client->pers.netname));
-		}
-		else
-		{
-			trap_SendServerCommand( ent-g_entities, va("print \"%s ^7is now unignored.\n\"", g_entities[ignoree].client->pers.netname));
-			trap_SendServerCommand( ignoree, va("print \"%s ^7has unignored you.\n\"", ent->client->pers.netname));
-		}
-	}
+			// MJN - Ignore // FULL CREDIT TO MJN!
+			else if (Q_stricmp(cmd, "ignore") == 0) {
+				int ignoree = -1;
+				qboolean ignore;
+				char   name[MAX_STRING_CHARS];
+				if (trap_Argc() != 2) {
+					trap_SendServerCommand(ent - g_entities, "print \"Usage: ignore <client>\n\"");
+					return;
+				}
+				trap_Argv(1, name, sizeof(name));
+				ignoree = G_ClientNumberFromArg(name);
+				if (ignoree == -1)
+				{
+					trap_SendServerCommand(ent - g_entities, va("print \"Can't find client ID for %s\n\"", name));
+					return;
+				}
+				if (ignoree == -2)
+				{
+					trap_SendServerCommand(ent - g_entities, va("print \"Ambiguous client ID for %s\n\"", name));
+					return;
+				}
+				if (ignoree >= MAX_CLIENTS || ignoree < 0)
+				{
+					trap_SendServerCommand(ent - g_entities, va("print \"Bad client ID for %s\n\"", name));
+					return;
+				}
+				if (!g_entities[ignoree].inuse)
+				{
+					trap_SendServerCommand(ent - g_entities, va("print \"Client %s is not active\n\"", name));
+					return;
+				}
+				ignore = G_IsClientChatIgnored(ent->client->ps.clientNum, ignoree) ? qfalse : qtrue;
+				if (ignoree == ent->client->ps.clientNum)
+				{
+					trap_SendServerCommand(ent - g_entities, va("print \"You cant ignore yourself.\n\""));
+					return;
+				}
+				G_IgnoreClientChat(ent->client->ps.clientNum, ignoree, ignore);
+				if (ignore)
+				{
+					trap_SendServerCommand(ent - g_entities, va("print \"%s ^7is now being ignored.\n\"", g_entities[ignoree].client->pers.netname));
+					trap_SendServerCommand(ignoree, va("print \"%s ^7is now ignoring you.\n\"", ent->client->pers.netname));
+				}
+				else
+				{
+					trap_SendServerCommand(ent - g_entities, va("print \"%s ^7is now unignored.\n\"", g_entities[ignoree].client->pers.netname));
+					trap_SendServerCommand(ignoree, va("print \"%s ^7has unignored you.\n\"", ent->client->pers.netname));
+				}
+			}
 
 	else if (Q_stricmp(cmd, "ordernpc") == 0)
 	{
@@ -5540,46 +5534,42 @@ void ClientCommand( int clientNum ) {
 	}*/
 
 	else if ((Q_stricmp(cmd, "jetpack") == 0) || (Q_stricmp(cmd, "amjetpack") == 0))
-   {
-	if (g_gametype.integer == GT_CTY || g_gametype.integer == GT_SIEGE
-		 || g_gametype.integer == GT_DUEL || g_gametype.integer == GT_POWERDUEL){
-				 trap_SendServerCommand( ent-g_entities, va("print \"Cannot use this command in this gametype.\n\"" ) );
-				 return;
-			 }
-	if (ent->client->pers.amdemigod == 1 || ent->client->pers.amhuman == 1
-			|| ent->client->pers.ampunish == 1 || ent->client->pers.amsleep == 1 || ent->client->pers.amfreeze == 1){
-			trap_SendServerCommand( ent-g_entities, va("print \"Cannot put on jetpack in your current state.\n\"" ) );
+	{
+		if (g_gametype.integer == GT_CTY || g_gametype.integer == GT_SIEGE
+			|| g_gametype.integer == GT_DUEL || g_gametype.integer == GT_POWERDUEL) {
+			trap_SendServerCommand(ent - g_entities, va("print \"Cannot use this command in this gametype.\n\""));
 			return;
 		}
-	if (level.modeMeeting == qtrue){
-		return;
-	}
-	if (ent->client->pers.amhuman == 1){
-		trap_SendServerCommand( ent-g_entities, va("print \"Monk's can't have jetpacks!\n\"" ) );
-		return;
-	}
-	if (roar_allow_jetpack_command.integer == 0){
-		trap_SendServerCommand( ent-g_entities, va("print \"Jetpack is disabled on this server!\n\"" ) );
-		return;
-	}
-	if (ent->client->ps.duelInProgress){
-		trap_SendServerCommand( ent-g_entities, va("print \"Jetpack is not allowed in duels!\n\"" ) );
-		return;
-	}
-	if (ent->client->ps.stats[STAT_HOLDABLE_ITEMS] & (1 << HI_JETPACK)) 
-    { 
-		ent->client->ps.stats[STAT_HOLDABLE_ITEMS] &= ~(1 << HI_JETPACK);
-		if (ent->client->jetPackOn)
-		{
-			Jetpack_Off(ent);
+		if (ent->client->pers.amdemigod == 1 || ent->client->pers.amhuman == 1
+			|| ent->client->pers.ampunish == 1 || ent->client->pers.amsleep == 1 || ent->client->pers.amfreeze == 1) {
+			trap_SendServerCommand(ent - g_entities, va("print \"Cannot put on jetpack in your current state.\n\""));
+			return;
 		}
-    } 
-    else 
-    { 
-		ent->client->ps.stats[STAT_HOLDABLE_ITEMS] |= (1 << HI_JETPACK);
-    }
-   }
-   //[HolocronFiles]
+		if (level.modeMeeting == qtrue) {
+			return;
+		}
+		if (ent->client->pers.amhuman == 1) {
+			trap_SendServerCommand(ent - g_entities, va("print \"Monk's can't have jetpacks!\n\""));
+			return;
+		}
+		if (roar_allow_jetpack_command.integer == 0) {
+			trap_SendServerCommand(ent - g_entities, va("print \"Jetpack is disabled on this server!\n\""));
+			return;
+		}
+		if (ent->client->ps.duelInProgress) {
+			trap_SendServerCommand(ent - g_entities, va("print \"Jetpack is not allowed in duels!\n\""));
+			return;
+		}
+		if (ent->client->ps.stats[STAT_HOLDABLE_ITEMS] & (1 << HI_JETPACK))
+		{
+			ent->client->ps.stats[STAT_HOLDABLE_ITEMS] &= ~(1 << HI_JETPACK);
+			if (ent->client->jetPackOn)
+				Jetpack_Off(ent);
+		}
+		else
+			ent->client->ps.stats[STAT_HOLDABLE_ITEMS] |= (1 << HI_JETPACK);
+	}
+	//[HolocronFiles]
 	else if (Q_stricmp(cmd, "addholocron") == 0 && bot_wp_edit.integer >= 1)
 	{// Add a new holocron point. Unique1 added.
 		AOTCTC_Holocron_Add ( ent );
@@ -5772,16 +5762,16 @@ void ClientCommand( int clientNum ) {
 			}
 		}
 	}
-	else if (Q_stricmp(cmd, "loveandpeace") == 0 && CheatsOk( ent ))
+	else if (Q_stricmp(cmd, "loveandpeace") == 0 && CheatsOk(ent))
 	{
 		trace_t tr;
 		vec3_t fPos;
 
 		AngleVectors(ent->client->ps.viewangles, fPos, 0, 0);
 
-		fPos[0] = ent->client->ps.origin[0] + fPos[0]*40;
-		fPos[1] = ent->client->ps.origin[1] + fPos[1]*40;
-		fPos[2] = ent->client->ps.origin[2] + fPos[2]*40;
+		fPos[0] = ent->client->ps.origin[0] + fPos[0] * 40;
+		fPos[1] = ent->client->ps.origin[1] + fPos[1] * 40;
+		fPos[2] = ent->client->ps.origin[2] + fPos[2] * 40;
 
 		trap_Trace(&tr, ent->client->ps.origin, 0, 0, fPos, ent->s.number, ent->clipmask);
 
@@ -5809,22 +5799,22 @@ void ClientCommand( int clientNum ) {
 				if ((ent->client->ps.weapon != WP_SABER || ent->client->ps.saberHolstered) &&
 					(other->client->ps.weapon != WP_SABER || other->client->ps.saberHolstered))
 				{
-					VectorSubtract( other->client->ps.origin, ent->client->ps.origin, otherDir );
-					VectorCopy( ent->client->ps.viewangles, entAngles );
-					entAngles[YAW] = vectoyaw( otherDir );
-					SetClientViewAngle( ent, entAngles );
+					VectorSubtract(other->client->ps.origin, ent->client->ps.origin, otherDir);
+					VectorCopy(ent->client->ps.viewangles, entAngles);
+					entAngles[YAW] = vectoyaw(otherDir);
+					SetClientViewAngle(ent, entAngles);
 
-					StandardSetBodyAnim(ent, /*BOTH_KISSER1LOOP*/BOTH_STAND1, SETANIM_FLAG_OVERRIDE|SETANIM_FLAG_HOLD|SETANIM_FLAG_HOLDLESS);
+					StandardSetBodyAnim(ent, /*BOTH_KISSER1LOOP*/BOTH_STAND1, SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD | SETANIM_FLAG_HOLDLESS);
 					ent->client->ps.saberMove = LS_NONE;
 					ent->client->ps.saberBlocked = 0;
 					ent->client->ps.saberBlocking = 0;
 
-					VectorSubtract( ent->client->ps.origin, other->client->ps.origin, entDir );
-					VectorCopy( other->client->ps.viewangles, otherAngles );
-					otherAngles[YAW] = vectoyaw( entDir );
-					SetClientViewAngle( other, otherAngles );
+					VectorSubtract(ent->client->ps.origin, other->client->ps.origin, entDir);
+					VectorCopy(other->client->ps.viewangles, otherAngles);
+					otherAngles[YAW] = vectoyaw(entDir);
+					SetClientViewAngle(other, otherAngles);
 
-					StandardSetBodyAnim(other, /*BOTH_KISSEE1LOOP*/BOTH_STAND1, SETANIM_FLAG_OVERRIDE|SETANIM_FLAG_HOLD|SETANIM_FLAG_HOLDLESS);
+					StandardSetBodyAnim(other, /*BOTH_KISSEE1LOOP*/BOTH_STAND1, SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD | SETANIM_FLAG_HOLDLESS);
 					other->client->ps.saberMove = LS_NONE;
 					other->client->ps.saberBlocked = 0;
 					other->client->ps.saberBlocking = 0;
@@ -6204,12 +6194,12 @@ void ClientCommand( int clientNum ) {
 			trap_TrueMalloc((void **)&blah, i);
 			if (!blah)
 			{ //pointer is returned null if allocation failed
-				trap_SendServerCommand( -1, va("print \"Failed to alloc at %i!\n\"", i));
+				trap_SendServerCommand(-1, va("print \"Failed to alloc at %i!\n\"", i));
 				break;
 			}
 			while (x < i)
 			{ //fill the allocated memory up to the edge
-				if (x+1 == i)
+				if (x + 1 == i)
 				{
 					blah[x] = 0;
 				}
@@ -6222,67 +6212,67 @@ void ClientCommand( int clientNum ) {
 			trap_TrueFree((void **)&blah);
 			if (blah)
 			{ //should be nullified in the engine after being freed
-				trap_SendServerCommand( -1, va("print \"Failed to free at %i!\n\"", i));
+				trap_SendServerCommand(-1, va("print \"Failed to free at %i!\n\"", i));
 				break;
 			}
 
 			i++;
 		}
 
-		trap_SendServerCommand( -1, "print \"Finished allocation test\n\"");
+		trap_SendServerCommand(-1, "print \"Finished allocation test\n\"");
 	}
 #endif
 #ifndef FINAL_BUILD
-	else if (Q_stricmp(cmd, "debugShipDamage") == 0 && CheatsOk( ent ))
+	else if (Q_stricmp(cmd, "debugShipDamage") == 0 && CheatsOk(ent))
 	{
 		char	arg[MAX_STRING_CHARS];
 		char	arg2[MAX_STRING_CHARS];
 		int		shipSurf, damageLevel;
 
-		trap_Argv( 1, arg, sizeof( arg ) );
-		trap_Argv( 2, arg2, sizeof( arg2 ) );
-		shipSurf = SHIPSURF_FRONT+atoi(arg);
+		trap_Argv(1, arg, sizeof(arg));
+		trap_Argv(2, arg2, sizeof(arg2));
+		shipSurf = SHIPSURF_FRONT + atoi(arg);
 		damageLevel = atoi(arg2);
 
-		G_SetVehDamageFlags( &g_entities[ent->s.m_iVehicleNum], shipSurf, damageLevel );
+		G_SetVehDamageFlags(&g_entities[ent->s.m_iVehicleNum], shipSurf, damageLevel);
 	}
 #endif
-      else if (Q_stricmp(cmd, "adminlogout") == 0 )
-      { 
-         if ( ent->r.svFlags & SVF_ADMIN )
-         {
-			 if (ent->r.svFlags & SVF_ADMIN){
-			G_LogPrintf("%s %s\n", ent->client->pers.netname, ent->client->pers.logout);
-			trap_SendServerCommand( -1, va("print \"%s ^7%s\n\"", ent->client->pers.netname, ent->client->pers.logout ));   
-			ent->client->pers.iamanadmin = 0;
-            ent->r.svFlags &= ~SVF_ADMIN;
-			ent->client->pers.bitvalue = 0;
-			trap_SendServerCommand(ent-g_entities, va("cvar c_Adminpassword %s", " "));
-			 }
-		 }
-	  }
-	  else if (Q_stricmp(cmd, "clanlogout") == 0 )
-      { 
-         if ( ent->r.svFlags & SVF_CLANSAY )
-         {
-			 if (ent->r.svFlags & SVF_CLANSAY){
-			G_LogPrintf("%s %s\n", ent->client->pers.netname, roar_ClanLogout_saying.string);
-			trap_SendServerCommand( -1, va("print \"%s %s\n\"", ent->client->pers.netname, roar_ClanLogout_saying.string )); 
-			ent->client->pers.iamclan = qfalse;
-            ent->r.svFlags &= ~SVF_CLANSAY;
-			 }
-		 }
-	  }
+	else if (Q_stricmp(cmd, "adminlogout") == 0)
+	{
+		if (ent->r.svFlags & SVF_ADMIN)
+		{
+			if (ent->r.svFlags & SVF_ADMIN) {
+				G_LogPrintf("%s %s\n", ent->client->pers.netname, ent->client->pers.logout);
+				trap_SendServerCommand(-1, va("print \"%s ^7%s\n\"", ent->client->pers.netname, ent->client->pers.logout));
+				ent->client->pers.iamanadmin = 0;
+				ent->r.svFlags &= ~SVF_ADMIN;
+				ent->client->pers.bitvalue = 0;
+				trap_SendServerCommand(ent - g_entities, va("cvar c_Adminpassword %s", " "));
+			}
+		}
+	}
+	else if (Q_stricmp(cmd, "clanlogout") == 0)
+	{
+		if (ent->r.svFlags & SVF_CLANSAY)
+		{
+			if (ent->r.svFlags & SVF_CLANSAY) {
+				G_LogPrintf("%s %s\n", ent->client->pers.netname, roar_ClanLogout_saying.string);
+				trap_SendServerCommand(-1, va("print \"%s %s\n\"", ent->client->pers.netname, roar_ClanLogout_saying.string));
+				ent->client->pers.iamclan = qfalse;
+				ent->r.svFlags &= ~SVF_CLANSAY;
+			}
+		}
+	}
 	else
 	{
 		if (Q_stricmp(cmd, "addbot") == 0)
 		{ //because addbot isn't a recognized command unless you're the server, but it is in the menus regardless
 //			trap_SendServerCommand( clientNum, va("print \"You can only add bots as the server.\n\"" ) );
-			trap_SendServerCommand( clientNum, va("print \"%s.\n\"", G_GetStringEdString("MP_SVGAME", "ONLY_ADD_BOTS_AS_SERVER")));
+			trap_SendServerCommand(clientNum, va("print \"%s.\n\"", G_GetStringEdString("MP_SVGAME", "ONLY_ADD_BOTS_AS_SERVER")));
 		}
 		else
 		{
 			G_PerformEmote(cmd, ent);
 		}
 	}
-	}
+			}
