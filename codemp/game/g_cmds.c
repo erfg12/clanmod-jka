@@ -4,7 +4,6 @@
 #include "bg_saga.h"
 #include "g_adminshared.h"
 #include "timestamp.h"
-#include "../sqlite3/sqlite3.h"
 
 #include "../../ui/menudef.h"			// for the voice chats
 
@@ -25,282 +24,6 @@ void CG_CenterPrint( const char *str, int y, int charWidth );
 void SetTeamQuick(gentity_t *ent, int team, qboolean doBegin);
 extern int G_ClientNumberFromArg( char *str);
 void ChangeWeapon( gentity_t *ent, int newWeapon ) ;
-
-/*
-===================
-SQLite 3 database stuff
-
-===================
-*/
-static int callback(void *NotUsed, int argc, char **argv, char **azColName){
-	int i;
-	for (i = 0; i < argc; i++){
-		printf("%s = %s\n", azColName[i], argv[i] ? argv[i] : "NULL");
-	}
-	printf("\n");
-	return 0;
-}
-
-void sqliteRegisterUser(char *SQLStmnt, ...) {
-	va_list		argptr;
-	char		text[1024];
-
-	sqlite3 *db;
-	char *zErrMsg = 0;
-	int rc;
-	rc = sqlite3_open("clanmod.db", &db);
-	if (rc) //error connecting
-		sqlite3_close(db);
-
-	va_start(argptr, SQLStmnt);
-	vsprintf(text, SQLStmnt, argptr);
-	va_end(argptr);
-	rc = sqlite3_exec(db, text, callback, 0, &zErrMsg);
-	if (rc != SQLITE_OK){
-		fprintf(stderr, "SQL error: %s\n", zErrMsg);
-		sqlite3_free(zErrMsg);
-		sqlite3_close(db);
-		G_Printf( "Database error" );
-	}
-	else {
-		int lastid = sqlite3_last_insert_rowid(db);
-		char sql[1024];
-		sprintf(sql, "INSERT INTO stats (user_id) VALUES ('%i')", lastid);
-		rc = sqlite3_exec(db, sql, callback, 0, &zErrMsg);
-		if (rc != SQLITE_OK) {
-			fprintf(stderr, "SQL error: %s\n", zErrMsg);
-			sqlite3_free(zErrMsg);
-			sqlite3_close(db);
-			G_Printf("Database error\n");
-		}
-		else {
-			sqlite3_close(db);
-			G_Printf("Database insert success\n");
-		}
-	}
-}
-
-void sqliteUpdateStats(char *SQLStmnt, ...) {
-	va_list		argptr;
-	char		text[1024];
-
-	sqlite3 *db;
-	char *zErrMsg = 0;
-	int rc;
-	rc = sqlite3_open("clanmod.db", &db);
-	if (rc) //error connecting
-		sqlite3_close(db);
-
-	va_start(argptr, SQLStmnt);
-	vsprintf(text, SQLStmnt, argptr);
-	va_end(argptr);
-	rc = sqlite3_exec(db, text, callback, 0, &zErrMsg);
-	if (rc != SQLITE_OK) {
-		fprintf(stderr, "SQL error: %s\n", zErrMsg);
-		sqlite3_free(zErrMsg);
-		sqlite3_close(db);
-		G_Printf("Database error\n");
-	}
-	else {
-		sqlite3_close(db);
-		G_Printf("Database insert success\n");
-	}
-}
-
-int sqliteSelectUserID(char *SQLStmnt, ...) {
-	sqlite3_stmt *stmt;
-	sqlite3 *db;
-	char *zErrMsg = 0;
-	va_list		argptr;
-	char		text[1024];
-
-	va_start(argptr, SQLStmnt);
-	vsprintf(text, SQLStmnt, argptr);
-	va_end(argptr);
-
-	if (sqlite3_open("clanmod.db", &db) == SQLITE_OK)
-	{
-		//G_Printf(text);
-		int rc = sqlite3_prepare_v2(db, text, -1, &stmt, NULL);
-		if (rc != SQLITE_OK)
-			fprintf(stderr, "SQL error: %s\n", zErrMsg);
-
-		rc = sqlite3_step(stmt);
-
-		if (rc != SQLITE_ROW && rc != SQLITE_DONE) {
-			sqlite3_finalize(stmt);
-			G_Printf("user ID not found\n");
-			return 0;
-		}
-
-		if (rc == SQLITE_DONE) {
-			sqlite3_finalize(stmt);
-			G_Printf("user ID not found\n");
-			return 0;
-		}
-
-		int id = sqlite3_column_int(stmt, 0);
-		sqlite3_finalize(stmt);
-		return id;
-	}
-	else
-		return 0;
-}
-
-char *sqliteGetName(char *SQLStmnt, ...) {
-	sqlite3_stmt *stmt;
-	sqlite3 *db;
-	char *zErrMsg = 0;
-	va_list		argptr;
-	char		text[1024];
-
-	va_start(argptr, SQLStmnt);
-	vsprintf(text, SQLStmnt, argptr);
-	va_end(argptr);
-
-	if (sqlite3_open("clanmod.db", &db) == SQLITE_OK)
-	{
-		//G_Printf(text);
-		int rc = sqlite3_prepare_v2(db, text, -1, &stmt, NULL);
-		if (rc != SQLITE_OK)
-			fprintf(stderr, "SQL error: %s\n", zErrMsg);
-
-		rc = sqlite3_step(stmt);
-
-		if (rc != SQLITE_ROW && rc != SQLITE_DONE) {
-			sqlite3_finalize(stmt);
-			G_Printf("user name not found\n");
-			return 0;
-		}
-
-		if (rc == SQLITE_DONE) {
-			sqlite3_finalize(stmt);
-			G_Printf("user name not found\n");
-			return 0;
-		}
-
-		char *data = malloc(1024);
-		sprintf(data, sqlite3_column_text(stmt, 1));
-		sqlite3_finalize(stmt);
-		return data;
-	}
-	else
-		return "";
-}
-
-char *replace_str(char *str, char *orig, char *rep)
-{
-	static char buffer[4096];
-	char *p;
-
-	if (!(p = strstr(str, orig)))  // Is 'orig' even in 'str'?
-		return str;
-
-	strncpy(buffer, str, p - str); // Copy characters from 'str' start to 'orig' st$
-	buffer[p - str] = '\0';
-
-	sprintf(buffer + (p - str), "%s%s", rep, p + strlen(orig));
-
-	return buffer;
-}
-
-char *cleanName(char *name) {
-	strcpy(name, replace_str(name, "^0", ""));
-	strcpy(name, replace_str(name, "^1", ""));
-	strcpy(name, replace_str(name, "^2", ""));
-	strcpy(name, replace_str(name, "^3", ""));
-	strcpy(name, replace_str(name, "^4", ""));
-	strcpy(name, replace_str(name, "^5", ""));
-	strcpy(name, replace_str(name, "^6", ""));
-	strcpy(name, replace_str(name, "^7", ""));
-	strcpy(name, replace_str(name, "^8", ""));
-	strcpy(name, replace_str(name, "^9", ""));
-	return name;
-}
-
-char *sqliteGetStats(char *SQLStmnt, ...) {
-	sqlite3_stmt *stmt;
-	sqlite3 *db;
-	char *zErrMsg = 0;
-	va_list		argptr;
-	char		text[1024];
-
-	va_start(argptr, SQLStmnt);
-	vsprintf(text, SQLStmnt, argptr);
-	va_end(argptr);
-
-	if (sqlite3_open("clanmod.db", &db) == SQLITE_OK)
-	{
-		//G_Printf(text);
-		int rc = sqlite3_prepare_v2(db, text, -1, &stmt, NULL);
-		if (rc != SQLITE_OK)
-			fprintf(stderr, "SQL error: %s\n", zErrMsg);
-
-		rc = sqlite3_step(stmt);
-
-		if (rc != SQLITE_ROW && rc != SQLITE_DONE) {
-			sqlite3_finalize(stmt);
-			G_Printf("user ID not found\n");
-			return;
-		}
-
-		if (rc == SQLITE_DONE) {
-			sqlite3_finalize(stmt);
-			G_Printf("user ID not found\n");
-			return;
-		}
-		int id = sqlite3_column_int(stmt, 0);
-		int kills = sqlite3_column_int(stmt, 1);
-		int deaths = sqlite3_column_int(stmt, 2);
-		int duel_wins = sqlite3_column_int(stmt, 3);
-		int duel_loses = sqlite3_column_int(stmt, 4);
-		int flag_captures = sqlite3_column_int(stmt, 5);
-		int ffa_wins = sqlite3_column_int(stmt, 6);
-		int ffa_loses = sqlite3_column_int(stmt, 7);
-		int tdm_wins = sqlite3_column_int(stmt, 8);
-		int tdm_loses = sqlite3_column_int(stmt, 9);
-		int siege_wins = sqlite3_column_int(stmt, 10);
-		int siege_loses = sqlite3_column_int(stmt, 11);
-		int ctf_wins = sqlite3_column_int(stmt, 12);
-		int ctf_loses = sqlite3_column_int(stmt, 13);
-		sqlite3_finalize(stmt);
-
-		char *data = malloc(1024);
-		sprintf(data, "Kills/Deaths: %i/%i \n", kills, deaths);
-		sprintf(data + strlen(data), "Duel Wins/Loses: %i/%i \n", duel_wins, duel_loses);
-		sprintf(data + strlen(data), "Flag Captures: %i \n", flag_captures);
-		//todo: add more later
-		return data;
-	}
-}
-
-char *sqliteGetLeaders(char *SQLStmnt, ...) {
-	sqlite3_stmt *stmt;
-	sqlite3		*db;
-	char		*zErrMsg = 0;
-	
-	if (sqlite3_open("clanmod.db", &db) == SQLITE_OK)
-	{
-		//G_Printf(text);
-		int rc = sqlite3_prepare_v2(db, SQLStmnt, -1, &stmt, NULL);
-		if (rc != SQLITE_OK)
-			fprintf(stderr, "SQL error: %s\n", zErrMsg);
-
-		char *data = malloc(1024);
-		sprintf(data, "CURRENT GAMETYPE LEADERBOARD \n");
-		do {
-			rc = sqlite3_step(stmt);
-
-			if (rc == SQLITE_ROW) { /* can read data */
-				sprintf(data + strlen(data), "%s: %i/%i \n", sqliteGetName("SELECT * FROM users WHERE id = '%i'",sqlite3_column_int(stmt, 0)), sqlite3_column_int(stmt, 1), sqlite3_column_int(stmt, 2));
-			}
-		} while (rc == SQLITE_ROW);
-
-		sqlite3_finalize(stmt);
-
-		return data;
-	}
-}
 
 /*
 ==================
@@ -324,9 +47,7 @@ void DeathmatchScoreboardMessage( gentity_t *ent ) {
 	numSorted = level.numConnectedClients;
 	
 	if (numSorted > MAX_CLIENT_SCORE_SEND)
-	{
 		numSorted = MAX_CLIENT_SCORE_SEND;
-	}
 
 	for (i=0 ; i < numSorted ; i++) {
 		int		ping;
@@ -400,13 +121,10 @@ Admin commands
 ================== 
 */ 
 qboolean   ClanSayOk( gentity_t *ent ) {
-
-   if ( ent->r.svFlags & SVF_CLANSAY ) { 
-      return qtrue; 
-   } 
-   else {
-   return qfalse;
-   }
+	if (ent->r.svFlags & SVF_CLANSAY)
+		return qtrue; 
+	else
+		return qfalse;
 }
 
 
@@ -2285,27 +2003,6 @@ if ( strstr( text, "!jetpack") ){
 
 	if (strstr(text, "!leaderboard")) {
 		//todo
-	}
-
-	if (strstr(text, "!stats")) {
-		char user[MAX_STRING_CHARS];
-		int client_id = ent->client->ps.clientNum;
-		trap_Argv(1, user, sizeof(user));
-
-		if (trap_Argc() > 1) {
-			int userID = sqliteSelectUserID("SELECT * FROM users WHERE user = '%s'", user);
-			if (userID > 0)
-				trap_SendServerCommand(client_id, va("print \"^3===^1PLAYER %s ^1STATUS^3===\n%s\n\"", user, sqliteGetStats("SELECT * FROM stats WHERE user_id = '%i'", ent->client->pers.userID)));
-			else
-				trap_SendServerCommand(client_id, va("print \"^1Player name %s not found in DB.\n\"", user));
-		}
-		else
-		{
-			if (ent->client->pers.userID > 0)
-				trap_SendServerCommand(client_id, va("print \"^3===^1YOUR PLAYER STATUS^3===\n\n%s\n\"", sqliteGetStats("SELECT * FROM stats WHERE user_id = '%i'", ent->client->pers.userID)));
-			else
-				trap_SendServerCommand(client_id, va("print \"^1Login first using the /cmlogin command.\n\""));
-		}
 	}
 
 	if ( strstr( text, "!slapme") ){
@@ -4924,80 +4621,6 @@ void ClientCommand( int clientNum ) {
 		//else {
 		//trap_SendServerCommand( ent-g_entities, va("print \"^1YOU DO NOT HAVE THE CLAN MOD PLUGIN! WITHOUT IT, YOU CANNOT DO ANY OF THESE COMMANDS! DOWNLOAD IT AT WWW.CLANMOD.ORG/DOWNLOADS\n\"" ) );
 		//}
-	}
-	else if (Q_stricmp(cmd, "cmregister") == 0){
-		int client_id = -1;
-		char pass[MAX_STRING_CHARS];
-
-		trap_Argv(1, pass, sizeof(pass));
-		client_id = ent->client->ps.clientNum;
-
-		if (strcmp(cleanName(g_entities[client_id].client->pers.netname), "Padawan") == 0) {
-			trap_SendServerCommand(client_id, va("print \"Users are registered to their player names. Padawan is not allowed.\n\""));
-			return;
-		}
-
-		if ((trap_Argc() < 1) || (trap_Argc() > 2))
-		{
-			trap_SendServerCommand(client_id, va("print \"Usage: /register <password>\n\""));
-			return;
-		}
-
-		sqliteRegisterUser("INSERT INTO users (user, pass, ipaddress) VALUES ('%s', '%s', '%s')", cleanName(g_entities[client_id].client->pers.netname), pass, g_entities[client_id].client->sess.myip);
-		trap_SendServerCommand(client_id, va("print \"^3User %s ^3is now registered.\n\"", g_entities[client_id].client->pers.netname));
-	}
-	else if (Q_stricmp(cmd, "cmleaderboard") == 0 || Q_stricmp(cmd, "cmleaders") == 0) {
-		if (g_gametype.integer == GT_FFA || g_gametype.integer == GT_HOLOCRON || g_gametype.integer == GT_JEDIMASTER)
-			trap_SendServerCommand(ent->client->ps.clientNum, va("print \"%s\n\"", sqliteGetLeaders("SELECT user_id,kills,deaths FROM stats ORDER BY kills DESC LIMIT 5")));
-		else if (g_gametype.integer == GT_DUEL || g_gametype.integer == GT_POWERDUEL)
-			trap_SendServerCommand(ent->client->ps.clientNum, va("print \"%s\n\"", sqliteGetLeaders("SELECT user_id,duel_wins,duel_loses FROM stats ORDER BY duel_wins DESC LIMIT 5")));
-		else if (g_gametype.integer == GT_TEAM)
-			trap_SendServerCommand(ent->client->ps.clientNum, va("print \"%s\n\"", sqliteGetLeaders("SELECT user_id,tdm_wins,tdm_loses FROM stats ORDER BY tdm_wins DESC LIMIT 5")));
-		else if (g_gametype.integer == GT_SIEGE)
-			trap_SendServerCommand(ent->client->ps.clientNum, va("print \"%s\n\"", sqliteGetLeaders("SELECT user_id,siege_wins,siege_loses FROM siege_wins ORDER BY tdm_wins DESC LIMIT 5")));
-		else if (g_gametype.integer == GT_CTF || g_gametype.integer == GT_CTY)
-			trap_SendServerCommand(ent->client->ps.clientNum, va("print \"%s\n\"", sqliteGetLeaders("SELECT user_id,ctf_wins,ctf_loses FROM stats ORDER BY ctf_wins DESC LIMIT 5")));
-	}
-	else if (Q_stricmp(cmd, "cmlogin") == 0){
-		int client_id = -1;
-		char pass[MAX_STRING_CHARS];
-
-		trap_Argv(1, pass, sizeof(pass));
-		client_id = ent->client->ps.clientNum;
-
-		if ((trap_Argc() < 1) || (trap_Argc() > 2))
-		{
-			trap_SendServerCommand(client_id, va("print \"Usage: /login <password>\n\""));
-			return;
-		}
-
-		int userID = sqliteSelectUserID("SELECT * FROM users WHERE user = '%s' AND pass = '%s'", g_entities[client_id].client->pers.netname, pass);
-		if (userID > 0) {
-			ent->client->pers.userID = userID;
-			trap_SendServerCommand(client_id, va("print \"^3You are now logged in.\n\""));
-		}
-		else
-			trap_SendServerCommand(client_id, va("print \"^1User not found\n\""));
-	}
-	else if (Q_stricmp(cmd, "cmstats") == 0) {
-		char user[MAX_STRING_CHARS];
-		int client_id = ent->client->ps.clientNum;
-		trap_Argv(1, user, sizeof(user));
-
-		if (trap_Argc() > 1) {
-			int userID = sqliteSelectUserID("SELECT * FROM users WHERE user = '%s'", user);
-			if (userID > 0)
-				trap_SendServerCommand(client_id, va("print \"^3===^1PLAYER %s ^1STATUS^3===\n%s\n\"", user, sqliteGetStats("SELECT * FROM stats WHERE user_id = '%i'", ent->client->pers.userID)));
-			else
-				trap_SendServerCommand(client_id, va("print \"^1Player name %s not found in DB.\n\"", user));
-		}
-		else
-		{
-			if (ent->client->pers.userID > 0)
-				trap_SendServerCommand(client_id, va("print \"^3===^1YOUR PLAYER STATUS^3===\n\n%s\n\"", sqliteGetStats("SELECT * FROM stats WHERE user_id = '%i'", ent->client->pers.userID)));
-			else
-				trap_SendServerCommand(client_id, va("print \"^1Login first using the /cmlogin command.\n\""));
-		}
 	}
 	else if (Q_stricmp (cmd, "emotes") == 0)
 	{

@@ -776,11 +776,6 @@ int Team_TouchOurFlag( gentity_t *ent, gentity_t *other, int team ) {
 	other->client->rewardTime = level.time + REWARD_SPRITE_TIME;
 	//other->client->ps.persistant[PERS_CAPTURES]++;
 
-	if (other->client->pers.userID > 0) {
-		trap_SendServerCommand(other->client->ps.clientNum, va("print \"^3Flag Captures increased in DB.\n\""));
-		sqliteUpdateStats("UPDATE stats SET flag_captures = flag_captures + 1 WHERE user_id = '%i'", other->client->pers.userID);
-	}
-
 	// other gets another 10 frag bonus
 	AddScore(other, ent->r.currentOrigin, CTF_CAPTURE_BONUS);
 
