@@ -3104,6 +3104,60 @@ qboolean	ConsoleCommand( void ) {
 		return qtrue;
 	}
 
+	if (Q_stricmp(cmd, "cmregister") == 0){
+		char *user[MAX_STRING_CHARS];
+		char *pass[MAX_STRING_CHARS];
+
+		trap_Argv(1, user, sizeof(user));
+		trap_Argv(2, pass, sizeof(pass));
+
+		if ((trap_Argc() < 2) || (trap_Argc() > 3))
+		{
+			G_Printf("Usage: /register <playername> <password>");
+			return;
+		}
+		sqliteRegisterUser("INSERT INTO users (user, pass, ipaddress) VALUES ('%s', '%s', '127.0.0.1')", user, pass);
+		G_Printf("User %s now registered.", user);
+	}
+	if (Q_stricmp(cmd, "cmfinduser") == 0){
+		char *user[MAX_STRING_CHARS];
+
+		trap_Argv(1, user, sizeof(user));
+
+		if ((trap_Argc() < 1) || (trap_Argc() > 2))
+		{
+			G_Printf("Usage: /checkid <playername>");
+			return;
+		}
+		int getID = sqliteSelectUserID("SELECT * FROM users WHERE user = '%s'", user);
+		if (getID > 0)
+			G_Printf("USER FOUND - ID: %i", getID);
+		else
+			G_Printf("USER NOT FOUND");
+	}
+	if (Q_stricmp(cmd, "cmstats") == 0) {
+		char *user[MAX_STRING_CHARS];
+
+		trap_Argv(1, user, sizeof(user));
+		int getID = sqliteSelectUserID("SELECT * FROM users WHERE user = '%s'", user);
+		if (getID > 0)
+			G_Printf("%s", sqliteGetStats("SELECT * FROM stats WHERE user_id = '%i'", getID));
+		else
+			G_Printf("USER NOT FOUND");
+	}
+	if (Q_stricmp(cmd, "cmleaderboard") == 0 || Q_stricmp(cmd, "cmleaders") == 0) {
+		if (g_gametype.integer == GT_FFA || g_gametype.integer == GT_HOLOCRON || g_gametype.integer == GT_JEDIMASTER)
+			G_Printf("%s", sqliteGetLeaders("SELECT user_id,kills,deaths FROM stats ORDER BY kills DESC LIMIT 5"));
+		else if (g_gametype.integer == GT_DUEL || g_gametype.integer == GT_POWERDUEL)
+			G_Printf("%s", sqliteGetLeaders("SELECT user_id,duel_wins,duel_loses FROM stats ORDER BY duel_wins DESC LIMIT 5"));
+		else if (g_gametype.integer == GT_TEAM)
+			G_Printf("%s", sqliteGetLeaders("SELECT user_id,tdm_wins,tdm_loses FROM stats ORDER BY tdm_wins DESC LIMIT 5"));
+		else if (g_gametype.integer == GT_SIEGE)
+			G_Printf("%s", sqliteGetLeaders("SELECT user_id,siege_wins,siege_loses FROM siege_wins ORDER BY tdm_wins DESC LIMIT 5"));
+		else if (g_gametype.integer == GT_CTF || g_gametype.integer == GT_CTY)
+			G_Printf("%s", sqliteGetLeaders("SELECT user_id,ctf_wins,ctf_loses FROM stats ORDER BY ctf_wins DESC LIMIT 5"));
+	}
+
 	if (Q_stricmp (cmd, "amvstr") == 0) {
 		Svcmd_AmVSTR();
 		return qtrue;

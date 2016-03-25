@@ -311,6 +311,9 @@
     <ClCompile Include="w_saber.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\sqlite3\sqlite3.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\ui\menudef.h">

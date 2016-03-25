@@ -3154,6 +3154,16 @@ void ClientThink_real( gentity_t *ent ) {
 				trap_SendServerCommand( -1, va("print \"%s ^7survived with ^5%d ^7health and ^5%d ^7shield\n\"",
 				ent->client->pers.netname, ent->client->ps.stats[STAT_HEALTH], ent->client->ps.stats[STAT_ARMOR] ) );
 			}
+
+			//duel wins/loses for FFA duel (duelAgainst = loser, ent = winner)
+			if (duelAgainst->client->pers.userID > 0) {
+				trap_SendServerCommand(duelAgainst->client->ps.clientNum, va("print \"^3Duel Loses increased in DB.\n\""));
+				sqliteUpdateStats("UPDATE stats SET duel_loses = duel_loses + 1 WHERE user_id = '%i'", duelAgainst->client->pers.userID);
+			}
+			if (ent->client->pers.userID > 0) {
+				trap_SendServerCommand(ent->client->ps.clientNum, va("print \"^3Duel Wins increased in DB.\n\""));
+				sqliteUpdateStats("UPDATE stats SET duel_wins = duel_wins + 1 WHERE user_id = '%i'", ent->client->pers.userID);
+			}
 			//RoAR mod END
 
 			if (dueltypes[duelAgainst->client->ps.clientNum] == 3 || dueltypes[duelAgainst->client->ps.clientNum] == 2)
