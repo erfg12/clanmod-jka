@@ -8,10 +8,10 @@
 #undef trap_S_AddLoopingSound
 #undef trap_S_AddRealLoopingSound
 
-static int (QDECL *syscall)( int arg, ... ) = (int (QDECL *)( int, ...))-1;
+static int (QDECL *syscall)(intptr_t arg, ... ) = (intptr_t(QDECL *)(intptr_t, ...))-1;
 
 #include "../namespace_begin.h"
-void dllEntry( int (QDECL  *syscallptr)( int arg,... ) ) {
+void dllEntry(intptr_t (QDECL  *syscallptr)(intptr_t arg,... ) ) {
 	syscall = syscallptr;
 }
 
