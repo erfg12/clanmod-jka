@@ -6,6 +6,7 @@
 #include "g_nav.h"
 #include "bg_saga.h"
 #include "timestamp.h"
+#include <stdint.h>
 
 level_locals_t	level;
 
@@ -243,14 +244,7 @@ vmCvar_t		x_cstime;
 vmCvar_t		roar_allow_black_names;
 vmCvar_t	mod_pushall;
 
-//RoAR mod: BADWORD FILTER
-vmCvar_t		cm_badword1;
-vmCvar_t		cm_badword2;
-vmCvar_t		cm_badword3;
-vmCvar_t		cm_badword4;
-vmCvar_t		cm_badword5;
-vmCvar_t		cm_precoded_badwords;
-//END
+vmCvar_t		cm_badwords;
 
 vmCvar_t	m_v1;
 vmCvar_t	m_v2;
@@ -370,12 +364,10 @@ vmCvar_t		roar_silence_off_saying;
 vmCvar_t		roar_silence_on_ALL_saying;
 vmCvar_t		roar_silence_off_ALL_saying;
 
-vmCvar_t		roar_silence_insult_1;
-vmCvar_t		roar_silence_insult_2;
-vmCvar_t		roar_silence_insult_3;
-vmCvar_t		roar_silence_insult_4;
+vmCvar_t		cm_insults;
 
 vmCvar_t		cm_noPadawanNames;
+vmCvar_t		cm_noServerNames;
 vmCvar_t		cm_newName;
 vmCvar_t		cm_clanTag;
 vmCvar_t		cm_tagwarnings;
@@ -562,31 +554,29 @@ static cvarTable_t		gameCvarTable[] = {
 	{ &roar_silence_on_ALL_saying,		"cm_silence_on_ALL_saying",		"Everyone has been ^1SILENCED!",		CVAR_ARCHIVE,					0, qfalse },
 	{ &roar_silence_off_ALL_saying,		"cm_silence_off_ALL_saying",	"Everyone may now talk",		CVAR_ARCHIVE,					0, qfalse },
 
-	{ &roar_silence_insult_1,			"cm_silence_insult_1",			"I'm stupid!",		CVAR_ARCHIVE,					0, qfalse },
-	{ &roar_silence_insult_2,			"cm_silence_insult_2",			"I'm a moron!",		CVAR_ARCHIVE,					0, qfalse },
-	{ &roar_silence_insult_3,			"cm_silence_insult_3",			"I'm a noob!",		CVAR_ARCHIVE,					0, qfalse },
-	{ &roar_silence_insult_4,			"cm_silence_insult_4",			"I look as stupid as I am!",		CVAR_ARCHIVE,					0, qfalse },
+	{ &cm_insults,						"cm_insults",					"I cannot think for myself.,My mommy says I'm special.,I deserve this.,I'm dumb.",		CVAR_ARCHIVE,		0, qfalse },
 
 	{ &roar_insult_silence_on_saying,			"cm_insult_silence_on_saying",			"is insulting himself",		CVAR_ARCHIVE,					0, qfalse },
 	{ &roar_insult_silence_off_saying,			"cm_insult_silence_off_saying",			"is no longer insulting himself",		CVAR_ARCHIVE,					0, qfalse },
 
-	{ &roar_disable_slideOnHeads,			"cm_disable_slideOnHeads",			"0",		CVAR_ARCHIVE,					0, qfalse },
+	{ &roar_disable_slideOnHeads,			"cm_slideOnHeads",			"0",		CVAR_ARCHIVE,					0, qfalse },
 
-	{ &roar_allow_chatColors,			"cm_allow_chatColors",			"1",		CVAR_ARCHIVE,					0, qfalse },
+	{ &roar_allow_chatColors,			"cm_chatColors",			"1",		CVAR_ARCHIVE,					0, qfalse },
 
 	{ &cm_AllowKnockDownPull,			"cm_AllowKnockDownPull",			"0",		CVAR_ARCHIVE,					0, qfalse },
-	
+
 	{ &cm_noPadawanNames,			"cm_noPadawanNames",			"0",		CVAR_ARCHIVE,					0, qfalse },
+	{ &cm_noPadawanNames,			"cm_noServerNames",			"0",		CVAR_ARCHIVE,					0, qfalse },
 	{ &cm_noSuddenDeath,			"cm_noSuddenDeath",			"0",		CVAR_ARCHIVE,					0, qtrue },
 	{ &cm_newName,			"cm_newName",			"",		CVAR_ARCHIVE,					0, qfalse },
 	{ &cm_clanTag,			"cm_clanTag",			"",		CVAR_ARCHIVE,					0, qfalse },
 	{ &cm_tagwarnings,			"cm_tagwarnings",			"2",		CVAR_ARCHIVE,					0, qfalse },
 
-	{ &clan_website, "clan_website", "none", CVAR_ARCHIVE|CVAR_SERVERINFO, 0, qfalse  },
-	{ &clan_fullname, "clan_fullname", "fullname", CVAR_ARCHIVE|CVAR_SERVERINFO, 0, qfalse  },
-	{ &clan_initials, "clan_initials", "initials", CVAR_ARCHIVE|CVAR_SERVERINFO, 0, qfalse  },
-	{ &clan_moreinfo, "clan_moreinfo", "none", CVAR_ARCHIVE|CVAR_SERVERINFO, 0, qfalse  },
-	
+	{ &clan_website, "clan_website", "none", CVAR_ARCHIVE | CVAR_SERVERINFO, 0, qfalse },
+	{ &clan_fullname, "clan_fullname", "fullname", CVAR_ARCHIVE | CVAR_SERVERINFO, 0, qfalse },
+	{ &clan_initials, "clan_initials", "initials", CVAR_ARCHIVE | CVAR_SERVERINFO, 0, qfalse },
+	{ &clan_moreinfo, "clan_moreinfo", "none", CVAR_ARCHIVE | CVAR_SERVERINFO, 0, qfalse },
+
 	{ &roar_slay_saying,			"cm_slay_saying",			"has been slain!",		CVAR_ARCHIVE,					0, qfalse },
 
 	{ &roar_banned_saying,			"cm_banned_saying",			"Banned.",		CVAR_ARCHIVE,					0, qfalse },
@@ -600,23 +590,21 @@ static cvarTable_t		gameCvarTable[] = {
 
 	{ &roar_grip_open_saber,			"cm_gripOpenSaber",			"0",		CVAR_ARCHIVE,					0, qtrue },
 
-	{ &roar_allow_jetpack_command,			"cm_allow_jetpack_command",			"1",		CVAR_ARCHIVE,			0, qtrue },
-	{ &cm_allow_report_command,			"cm_allow_report_command",			"1",		CVAR_ARCHIVE,			0, qtrue },
-	{ &roar_allow_dropsaber_command,			"cm_allow_drop_command",			"1",		CVAR_ARCHIVE,			0, qtrue },
-	{ &roar_chat_protection,			"cm_chat_protection",			"1",		CVAR_ARCHIVE,			0, qtrue },
-	{ &roar_enable_ForceDuel,			"cm_enable_ForceDuel",			"1",		CVAR_ARCHIVE,			0, qtrue },
+	{ &roar_allow_jetpack_command,			"cm_jetpack",			"1",		CVAR_ARCHIVE,			0, qtrue },
+	{ &cm_allow_report_command,			"cm_report",			"1",		CVAR_ARCHIVE,			0, qtrue },
+	{ &roar_allow_dropsaber_command,			"cm_drop",			"1",		CVAR_ARCHIVE,			0, qtrue },
+	{ &roar_chat_protection,			"cm_chatProtection",			"1",		CVAR_ARCHIVE,			0, qtrue },
 
-	{ &roar_idle_AutoProtect_timer,			"cm_AutoProtect_timer",			"30",		CVAR_ARCHIVE,					0, qtrue },
+	{ &roar_idle_AutoProtect_timer,			"cm_AutoProtectTimer",			"30",		CVAR_ARCHIVE,					0, qtrue },
 
-	{ &roar_enable_TrainingDuel,			"cm_enable_TrainingDuel",			"1",		CVAR_ARCHIVE,			0, qtrue },
-
-	{ &roar_enable_MeleeDuel,			"cm_enable_MeleeDuel",			"1",		CVAR_ARCHIVE,			0, qtrue },
-
-	{ &roar_enable_NormalDuel,			"cm_enable_NormalDuel",			"1",		CVAR_ARCHIVE,			0, qtrue },
+	{ &roar_enable_TrainingDuel,		"cm_TrainingDuels",			"1",		CVAR_ARCHIVE,			0, qtrue },
+	{ &roar_enable_ForceDuel,			"cm_ForceDuels",			"1",		CVAR_ARCHIVE,			0, qtrue },
+	{ &roar_enable_MeleeDuel,			"cm_MeleeDuels",			"1",		CVAR_ARCHIVE,			0, qtrue },
+	{ &roar_enable_NormalDuel,			"cm_Duels",			"1",		CVAR_ARCHIVE,			0, qtrue },
 	{ &roar_duel_begin_autobow,			"cm_autobow",			"1",		CVAR_ARCHIVE,			0, qtrue },
 
 	{ &cm_spillpassword,			"cm_spillpassword",			"0",		CVAR_ARCHIVE,			0, qtrue },
-	{ &roar_allow_KnockMeDown_command,			"cm_allow_KnockMeDown_command",			"0",		CVAR_ARCHIVE,			0, qtrue },
+	{ &roar_allow_KnockMeDown_command,			"cm_KnockMeDown",			"0",		CVAR_ARCHIVE,			0, qtrue },
 
 	{ &cm_customSaberDmgs,			"cm_customSaberDmgs",			"0",		CVAR_ARCHIVE,			0, qtrue },
 
@@ -634,8 +622,8 @@ static cvarTable_t		gameCvarTable[] = {
 	{ &x_cstime,			"cm_motd_time",		"5",	CVAR_ARCHIVE,					0, qtrue },
 	{ &roar_allow_black_names,	"cm_blacknames",		"1",	CVAR_ARCHIVE,					0, qtrue },
 	{ &roar_console_motd,	"cm_console_motd",		"^1Type in /HELP to see a list of all the commands.",	CVAR_ARCHIVE,					0, qtrue },
-	{ &roar_starting_weapons,	"cm_starting_weapons",		"0",	CVAR_ARCHIVE,					0, qtrue },
-	{ &roar_allow_samePlayerNames,	"cm_allow_samePlayerNames",		"0",	CVAR_ARCHIVE,					0, qtrue },
+	{ &roar_starting_weapons,	"cm_startWeapons",		"0",	CVAR_ARCHIVE,					0, qtrue },
+	{ &roar_allow_samePlayerNames,	"cm_samePlayerNames",		"0",	CVAR_ARCHIVE,					0, qtrue },
 	{ &cm_empower_infforce,	"cm_empower_infforce",		"0",	CVAR_ARCHIVE,					0, qtrue },
 	{ &cm_terminator_infammo,	"cm_terminator_infammo",		"0",	CVAR_ARCHIVE,					0, qtrue },
 	{ &cm_forcekickflip,	"cm_forcekickflip",		"0",	CVAR_ARCHIVE,					0, qtrue },
@@ -674,18 +662,13 @@ static cvarTable_t		gameCvarTable[] = {
 	{ &cm_password_latch,			"cm_password_latch",			"0",		CVAR_ARCHIVE,					0, qfalse },
 
 	//RoAR mod: BADWORD FILTER
-	{ &cm_badword1,			"cm_badword1",			"",		CVAR_ARCHIVE,					0, qfalse },
-	{ &cm_badword2,			"cm_badword2",			"",		CVAR_ARCHIVE,					0, qfalse },
-	{ &cm_badword3,			"cm_badword3",			"",		CVAR_ARCHIVE,					0, qfalse },
-	{ &cm_badword4,			"cm_badword4",			"",		CVAR_ARCHIVE,					0, qfalse },
-	{ &cm_badword5,			"cm_badword5",			"",		CVAR_ARCHIVE,					0, qfalse },
-	{ &cm_precoded_badwords,			"cm_precoded_badwords",			"0",		CVAR_ARCHIVE,					0, qfalse },
+	{ &cm_badwords,			"cm_badwords",			"",		CVAR_ARCHIVE,					0, qfalse },
 	//END
 	//RoAR mod END
 
 	//*************************MJN***********************************************************************
 	// Saber Damage CVars:
-	
+
 	{ &g_mSaberDMGTwirl,	"g_mSaberDMGTwirl", "10", CVAR_ARCHIVE, 0, qtrue },
 	{ &g_mSaberDMGKick,	"g_mSaberDMGKick", "2", CVAR_ARCHIVE, 0, qtrue },
 	{ &g_mSaberDMGDualKata,	"g_mSaberDMGDualKata", "90", CVAR_ARCHIVE, 0, qtrue },
@@ -717,23 +700,23 @@ static cvarTable_t		gameCvarTable[] = {
 	{ &g_mSaberDMGBlueBackMax, "g_mSaberDMGBlueBackMax", "30", CVAR_ARCHIVE, 0, qtrue },
 	//
 
-	{ &g_debugMelee, "g_debugMelee", "1", CVAR_SERVERINFO, 0, qtrue  },
-	{ &g_stepSlideFix, "g_stepSlideFix", "1", CVAR_SERVERINFO, 0, qtrue  },
+	{ &g_debugMelee, "g_debugMelee", "1", CVAR_SERVERINFO, 0, qtrue },
+	{ &g_stepSlideFix, "g_stepSlideFix", "1", CVAR_SERVERINFO, 0, qtrue },
 
 	{ &g_noSpecMove, "g_noSpecMove", "0", CVAR_SERVERINFO, 0, qtrue },
 
 	// noset vars
-	{ NULL, "gamename", GAMEVERSION , CVAR_SERVERINFO | CVAR_ROM, 0, qfalse  },
-	{ NULL, "gamedate", __DATE__ , CVAR_ROM, 0, qfalse  },
-	{ &g_restarted, "g_restarted", "0", CVAR_ROM, 0, qfalse  },
-	{ NULL, "sv_mapname", "", CVAR_SERVERINFO | CVAR_ROM, 0, qfalse  },
+	{ NULL, "gamename", GAMEVERSION , CVAR_SERVERINFO | CVAR_ROM, 0, qfalse },
+	{ NULL, "gamedate", __DATE__ , CVAR_ROM, 0, qfalse },
+	{ &g_restarted, "g_restarted", "0", CVAR_ROM, 0, qfalse },
+	{ NULL, "sv_mapname", "", CVAR_SERVERINFO | CVAR_ROM, 0, qfalse },
 
 	// latched vars
-	{ &g_gametype, "g_gametype", "0", CVAR_SERVERINFO | CVAR_LATCH, 0, qfalse  },
-	{ &g_MaxHolocronCarry, "g_MaxHolocronCarry", "3", CVAR_SERVERINFO | CVAR_LATCH, 0, qfalse  },
+	{ &g_gametype, "g_gametype", "0", CVAR_SERVERINFO | CVAR_LATCH, 0, qfalse },
+	{ &g_MaxHolocronCarry, "g_MaxHolocronCarry", "3", CVAR_SERVERINFO | CVAR_LATCH, 0, qfalse },
 
-	{ &g_maxclients, "sv_maxclients", "8", CVAR_SERVERINFO | CVAR_LATCH | CVAR_ARCHIVE, 0, qfalse  },
-	{ &g_maxGameClients, "g_maxGameClients", "0", CVAR_SERVERINFO | CVAR_LATCH | CVAR_ARCHIVE, 0, qfalse  },
+	{ &g_maxclients, "sv_maxclients", "8", CVAR_SERVERINFO | CVAR_LATCH | CVAR_ARCHIVE, 0, qfalse },
+	{ &g_maxGameClients, "g_maxGameClients", "0", CVAR_SERVERINFO | CVAR_LATCH | CVAR_ARCHIVE, 0, qfalse },
 
 	{ &g_trueJedi, "g_jediVmerc", "0", CVAR_SERVERINFO | CVAR_LATCH | CVAR_ARCHIVE, 0, qtrue },
 
@@ -741,275 +724,275 @@ static cvarTable_t		gameCvarTable[] = {
 	{ &g_ff_objectives, "g_ff_objectives", "0", /*CVAR_SERVERINFO |*/ CVAR_CHEAT | CVAR_NORESTART, 0, qtrue },
 
 	{ &g_autoMapCycle, "g_autoMapCycle", "0", CVAR_ARCHIVE | CVAR_NORESTART, 0, qtrue },
-	{ &g_dmflags, "dmflags", "0", CVAR_SERVERINFO | CVAR_ARCHIVE, 0, qtrue  },
-	
-	{ &g_maxForceRank, "g_maxForceRank", "6", CVAR_SERVERINFO | CVAR_ARCHIVE | CVAR_LATCH, 0, qfalse  },
-	{ &g_forceBasedTeams, "g_forceBasedTeams", "0", CVAR_SERVERINFO | CVAR_ARCHIVE | CVAR_LATCH, 0, qfalse  },
-	{ &g_privateDuel, "g_privateDuel", "1", CVAR_SERVERINFO | CVAR_ARCHIVE, 0, qtrue  },
+	{ &g_dmflags, "dmflags", "0", CVAR_SERVERINFO | CVAR_ARCHIVE, 0, qtrue },
 
-	{ &g_allowNPC, "g_allowNPC", "1", CVAR_SERVERINFO | CVAR_CHEAT, 0, qtrue  },
+	{ &g_maxForceRank, "g_maxForceRank", "6", CVAR_SERVERINFO | CVAR_ARCHIVE | CVAR_LATCH, 0, qfalse },
+	{ &g_forceBasedTeams, "g_forceBasedTeams", "0", CVAR_SERVERINFO | CVAR_ARCHIVE | CVAR_LATCH, 0, qfalse },
+	{ &g_privateDuel, "g_privateDuel", "1", CVAR_SERVERINFO | CVAR_ARCHIVE, 0, qtrue },
 
-	{ &g_armBreakage, "g_armBreakage", "0", 0, 0, qtrue  },
+	{ &g_allowNPC, "g_allowNPC", "1", CVAR_SERVERINFO | CVAR_CHEAT, 0, qtrue },
 
-	{ &g_saberLocking, "g_saberLocking", "1", CVAR_SERVERINFO | CVAR_ARCHIVE, 0, qtrue  },
-	{ &g_saberLockFactor, "g_saberLockFactor", "2", CVAR_ARCHIVE, 0, qtrue  },
-	{ &g_saberTraceSaberFirst, "g_saberTraceSaberFirst", "0", CVAR_ARCHIVE, 0, qtrue  },
+	{ &g_armBreakage, "g_armBreakage", "0", 0, 0, qtrue },
 
-	{ &d_saberKickTweak, "d_saberKickTweak", "1", 0, 0, qtrue  },
+	{ &g_saberLocking, "g_saberLocking", "1", CVAR_SERVERINFO | CVAR_ARCHIVE, 0, qtrue },
+	{ &g_saberLockFactor, "g_saberLockFactor", "2", CVAR_ARCHIVE, 0, qtrue },
+	{ &g_saberTraceSaberFirst, "g_saberTraceSaberFirst", "0", CVAR_ARCHIVE, 0, qtrue },
+
+	{ &d_saberKickTweak, "d_saberKickTweak", "1", 0, 0, qtrue },
 
 	{ &d_powerDuelPrint, "d_powerDuelPrint", "0", 0, qtrue },
 
-	{ &d_saberGhoul2Collision, "d_saberGhoul2Collision", "1", CVAR_CHEAT, 0, qtrue  },
-	{ &g_saberBladeFaces, "g_saberBladeFaces", "1", 0, 0, qtrue  },
+	{ &d_saberGhoul2Collision, "d_saberGhoul2Collision", "1", CVAR_CHEAT, 0, qtrue },
+	{ &g_saberBladeFaces, "g_saberBladeFaces", "1", 0, 0, qtrue },
 
-	{ &d_saberAlwaysBoxTrace, "d_saberAlwaysBoxTrace", "0", CVAR_CHEAT, 0, qtrue  },
-	{ &d_saberBoxTraceSize, "d_saberBoxTraceSize", "0", CVAR_CHEAT, 0, qtrue  },
+	{ &d_saberAlwaysBoxTrace, "d_saberAlwaysBoxTrace", "0", CVAR_CHEAT, 0, qtrue },
+	{ &d_saberBoxTraceSize, "d_saberBoxTraceSize", "0", CVAR_CHEAT, 0, qtrue },
 
 	{ &d_siegeSeekerNPC, "d_siegeSeekerNPC", "0", CVAR_CHEAT, 0, qtrue },
 
 #ifdef _DEBUG
-	{ &g_disableServerG2, "g_disableServerG2", "0", 0, 0, qtrue },
+{ &g_disableServerG2, "g_disableServerG2", "0", 0, 0, qtrue },
 #endif
 
-	{ &d_perPlayerGhoul2, "d_perPlayerGhoul2", "0", CVAR_CHEAT, 0, qtrue },
+{ &d_perPlayerGhoul2, "d_perPlayerGhoul2", "0", CVAR_CHEAT, 0, qtrue },
 
-	{ &d_projectileGhoul2Collision, "d_projectileGhoul2Collision", "1", CVAR_CHEAT, 0, qtrue  },
+{ &d_projectileGhoul2Collision, "d_projectileGhoul2Collision", "1", CVAR_CHEAT, 0, qtrue },
 
-	{ &g_g2TraceLod, "g_g2TraceLod", "3", 0, 0, qtrue  },
+{ &g_g2TraceLod, "g_g2TraceLod", "3", 0, 0, qtrue },
 
-	{ &g_optvehtrace, "com_optvehtrace", "0", 0, 0, qtrue  },
+{ &g_optvehtrace, "com_optvehtrace", "0", 0, 0, qtrue },
 
-	{ &g_locationBasedDamage, "g_locationBasedDamage", "1", 0, 0, qtrue },
+{ &g_locationBasedDamage, "g_locationBasedDamage", "1", 0, 0, qtrue },
 
-	{ &g_allowHighPingDuelist, "g_allowHighPingDuelist", "1", 0, 0, qtrue },
+{ &g_allowHighPingDuelist, "g_allowHighPingDuelist", "1", 0, 0, qtrue },
 
-	{ &g_logClientInfo, "g_logClientInfo", "0", CVAR_ARCHIVE, 0, qtrue  },
+{ &g_logClientInfo, "g_logClientInfo", "0", CVAR_ARCHIVE, 0, qtrue },
 
-	{ &g_slowmoDuelEnd, "g_slowmoDuelEnd", "0", CVAR_ARCHIVE, 0, qtrue  },
+{ &g_slowmoDuelEnd, "g_slowmoDuelEnd", "0", CVAR_ARCHIVE, 0, qtrue },
 
-	{ &g_saberDamageScale, "g_saberDamageScale", "1", CVAR_ARCHIVE, 0, qtrue  },
+{ &g_saberDamageScale, "g_saberDamageScale", "1", CVAR_ARCHIVE, 0, qtrue },
 
-	{ &g_useWhileThrowing, "g_useWhileThrowing", "1", 0, 0, qtrue  },
+{ &g_useWhileThrowing, "g_useWhileThrowing", "1", 0, 0, qtrue },
 
-	{ &g_RMG, "RMG", "0", 0, 0, qtrue  },
+{ &g_RMG, "RMG", "0", 0, 0, qtrue },
 
-	{ &g_svfps, "sv_fps", "20", 0, 0, qtrue },
+{ &g_svfps, "sv_fps", "20", 0, 0, qtrue },
 
-	{ &g_forceRegenTime, "g_forceRegenTime", "200", CVAR_SERVERINFO | CVAR_ARCHIVE, 0, qtrue  },
-	{ &cm_DuelForceRegenTime, "cm_DuelForceRegenTime", "200", CVAR_SERVERINFO | CVAR_ARCHIVE, 0, qtrue  },
+{ &g_forceRegenTime, "g_forceRegenTime", "200", CVAR_SERVERINFO | CVAR_ARCHIVE, 0, qtrue },
+{ &cm_DuelForceRegenTime, "cm_DuelForceRegenTime", "200", CVAR_SERVERINFO | CVAR_ARCHIVE, 0, qtrue },
 
-	{ &g_spawnInvulnerability, "g_spawnInvulnerability", "3000", CVAR_ARCHIVE, 0, qtrue  },
+{ &g_spawnInvulnerability, "g_spawnInvulnerability", "3000", CVAR_ARCHIVE, 0, qtrue },
 
-	{ &g_forcePowerDisable, "g_forcePowerDisable", "0", CVAR_SERVERINFO | CVAR_ARCHIVE | CVAR_LATCH, 0, qtrue  },
-	{ &g_weaponDisable, "g_weaponDisable", "0", CVAR_SERVERINFO | CVAR_ARCHIVE | CVAR_LATCH, 0, qtrue  },
-	{ &g_duelWeaponDisable, "g_duelWeaponDisable", "1", CVAR_SERVERINFO | CVAR_ARCHIVE | CVAR_LATCH, 0, qtrue  },
+{ &g_forcePowerDisable, "g_forcePowerDisable", "0", CVAR_SERVERINFO | CVAR_ARCHIVE | CVAR_LATCH, 0, qtrue },
+{ &g_weaponDisable, "g_weaponDisable", "0", CVAR_SERVERINFO | CVAR_ARCHIVE | CVAR_LATCH, 0, qtrue },
+{ &g_duelWeaponDisable, "g_duelWeaponDisable", "1", CVAR_SERVERINFO | CVAR_ARCHIVE | CVAR_LATCH, 0, qtrue },
 
-	{ &g_allowDuelSuicide, "g_allowDuelSuicide", "1", CVAR_ARCHIVE, 0, qtrue },
+{ &g_allowDuelSuicide, "g_allowDuelSuicide", "1", CVAR_ARCHIVE, 0, qtrue },
 
-	{ &g_fraglimitVoteCorrection, "g_fraglimitVoteCorrection", "1", CVAR_ARCHIVE, 0, qtrue },
+{ &g_fraglimitVoteCorrection, "g_fraglimitVoteCorrection", "1", CVAR_ARCHIVE, 0, qtrue },
 
-	{ &g_fraglimit, "fraglimit", "20", CVAR_SERVERINFO | CVAR_ARCHIVE | CVAR_NORESTART, 0, qtrue },
-	{ &g_duel_fraglimit, "duel_fraglimit", "10", CVAR_SERVERINFO | CVAR_ARCHIVE | CVAR_NORESTART, 0, qtrue },
-	{ &g_timelimit, "timelimit", "0", CVAR_SERVERINFO | CVAR_ARCHIVE | CVAR_NORESTART, 0, qtrue },
-	{ &g_capturelimit, "capturelimit", "8", CVAR_SERVERINFO | CVAR_ARCHIVE | CVAR_NORESTART, 0, qtrue },
+{ &g_fraglimit, "fraglimit", "20", CVAR_SERVERINFO | CVAR_ARCHIVE | CVAR_NORESTART, 0, qtrue },
+{ &g_duel_fraglimit, "duel_fraglimit", "10", CVAR_SERVERINFO | CVAR_ARCHIVE | CVAR_NORESTART, 0, qtrue },
+{ &g_timelimit, "timelimit", "0", CVAR_SERVERINFO | CVAR_ARCHIVE | CVAR_NORESTART, 0, qtrue },
+{ &g_capturelimit, "capturelimit", "8", CVAR_SERVERINFO | CVAR_ARCHIVE | CVAR_NORESTART, 0, qtrue },
 
-	{ &g_synchronousClients, "g_synchronousClients", "0", CVAR_SYSTEMINFO, 0, qfalse  },
+{ &g_synchronousClients, "g_synchronousClients", "0", CVAR_SYSTEMINFO, 0, qfalse },
 
-	{ &d_saberInterpolate, "d_saberInterpolate", "0", CVAR_CHEAT, 0, qtrue },
+{ &d_saberInterpolate, "d_saberInterpolate", "0", CVAR_CHEAT, 0, qtrue },
 
-	{ &g_friendlyFire, "g_friendlyFire", "0", CVAR_ARCHIVE, 0, qtrue  },
-	{ &g_friendlySaber, "g_friendlySaber", "0", CVAR_ARCHIVE, 0, qtrue  },
+{ &g_friendlyFire, "g_friendlyFire", "0", CVAR_ARCHIVE, 0, qtrue },
+{ &g_friendlySaber, "g_friendlySaber", "0", CVAR_ARCHIVE, 0, qtrue },
 
-	{ &g_teamAutoJoin, "g_teamAutoJoin", "0", CVAR_ARCHIVE  },
-	{ &g_teamForceBalance, "g_teamForceBalance", "0", CVAR_ARCHIVE  },
+{ &g_teamAutoJoin, "g_teamAutoJoin", "0", CVAR_ARCHIVE },
+{ &g_teamForceBalance, "g_teamForceBalance", "0", CVAR_ARCHIVE },
 
-	{ &g_warmup, "g_warmup", "20", CVAR_ARCHIVE, 0, qtrue  },
-	{ &g_doWarmup, "g_doWarmup", "0", 0, 0, qtrue  },
-	{ &g_log, "g_log", "games.log", CVAR_ARCHIVE, 0, qfalse  },
-	{ &g_logSync, "g_logSync", "0", CVAR_ARCHIVE, 0, qfalse  },
+{ &g_warmup, "g_warmup", "20", CVAR_ARCHIVE, 0, qtrue },
+{ &g_doWarmup, "g_doWarmup", "0", 0, 0, qtrue },
+{ &g_log, "g_log", "games.log", CVAR_ARCHIVE, 0, qfalse },
+{ &g_logSync, "g_logSync", "0", CVAR_ARCHIVE, 0, qfalse },
 
-	{ &g_statLog, "g_statLog", "0", CVAR_ARCHIVE, 0, qfalse },
-	{ &g_statLogFile, "g_statLogFile", "statlog.log", CVAR_ARCHIVE, 0, qfalse },
+{ &g_statLog, "g_statLog", "0", CVAR_ARCHIVE, 0, qfalse },
+{ &g_statLogFile, "g_statLogFile", "statlog.log", CVAR_ARCHIVE, 0, qfalse },
 
-	{ &g_password, "g_password", "", CVAR_USERINFO, 0, qfalse  },
+{ &g_password, "g_password", "", CVAR_USERINFO, 0, qfalse },
 
-	{ &g_banIPs, "g_banIPs", "", CVAR_ARCHIVE, 0, qfalse  },
-	{ &g_filterBan, "g_filterBan", "1", CVAR_ARCHIVE, 0, qfalse  },
-	{ &g_filterAdminBan, "g_filterAdminBan", "1", CVAR_ARCHIVE, 0, qfalse  },
+{ &g_banIPs, "g_banIPs", "", CVAR_ARCHIVE, 0, qfalse },
+{ &g_filterBan, "g_filterBan", "1", CVAR_ARCHIVE, 0, qfalse },
+{ &g_filterAdminBan, "g_filterAdminBan", "1", CVAR_ARCHIVE, 0, qfalse },
 
-	{ &g_needpass, "g_needpass", "0", CVAR_SERVERINFO | CVAR_ROM, 0, qfalse },
+{ &g_needpass, "g_needpass", "0", CVAR_SERVERINFO | CVAR_ROM, 0, qfalse },
 
-	{ &g_dedicated, "dedicated", "0", 0, 0, qfalse  },
+{ &g_dedicated, "dedicated", "0", 0, 0, qfalse },
 
-	{ &g_developer, "developer", "0", 0, 0, qfalse },
+{ &g_developer, "developer", "0", 0, 0, qfalse },
 
-	{ &g_speed, "g_speed", "250", 0, 0, qtrue  },
-	{ &g_gravity, "g_gravity", "800", 0, 0, qtrue  },
-	{ &g_knockback, "g_knockback", "1000", 0, 0, qtrue  },
-	{ &g_quadfactor, "g_quadfactor", "3", 0, 0, qtrue  },
-	{ &g_weaponRespawn, "g_weaponrespawn", "5", 0, 0, qtrue  },
-	{ &g_weaponTeamRespawn, "g_weaponTeamRespawn", "5", 0, 0, qtrue },
-	{ &g_adaptRespawn, "g_adaptrespawn", "1", 0, 0, qtrue  },		// Make weapons respawn faster with a lot of players.
-	{ &g_forcerespawn, "g_forcerespawn", "60", 0, 0, qtrue },		// One minute force respawn.  Give a player enough time to reallocate force.
-	{ &g_siegeRespawn, "g_siegeRespawn", "20", CVAR_SERVERINFO | CVAR_ARCHIVE, 0, qtrue }, //siege respawn wave time
-	{ &g_inactivity, "g_inactivity", "0", 0, 0, qtrue },
-	{ &g_debugMove, "g_debugMove", "0", 0, 0, qfalse },
+{ &g_speed, "g_speed", "250", 0, 0, qtrue },
+{ &g_gravity, "g_gravity", "800", 0, 0, qtrue },
+{ &g_knockback, "g_knockback", "1000", 0, 0, qtrue },
+{ &g_quadfactor, "g_quadfactor", "3", 0, 0, qtrue },
+{ &g_weaponRespawn, "g_weaponrespawn", "5", 0, 0, qtrue },
+{ &g_weaponTeamRespawn, "g_weaponTeamRespawn", "5", 0, 0, qtrue },
+{ &g_adaptRespawn, "g_adaptrespawn", "1", 0, 0, qtrue },		// Make weapons respawn faster with a lot of players.
+{ &g_forcerespawn, "g_forcerespawn", "60", 0, 0, qtrue },		// One minute force respawn.  Give a player enough time to reallocate force.
+{ &g_siegeRespawn, "g_siegeRespawn", "20", CVAR_SERVERINFO | CVAR_ARCHIVE, 0, qtrue }, //siege respawn wave time
+{ &g_inactivity, "g_inactivity", "0", 0, 0, qtrue },
+{ &g_debugMove, "g_debugMove", "0", 0, 0, qfalse },
 #ifndef FINAL_BUILD
-	{ &g_debugDamage, "g_debugDamage", "0", 0, 0, qfalse },
+{ &g_debugDamage, "g_debugDamage", "0", 0, 0, qfalse },
 #endif
-	{ &g_debugAlloc, "g_debugAlloc", "0", 0, 0, qfalse },
-	{ &g_debugServerSkel, "g_debugServerSkel", "0", CVAR_CHEAT, 0, qfalse },
-	{ &g_motd, "g_motd", "", 0, 0, qfalse },
-	{ &g_blood, "com_blood", "1", 0, 0, qfalse },
+{ &g_debugAlloc, "g_debugAlloc", "0", 0, 0, qfalse },
+{ &g_debugServerSkel, "g_debugServerSkel", "0", CVAR_CHEAT, 0, qfalse },
+{ &g_motd, "g_motd", "", 0, 0, qfalse },
+{ &g_blood, "com_blood", "1", 0, 0, qfalse },
 
-	{ &g_podiumDist, "g_podiumDist", "80", 0, 0, qfalse },
-	{ &g_podiumDrop, "g_podiumDrop", "70", 0, 0, qfalse },
+{ &g_podiumDist, "g_podiumDist", "80", 0, 0, qfalse },
+{ &g_podiumDrop, "g_podiumDrop", "70", 0, 0, qfalse },
 
-	{ &g_allowVote, "g_allowVote", "1", CVAR_ARCHIVE, 0, qfalse },
-	{ &g_listEntity, "g_listEntity", "0", 0, 0, qfalse },
+{ &g_allowVote, "g_allowVote", "1", CVAR_ARCHIVE, 0, qfalse },
+{ &g_listEntity, "g_listEntity", "0", 0, 0, qfalse },
 
 #if 0
-	{ &g_debugForward, "g_debugForward", "0", 0, 0, qfalse },
-	{ &g_debugRight, "g_debugRight", "0", 0, 0, qfalse },
-	{ &g_debugUp, "g_debugUp", "0", 0, 0, qfalse },
+{ &g_debugForward, "g_debugForward", "0", 0, 0, qfalse },
+{ &g_debugRight, "g_debugRight", "0", 0, 0, qfalse },
+{ &g_debugUp, "g_debugUp", "0", 0, 0, qfalse },
 #endif
 
 //	{ &g_redteam, "g_redteam", "Empire", CVAR_ARCHIVE | CVAR_SERVERINFO | CVAR_USERINFO , 0, qtrue, qtrue },
 //	{ &g_blueteam, "g_blueteam", "Rebellion", CVAR_ARCHIVE | CVAR_SERVERINFO | CVAR_USERINFO , 0, qtrue, qtrue  },
-	{ &g_singlePlayer, "ui_singlePlayerActive", "", 0, 0, qfalse, qfalse  },
+{ &g_singlePlayer, "ui_singlePlayerActive", "", 0, 0, qfalse, qfalse },
 
-	{ &g_enableBreath, "g_enableBreath", "0", 0, 0, qtrue, qfalse },
-	{ &g_smoothClients, "g_smoothClients", "1", 0, 0, qfalse},
-	{ &pmove_fixed, "pmove_fixed", "0", CVAR_SYSTEMINFO, 0, qfalse},
-	{ &pmove_msec, "pmove_msec", "8", CVAR_SYSTEMINFO, 0, qfalse},
+{ &g_enableBreath, "g_enableBreath", "0", 0, 0, qtrue, qfalse },
+{ &g_smoothClients, "g_smoothClients", "1", 0, 0, qfalse },
+{ &pmove_fixed, "pmove_fixed", "0", CVAR_SYSTEMINFO, 0, qfalse },
+{ &pmove_msec, "pmove_msec", "8", CVAR_SYSTEMINFO, 0, qfalse },
 
-	{ &g_dismember, "g_dismember", "0", CVAR_ARCHIVE, 0, qtrue  },
-	{ &g_forceDodge, "g_forceDodge", "1", 0, 0, qtrue  },
+{ &g_dismember, "g_dismember", "0", CVAR_ARCHIVE, 0, qtrue },
+{ &g_forceDodge, "g_forceDodge", "1", 0, 0, qtrue },
 
-	{ &g_timeouttospec, "g_timeouttospec", "70", CVAR_ARCHIVE, 0, qfalse },
+{ &g_timeouttospec, "g_timeouttospec", "70", CVAR_ARCHIVE, 0, qfalse },
 
-	{ &g_saberDmgVelocityScale, "g_saberDmgVelocityScale", "0", CVAR_ARCHIVE, 0, qtrue  },
-	{ &g_saberDmgDelay_Idle, "g_saberDmgDelay_Idle", "350", CVAR_ARCHIVE, 0, qtrue  },
-	{ &g_saberDmgDelay_Wound, "g_saberDmgDelay_Wound", "0", CVAR_ARCHIVE, 0, qtrue  },
+{ &g_saberDmgVelocityScale, "g_saberDmgVelocityScale", "0", CVAR_ARCHIVE, 0, qtrue },
+{ &g_saberDmgDelay_Idle, "g_saberDmgDelay_Idle", "350", CVAR_ARCHIVE, 0, qtrue },
+{ &g_saberDmgDelay_Wound, "g_saberDmgDelay_Wound", "0", CVAR_ARCHIVE, 0, qtrue },
 
 #ifndef FINAL_BUILD
-	{ &g_saberDebugPrint, "g_saberDebugPrint", "0", CVAR_CHEAT, 0, qfalse  },
+{ &g_saberDebugPrint, "g_saberDebugPrint", "0", CVAR_CHEAT, 0, qfalse },
 #endif
-	{ &g_debugSaberLocks, "g_debugSaberLocks", "0", CVAR_CHEAT, 0, qfalse },
-	{ &g_saberLockRandomNess, "g_saberLockRandomNess", "2", CVAR_CHEAT, 0, qfalse },
+{ &g_debugSaberLocks, "g_debugSaberLocks", "0", CVAR_CHEAT, 0, qfalse },
+{ &g_saberLockRandomNess, "g_saberLockRandomNess", "2", CVAR_CHEAT, 0, qfalse },
 // nmckenzie: SABER_DAMAGE_WALLS
-	{ &g_saberWallDamageScale, "g_saberWallDamageScale", "0.4", CVAR_SERVERINFO, 0, qfalse },
+{ &g_saberWallDamageScale, "g_saberWallDamageScale", "0.4", CVAR_SERVERINFO, 0, qfalse },
 
-	{ &d_saberStanceDebug, "d_saberStanceDebug", "0", 0, 0, qfalse },
+{ &d_saberStanceDebug, "d_saberStanceDebug", "0", 0, 0, qfalse },
 
-	{ &g_siegeTeamSwitch, "g_siegeTeamSwitch", "1", CVAR_SERVERINFO|CVAR_ARCHIVE, qfalse },
+{ &g_siegeTeamSwitch, "g_siegeTeamSwitch", "1", CVAR_SERVERINFO | CVAR_ARCHIVE, qfalse },
 
-	{ &bg_fighterAltControl, "bg_fighterAltControl", "0", CVAR_SERVERINFO, 0, qtrue },
+{ &bg_fighterAltControl, "bg_fighterAltControl", "0", CVAR_SERVERINFO, 0, qtrue },
 
 #ifdef DEBUG_SABER_BOX
-	{ &g_saberDebugBox, "g_saberDebugBox", "0", CVAR_ARCHIVE, 0, qfalse },
+{ &g_saberDebugBox, "g_saberDebugBox", "0", CVAR_ARCHIVE, 0, qfalse },
 #endif
 
-	{ &d_altRoutes, "d_altRoutes", "0", CVAR_CHEAT, 0, qfalse },
-	{ &d_patched, "d_patched", "0", CVAR_CHEAT, 0, qfalse },
+{ &d_altRoutes, "d_altRoutes", "0", CVAR_CHEAT, 0, qfalse },
+{ &d_patched, "d_patched", "0", CVAR_CHEAT, 0, qfalse },
 
-	{ &g_saberRealisticCombat, "g_saberRealisticCombat", "0", CVAR_CHEAT, 0, qtrue },
-	{ &g_saberRestrictForce, "g_saberRestrictForce", "0", CVAR_CHEAT },
-	{ &d_saberSPStyleDamage, "d_saberSPStyleDamage", "0", CVAR_CHEAT },
+{ &g_saberRealisticCombat, "g_saberRealisticCombat", "0", CVAR_CHEAT, 0, qtrue },
+{ &g_saberRestrictForce, "g_saberRestrictForce", "0", CVAR_CHEAT },
+{ &d_saberSPStyleDamage, "d_saberSPStyleDamage", "0", CVAR_CHEAT },
 
-	{ &debugNoRoam, "d_noroam", "0", CVAR_CHEAT },
-	{ &debugNPCAimingBeam, "d_npcaiming", "0", CVAR_CHEAT },
-	{ &debugBreak, "d_break", "0", CVAR_CHEAT },
-	{ &debugNPCAI, "d_npcai", "0", CVAR_CHEAT },
-	{ &debugNPCFreeze, "d_npcfreeze", "0", CVAR_CHEAT },
-	{ &d_JediAI, "d_JediAI", "0", CVAR_CHEAT },
-	{ &d_noGroupAI, "d_noGroupAI", "0", CVAR_CHEAT },
-	{ &d_asynchronousGroupAI, "d_asynchronousGroupAI", "0", CVAR_CHEAT },
-	
-	//0 = never (BORING)
-	//1 = kyle only
-	//2 = kyle and last enemy jedi
-	//3 = kyle and any enemy jedi
-	//4 = kyle and last enemy in a group
-	//5 = kyle and any enemy
-	//6 = also when kyle takes pain or enemy jedi dodges player saber swing or does an acrobatic evasion
+{ &debugNoRoam, "d_noroam", "0", CVAR_CHEAT },
+{ &debugNPCAimingBeam, "d_npcaiming", "0", CVAR_CHEAT },
+{ &debugBreak, "d_break", "0", CVAR_CHEAT },
+{ &debugNPCAI, "d_npcai", "0", CVAR_CHEAT },
+{ &debugNPCFreeze, "d_npcfreeze", "0", CVAR_CHEAT },
+{ &d_JediAI, "d_JediAI", "0", CVAR_CHEAT },
+{ &d_noGroupAI, "d_noGroupAI", "0", CVAR_CHEAT },
+{ &d_asynchronousGroupAI, "d_asynchronousGroupAI", "0", CVAR_CHEAT },
 
-	{ &d_slowmodeath, "d_slowmodeath", "0", CVAR_CHEAT },
+//0 = never (BORING)
+//1 = kyle only
+//2 = kyle and last enemy jedi
+//3 = kyle and any enemy jedi
+//4 = kyle and last enemy in a group
+//5 = kyle and any enemy
+//6 = also when kyle takes pain or enemy jedi dodges player saber swing or does an acrobatic evasion
 
-	{ &d_saberCombat, "d_saberCombat", "0", CVAR_CHEAT },
+{ &d_slowmodeath, "d_slowmodeath", "0", CVAR_CHEAT },
 
-	{ &g_spskill, "g_npcspskill", "0", CVAR_ARCHIVE | CVAR_INTERNAL },
+{ &d_saberCombat, "d_saberCombat", "0", CVAR_CHEAT },
 
-	//for overriding the level defaults
-	{ &g_siegeTeam1, "g_siegeTeam1", "none", CVAR_ARCHIVE|CVAR_SERVERINFO, 0, qfalse  },
-	{ &g_siegeTeam2, "g_siegeTeam2", "none", CVAR_ARCHIVE|CVAR_SERVERINFO, 0, qfalse  },
+{ &g_spskill, "g_npcspskill", "0", CVAR_ARCHIVE | CVAR_INTERNAL },
 
-	//mainly for debugging with bots while I'm not around (want the server to
-	//cycle through levels naturally)
-	{ &d_noIntermissionWait, "d_noIntermissionWait", "0", CVAR_CHEAT, 0, qfalse  },
+//for overriding the level defaults
+{ &g_siegeTeam1, "g_siegeTeam1", "none", CVAR_ARCHIVE | CVAR_SERVERINFO, 0, qfalse },
+{ &g_siegeTeam2, "g_siegeTeam2", "none", CVAR_ARCHIVE | CVAR_SERVERINFO, 0, qfalse },
 
-	{ &g_austrian, "g_austrian", "0", CVAR_ARCHIVE, 0, qfalse  },
+//mainly for debugging with bots while I'm not around (want the server to
+//cycle through levels naturally)
+{ &d_noIntermissionWait, "d_noIntermissionWait", "0", CVAR_CHEAT, 0, qfalse },
 
-	//============================grapplemod===================
-	{ &m_grapple_shoot_speed, "m_grapple_shootspeed", "800", CVAR_ARCHIVE, 0 , qtrue }, //// grapple speed 
-	{ &m_enable_grapple, "m_enable_grapple", "1", CVAR_ARCHIVE, 0, qtrue },
-	{ &saberChangeProtectTime, "cm_saberChangeProtectTime", "500", CVAR_ARCHIVE, 0 , qtrue },
-	{ &hookChangeProtectTime, "cm_hookFloodTime", "0", CVAR_ARCHIVE, 0 , qtrue },
-	//============================grapplemod===================
+{ &g_austrian, "g_austrian", "0", CVAR_ARCHIVE, 0, qfalse },
+
+//============================grapplemod===================
+{ &m_grapple_shoot_speed, "m_grapple_shootspeed", "800", CVAR_ARCHIVE, 0 , qtrue }, //// grapple speed 
+{ &m_enable_grapple, "m_grapple", "1", CVAR_ARCHIVE, 0, qtrue },
+{ &saberChangeProtectTime, "cm_saberChangeProtectTime", "500", CVAR_ARCHIVE, 0 , qtrue },
+{ &hookChangeProtectTime, "cm_hookFloodTime", "0", CVAR_ARCHIVE, 0 , qtrue },
+//============================grapplemod===================
 // nmckenzie:
 // DUEL_HEALTH
-	{ &g_showDuelHealths, "g_showDuelHealths", "0", CVAR_SERVERINFO },
-	{ &g_powerDuelStartHealth, "g_powerDuelStartHealth", "150", CVAR_ARCHIVE, 0, qtrue  },
-	{ &g_powerDuelEndHealth, "g_powerDuelEndHealth", "90", CVAR_ARCHIVE, 0, qtrue  },
-	{ &cm_automessenger,         "cm_automessenger",         "1", CVAR_ARCHIVE | CVAR_INTERNAL, 0, qtrue },
-	{ &mod_pushall, "mod_pushall", "1", CVAR_ARCHIVE, 0, qtrue },
-	//{ &d_slowmodeath,         "cm_slowmodeath",         "0", 0, 0, qtrue },
-	{ &m_v1, "m_v1", "Disable Auto Bow:cm_autobow 0", CVAR_ARCHIVE, 0 , qfalse }, //// mod control vote strings
-	{ &m_v2, "m_v2", "", CVAR_ARCHIVE, 0 , qfalse }, 
-	{ &m_v3, "m_v3", "", CVAR_ARCHIVE, 0 , qfalse }, 
-	{ &m_v4, "m_v4", "", CVAR_ARCHIVE, 0 , qfalse }, 
-	{ &m_v5, "m_v5", "", CVAR_ARCHIVE, 0 , qfalse }, 
-	{ &m_v6, "m_v6", "", CVAR_ARCHIVE, 0 , qfalse },
-	{ &m_rV, "cm_restrictvote", "0", CVAR_INTERNAL, 0, qfalse}, ////lmo restrict votes
-	{ &roar_emoteControl, "cm_emoteControl", "0", CVAR_INTERNAL, 0 , qtrue },
-	{ &g_clanPassword,         "cm_clanPassword",         "clanpass", CVAR_INTERNAL, 0, qfalse },
-	{ &g_NPCmaxFollowers, "mod_NPCmaxFollowers", "8", CVAR_ARCHIVE, 0, qtrue  },
+{ &g_showDuelHealths, "g_showDuelHealths", "0", CVAR_SERVERINFO },
+{ &g_powerDuelStartHealth, "g_powerDuelStartHealth", "150", CVAR_ARCHIVE, 0, qtrue },
+{ &g_powerDuelEndHealth, "g_powerDuelEndHealth", "90", CVAR_ARCHIVE, 0, qtrue },
+{ &cm_automessenger,         "cm_automessenger",         "1", CVAR_ARCHIVE | CVAR_INTERNAL, 0, qtrue },
+{ &mod_pushall, "mod_pushall", "1", CVAR_ARCHIVE, 0, qtrue },
+//{ &d_slowmodeath,         "cm_slowmodeath",         "0", 0, 0, qtrue },
+{ &m_v1, "m_v1", "Disable Auto Bow:cm_autobow 0", CVAR_ARCHIVE, 0 , qfalse }, //// mod control vote strings
+{ &m_v2, "m_v2", "", CVAR_ARCHIVE, 0 , qfalse },
+{ &m_v3, "m_v3", "", CVAR_ARCHIVE, 0 , qfalse },
+{ &m_v4, "m_v4", "", CVAR_ARCHIVE, 0 , qfalse },
+{ &m_v5, "m_v5", "", CVAR_ARCHIVE, 0 , qfalse },
+{ &m_v6, "m_v6", "", CVAR_ARCHIVE, 0 , qfalse },
+{ &m_rV, "cm_restrictvote", "0", CVAR_INTERNAL, 0, qfalse }, ////lmo restrict votes
+{ &roar_emoteControl, "cm_emoteControl", "0", CVAR_INTERNAL, 0 , qtrue },
+{ &g_clanPassword,         "cm_clanPassword",         "clanpass", CVAR_INTERNAL, 0, qfalse },
+{ &g_NPCmaxFollowers, "mod_NPCmaxFollowers", "8", CVAR_ARCHIVE, 0, qtrue },
 
-	//cm - Jake (custom weapon damages)
-	{ &cm_E11_BLASTER_DAMAGE, "cm_E11_BLASTER_DAMAGE", "20", CVAR_ARCHIVE, 0, qtrue  },
-	{ &cm_E11_BLASTER_VELOCITY, "cm_E11_BLASTER_VELOCITY", "2300", CVAR_ARCHIVE, 0, qtrue  },
-	{ &cm_DISRUPTOR_MAIN_DAMAGE, "cm_DISRUPTOR_MAIN_DAMAGE", "30", CVAR_ARCHIVE, 0, qtrue  },
-	{ &cm_DISRUPTOR_ALT_DAMAGE, "cm_DISRUPTOR_ALT_DAMAGE", "100", CVAR_ARCHIVE, 0, qtrue  },
-	{ &cm_BOWCASTER_DAMAGE, "cm_BOWCASTER_DAMAGE", "50", CVAR_ARCHIVE, 0, qtrue  },
-	{ &cm_BOWCASTER_VELOCITY, "cm_BOWCASTER_VELOCITY", "1300", CVAR_ARCHIVE, 0, qtrue  },
-	{ &cm_REPEATER_DAMAGE, "cm_REPEATER_DAMAGE", "14", CVAR_ARCHIVE, 0, qtrue  },
-	{ &cm_REPEATER_ALT_DAMAGE, "cm_REPEATER_ALT_DAMAGE", "60", CVAR_ARCHIVE, 0, qtrue  },
-	{ &cm_REPEATER_SPLASH_DAMAGE, "cm_REPEATER_SPLASH_DAMAGE", "60", CVAR_ARCHIVE, 0, qtrue  },
-	{ &cm_REPEATER_VELOCITY, "cm_REPEATER_VELOCITY", "1600", CVAR_ARCHIVE, 0, qtrue  },
-	{ &cm_DEMP2_DAMAGE, "cm_DEMP2_DAMAGE", "35", CVAR_ARCHIVE, 0, qtrue  },
-	{ &cm_DEMP2_ALT_DAMAGE, "cm_DEMP2_ALT_DAMAGE", "8", CVAR_ARCHIVE, 0, qtrue  },
-	{ &cm_DEMP2_VELOCITY, "cm_DEMP2_VELOCITY", "1800", CVAR_ARCHIVE, 0, qtrue  },
-	{ &cm_FLECHETTE_DAMAGE, "cm_FLECHETTE_DAMAGE", "12", CVAR_ARCHIVE, 0, qtrue  },
-	{ &cm_FLECHETTE_ALT_DAMAGE, "cm_FLECHETTE_ALT_DAMAGE", "60", CVAR_ARCHIVE, 0, qtrue  },
-	{ &cm_FLECHETTE_VELOCITY, "cm_FLECHETTE_VELOCITY", "3500", CVAR_ARCHIVE, 0, qtrue  },
-	{ &cm_ROCKET_DAMAGE, "cm_ROCKET_DAMAGE", "100", CVAR_ARCHIVE, 0, qtrue  },
-	{ &cm_ROCKET_SPLASH_DAMAGE, "cm_ROCKET_SPLASH_DAMAGE", "100", CVAR_ARCHIVE, 0, qtrue  },
-	{ &cm_ROCKET_VELOCITY, "cm_ROCKET_VELOCITY", "900", CVAR_ARCHIVE, 0, qtrue  },
-	{ &cm_CONCUSION_DAMAGE, "cm_CONCUSION_DAMAGE", "75", CVAR_ARCHIVE, 0, qtrue  },
-	{ &cm_CONCUSION_SPLASH_DAMAGE, "cm_CONCUSION_SPLASH_DAMAGE", "40", CVAR_ARCHIVE, 0, qtrue  },
-	{ &cm_CONCUSION_ALT_DAMAGE, "cm_CONCUSION_ALT_DAMAGE", "25", CVAR_ARCHIVE, 0, qtrue  },
-	{ &cm_CONCUSION_VELOCITY, "cm_CONCUSION_VELOCITY", "3000", CVAR_ARCHIVE, 0, qtrue  },
-	{ &cm_STUN_BATON_DAMAGE, "cm_STUN_BATON_DAMAGE", "20", CVAR_ARCHIVE, 0, qtrue  },
-	{ &cm_MELEE_SWING1_DAMAGE, "cm_MELEE_SWING1_DAMAGE", "10", CVAR_ARCHIVE, 0, qtrue  },
-	{ &cm_MELEE_SWING2_DAMAGE, "cm_MELEE_SWING2_DAMAGE", "12", CVAR_ARCHIVE, 0, qtrue  },
-	{ &cm_THERMAL_DETONATOR_DAMAGE, "cm_THERMAL_DETONATOR_DAMAGE", "70", CVAR_ARCHIVE, 0, qtrue  },
-	{ &cm_THERMAL_DETONATOR_ALT_DAMAGE, "cm_THERMAL_DETONATOR_ALT_DAMAGE", "60", CVAR_ARCHIVE, 0, qtrue  },
-	{ &cm_THERMAL_DETONATOR_VELOCITY, "cm_THERMAL_DETONATOR_VELOCITY", "900", CVAR_ARCHIVE, 0, qtrue  },
-	{ &cm_TRIP_MINE_DAMAGE, "cm_TRIP_MINE_DAMAGE", "100", CVAR_ARCHIVE, 0, qtrue  },
-	{ &cm_DET_PACK_DAMAGE, "cm_DET_PACK_DAMAGE", "100", CVAR_ARCHIVE, 0, qtrue  },
-	{ &cm_DET_PACK_SPLASH_DAMAGE, "cm_DET_PACK_SPLASH_DAMAGE", "200", CVAR_ARCHIVE, 0, qtrue  },
-	{ &cm_BRYAR_PISTOL_DAMAGE, "cm_BRYAR_PISTOL_DAMAGE", "10", CVAR_ARCHIVE, 0, qtrue },
-	{ &cm_BRYAR_PISTOL_VELOCITY, "cm_BRYAR_PISTOL_VELOCITY", "1600", CVAR_ARCHIVE, 0, qtrue },
+//cm - Jake (custom weapon damages)
+{ &cm_E11_BLASTER_DAMAGE, "cm_E11_BLASTER_DAMAGE", "20", CVAR_ARCHIVE, 0, qtrue },
+{ &cm_E11_BLASTER_VELOCITY, "cm_E11_BLASTER_VELOCITY", "2300", CVAR_ARCHIVE, 0, qtrue },
+{ &cm_DISRUPTOR_MAIN_DAMAGE, "cm_DISRUPTOR_MAIN_DAMAGE", "30", CVAR_ARCHIVE, 0, qtrue },
+{ &cm_DISRUPTOR_ALT_DAMAGE, "cm_DISRUPTOR_ALT_DAMAGE", "100", CVAR_ARCHIVE, 0, qtrue },
+{ &cm_BOWCASTER_DAMAGE, "cm_BOWCASTER_DAMAGE", "50", CVAR_ARCHIVE, 0, qtrue },
+{ &cm_BOWCASTER_VELOCITY, "cm_BOWCASTER_VELOCITY", "1300", CVAR_ARCHIVE, 0, qtrue },
+{ &cm_REPEATER_DAMAGE, "cm_REPEATER_DAMAGE", "14", CVAR_ARCHIVE, 0, qtrue },
+{ &cm_REPEATER_ALT_DAMAGE, "cm_REPEATER_ALT_DAMAGE", "60", CVAR_ARCHIVE, 0, qtrue },
+{ &cm_REPEATER_SPLASH_DAMAGE, "cm_REPEATER_SPLASH_DAMAGE", "60", CVAR_ARCHIVE, 0, qtrue },
+{ &cm_REPEATER_VELOCITY, "cm_REPEATER_VELOCITY", "1600", CVAR_ARCHIVE, 0, qtrue },
+{ &cm_DEMP2_DAMAGE, "cm_DEMP2_DAMAGE", "35", CVAR_ARCHIVE, 0, qtrue },
+{ &cm_DEMP2_ALT_DAMAGE, "cm_DEMP2_ALT_DAMAGE", "8", CVAR_ARCHIVE, 0, qtrue },
+{ &cm_DEMP2_VELOCITY, "cm_DEMP2_VELOCITY", "1800", CVAR_ARCHIVE, 0, qtrue },
+{ &cm_FLECHETTE_DAMAGE, "cm_FLECHETTE_DAMAGE", "12", CVAR_ARCHIVE, 0, qtrue },
+{ &cm_FLECHETTE_ALT_DAMAGE, "cm_FLECHETTE_ALT_DAMAGE", "60", CVAR_ARCHIVE, 0, qtrue },
+{ &cm_FLECHETTE_VELOCITY, "cm_FLECHETTE_VELOCITY", "3500", CVAR_ARCHIVE, 0, qtrue },
+{ &cm_ROCKET_DAMAGE, "cm_ROCKET_DAMAGE", "100", CVAR_ARCHIVE, 0, qtrue },
+{ &cm_ROCKET_SPLASH_DAMAGE, "cm_ROCKET_SPLASH_DAMAGE", "100", CVAR_ARCHIVE, 0, qtrue },
+{ &cm_ROCKET_VELOCITY, "cm_ROCKET_VELOCITY", "900", CVAR_ARCHIVE, 0, qtrue },
+{ &cm_CONCUSION_DAMAGE, "cm_CONCUSION_DAMAGE", "75", CVAR_ARCHIVE, 0, qtrue },
+{ &cm_CONCUSION_SPLASH_DAMAGE, "cm_CONCUSION_SPLASH_DAMAGE", "40", CVAR_ARCHIVE, 0, qtrue },
+{ &cm_CONCUSION_ALT_DAMAGE, "cm_CONCUSION_ALT_DAMAGE", "25", CVAR_ARCHIVE, 0, qtrue },
+{ &cm_CONCUSION_VELOCITY, "cm_CONCUSION_VELOCITY", "3000", CVAR_ARCHIVE, 0, qtrue },
+{ &cm_STUN_BATON_DAMAGE, "cm_STUN_BATON_DAMAGE", "20", CVAR_ARCHIVE, 0, qtrue },
+{ &cm_MELEE_SWING1_DAMAGE, "cm_MELEE_SWING1_DAMAGE", "10", CVAR_ARCHIVE, 0, qtrue },
+{ &cm_MELEE_SWING2_DAMAGE, "cm_MELEE_SWING2_DAMAGE", "12", CVAR_ARCHIVE, 0, qtrue },
+{ &cm_THERMAL_DETONATOR_DAMAGE, "cm_THERMAL_DETONATOR_DAMAGE", "70", CVAR_ARCHIVE, 0, qtrue },
+{ &cm_THERMAL_DETONATOR_ALT_DAMAGE, "cm_THERMAL_DETONATOR_ALT_DAMAGE", "60", CVAR_ARCHIVE, 0, qtrue },
+{ &cm_THERMAL_DETONATOR_VELOCITY, "cm_THERMAL_DETONATOR_VELOCITY", "900", CVAR_ARCHIVE, 0, qtrue },
+{ &cm_TRIP_MINE_DAMAGE, "cm_TRIP_MINE_DAMAGE", "100", CVAR_ARCHIVE, 0, qtrue },
+{ &cm_DET_PACK_DAMAGE, "cm_DET_PACK_DAMAGE", "100", CVAR_ARCHIVE, 0, qtrue },
+{ &cm_DET_PACK_SPLASH_DAMAGE, "cm_DET_PACK_SPLASH_DAMAGE", "200", CVAR_ARCHIVE, 0, qtrue },
+{ &cm_BRYAR_PISTOL_DAMAGE, "cm_BRYAR_PISTOL_DAMAGE", "10", CVAR_ARCHIVE, 0, qtrue },
+{ &cm_BRYAR_PISTOL_VELOCITY, "cm_BRYAR_PISTOL_VELOCITY", "1600", CVAR_ARCHIVE, 0, qtrue },
 };
 
 // bk001129 - made static to avoid aliasing
