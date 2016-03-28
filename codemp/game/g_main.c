@@ -366,6 +366,7 @@ vmCvar_t		roar_silence_off_ALL_saying;
 vmCvar_t		cm_insults;
 
 vmCvar_t		cm_noPadawanNames;
+vmCvar_t		cm_noServerNames;
 vmCvar_t		cm_newName;
 vmCvar_t		cm_clanTag;
 vmCvar_t		cm_tagwarnings;
@@ -564,6 +565,7 @@ static cvarTable_t		gameCvarTable[] = {
 	{ &cm_AllowKnockDownPull,			"cm_AllowKnockDownPull",			"0",		CVAR_ARCHIVE,					0, qfalse },
 	
 	{ &cm_noPadawanNames,			"cm_noPadawanNames",			"0",		CVAR_ARCHIVE,					0, qfalse },
+	{ &cm_noPadawanNames,			"cm_noServerNames",			"0",		CVAR_ARCHIVE,					0, qfalse },
 	{ &cm_noSuddenDeath,			"cm_noSuddenDeath",			"0",		CVAR_ARCHIVE,					0, qtrue },
 	{ &cm_newName,			"cm_newName",			"",		CVAR_ARCHIVE,					0, qfalse },
 	{ &cm_clanTag,			"cm_clanTag",			"",		CVAR_ARCHIVE,					0, qfalse },

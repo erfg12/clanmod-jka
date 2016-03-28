@@ -562,11 +562,13 @@ typedef struct {
 	//
 	int			save_score;
 	qboolean	ampadawan;
+	qboolean	amservername;
 	qboolean	amclanreserved;
 	qboolean	refuseduels;
 	int			offensive_numbers;
 	int			clantimer;
 	int			padawantimer;
+	int			servernametimer;
 	int			bitvalue;
 	char		login[1024];
 	char		logout[1024];
@@ -2030,6 +2032,7 @@ extern vmCvar_t		roar_silence_off_ALL_saying;
 extern vmCvar_t		cm_insults;
 
 extern vmCvar_t		cm_noPadawanNames;
+extern vmCvar_t		cm_noServerNames;
 extern vmCvar_t		cm_newName;
 extern vmCvar_t		cm_clanTag;
 extern vmCvar_t		cm_noSuddenDeath;

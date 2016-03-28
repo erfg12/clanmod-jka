@@ -106,31 +106,31 @@ Controls what emotes are allowed. Use Tools/Emote Calculator.exe to configure th
 
 
 -----------------------
-cm_allow_jetpack_command
+cm_jetpack
 -----------------------
 1 = on, 0 = off. Allow the /jetpack command.
 
 
 -----------------------
-cm_allow_KnockMeDown_command
+cm_KnockMeDown
 -----------------------
 1 = on, 0 = off. Allow the /KnockMeDown command.
 
 
 -----------------------
-cm_allow_drop_command
+cm_drop
 -----------------------
 1 = on, 0 = off. Allow the /drop command.
 
 
 -----------------------
-cm_allow_report_command
+cm_report
 -----------------------
 1 = on, 0 = off. Allow the /report command.
 
 
 -----------------------
-cm_starting_weapons
+cm_startWeapons
 -----------------------
 Configure what player starting weapons are. 0 = only saber, 1 = only melee, 2 = melee + saber.
 
@@ -142,25 +142,25 @@ cm_elevator
 
 
 -----------------------
-cm_enable_NormalDuel
+cm_Duels
 -----------------------
 1 = on, 0 = off. Allow normal lightsaber duels.
 
 
 -----------------------
-cm_enable_ForceDuel
+cm_ForceDuel
 -----------------------
 1 = on, 0 = off. Allow force power duels.
 
 
 -----------------------
-cm_enable_TrainingDuel
+cm_TrainingDuel
 -----------------------
 1 = on, 0 = off. Allow training duels. (infinite HP)
 
 
 -----------------------
-cm_enable_MeleeDuel
+cm_MeleeDuel
 -----------------------
 1 = on, 0 = off. Allow melee only duels. (fists and kicks only)
 
@@ -196,25 +196,25 @@ Set in milliseconds. How fast the grappling hook goes after being shot.
 
 
 -----------------------
-m_enable_grapple
+m_grapple
 -----------------------
 1 = on, 0 = off. Allow the use of a grappling hook.
 
 
 -----------------------
-cm_allow_chatColors
+cm_chatColors
 -----------------------
 1 = on, 0 = off. Allow the use of the c_chatColor cvar.
 
 
 -----------------------
-cm_allow_samePlayerNames
+cm_samePlayerNames
 -----------------------
 1 = on, 0 = off. Allow players to have the same name.
 
 
 -----------------------
-cm_chat_protection
+cm_chatProtection
 -----------------------
 1 = on, 0 = off. Protect the server from a chat flood.
 
@@ -236,6 +236,13 @@ The speed of a force gripped player moves. BASEJKA = 0.4
 g_NPCmaxFollowers
 -----------------------
 0 = no followers. Quantity of allowed NPC followers.
+
+
+-----------------------
+cm_noServerNames
+-----------------------
+1 = on, 0 = off. Player names cannot contain the word server. 
+Players have 30 seconds to change name or else it will be changed for them.
 
 
 -----------------------
@@ -299,20 +306,21 @@ Server clan information. Shows in the clan information menu.
 
 
 -----------------------
-set cm_precoded_badwords "0"
-set cm_badword1 ""
-set cm_badword2 ""
-set cm_badword3 ""
-set cm_badword4 ""
-set cm_badword5 ""
+cm_badwords
 -----------------------
-bad word filter system. Pre-coded words are the typical US curse words.
+Bad word filter system. Use ; to seperate words.
+
+
+-----------------------
+cm_insults
+-----------------------
+Set insult words. Use ; to seperate words.
 
 
 -----------------------
 cm_empower_infforce
 -----------------------
-1 = on, 0 = off. Empowered players have infinite force powers.
+1 = on, 0 = off. Empowered players have infinite force.
 
 
 -----------------------

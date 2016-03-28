@@ -3113,7 +3113,7 @@ qboolean	ConsoleCommand( void ) {
 
 		if ((trap_Argc() < 2) || (trap_Argc() > 3))
 		{
-			G_Printf("Usage: /register <playername> <password>");
+			G_Printf("Usage: /cmregister <playername> <password>");
 			return;
 		}
 		sqliteRegisterUser("INSERT INTO users (user, pass, ipaddress) VALUES ('%s', '%s', '127.0.0.1')", user, pass);
@@ -3126,7 +3126,7 @@ qboolean	ConsoleCommand( void ) {
 
 		if ((trap_Argc() < 1) || (trap_Argc() > 2))
 		{
-			G_Printf("Usage: /checkid <playername>");
+			G_Printf("Usage: /cmfinduser <playername>");
 			return;
 		}
 		int getID = sqliteSelectUserID("SELECT * FROM users WHERE user = '%s'", user);

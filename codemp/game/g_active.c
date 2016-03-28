@@ -896,18 +896,31 @@ void ClientTimerActions( gentity_t *ent, int msec ) {
 			}
 		}
 
-		if (client->pers.padawantimer >= 1 && client->pers.ampadawan == 1 &&
+		//RoAR mod NOTE: The new and improved Padawan name detection.
+		if (client->pers.amclanreserved == 0 && client->pers.padawantimer >= 1 && client->pers.ampadawan == 1 &&
 		*cm_noPadawanNames.string && cm_noPadawanNames.string[0] && *cm_newName.string && cm_newName.string[0] && cm_noPadawanNames.integer != 0){
 			trap_SendServerCommand( ent-g_entities, va("cp \"^1Padawan names are not allowed here!\n^1Please change it in ^3%d seconds^1,\n^1or your name will be changed.\n\"", client->pers.padawantimer ));
 			client->pers.padawantimer--;
 		}
 
-		//RoAR mod NOTE: The new and improved Padawan name detection.
 		if ( client->pers.amclanreserved == 0 && client->pers.padawantimer == 0 && client->pers.ampadawan == 1 &&
 		*cm_noPadawanNames.string && cm_noPadawanNames.string[0] && *cm_newName.string && cm_newName.string[0] && cm_noPadawanNames.integer != 0){
 			client->pers.ampadawan = 0;
 			uwRename(&g_entities[clientNum], cm_newName.string);
 			trap_SendServerCommand( ent-g_entities, va("print \"^1Padawan names are not allowed, you have been forcefully renamed.\n\"") );
+		}
+
+		if (client->pers.amclanreserved == 0 && client->pers.padawantimer == 0 && client->pers.servernametimer >= 1 && client->pers.amservername == 1 &&
+			*cm_noServerNames.string && cm_noServerNames.string[0] && *cm_newName.string && cm_newName.string[0] && cm_noServerNames.integer != 0) {
+			trap_SendServerCommand(ent-g_entities, va("cp \"^1Names with server in them are not allowed here!\n^1Please change it in ^3%d seconds^1,\n^1or your name will be changed.\n\"", client->pers.servernametimer));
+			client->pers.servernametimer--;
+		}
+
+		if (client->pers.padawantimer == 0 && client->pers.amclanreserved == 0 && client->pers.servernametimer == 0 && client->pers.amservername == 1 &&
+			*cm_noServerNames.string && cm_noServerNames.string[0] && *cm_newName.string && cm_newName.string[0] && cm_noServerNames.integer != 0) {
+			client->pers.amservername = 0;
+			uwRename(&g_entities[clientNum], cm_newName.string);
+			trap_SendServerCommand(ent-g_entities, va("print \"^1Names with server in them are not allowed, you have been forcefully renamed.\n\""));
 		}
 
 

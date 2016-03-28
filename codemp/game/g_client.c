@@ -2324,24 +2324,24 @@ void ClientUserinfoChanged( int clientNum ) {
 		}
 	}
 
-	if ( client->pers.connected == CON_CONNECTED ) {
-		if (ent->client->pers.amlockname == 1){
+	if (client->pers.connected == CON_CONNECTED) {
+		if (ent->client->pers.amlockname == 1) {
 			return;
 		}
-		if ( strcmp( oldname, client->pers.netname ) )
+		if (strcmp(oldname, client->pers.netname))
 		{
-			
-			if ( client->pers.netnameTime > level.time  )
+
+			if (client->pers.netnameTime > level.time)
 			{
-				trap_SendServerCommand( clientNum, va("print \"%s\n\"", G_GetStringEdString("MP_SVGAME", "NONAMECHANGE")) );
-				
-				Info_SetValueForKey( userinfo, "name", oldname );
-				trap_SetUserinfo( clientNum, userinfo );			
-				strcpy ( client->pers.netname, oldname );
+				trap_SendServerCommand(clientNum, va("print \"%s\n\"", G_GetStringEdString("MP_SVGAME", "NONAMECHANGE")));
+
+				Info_SetValueForKey(userinfo, "name", oldname);
+				trap_SetUserinfo(clientNum, userinfo);
+				strcpy(client->pers.netname, oldname);
 			}
 			else
-			{				
-				trap_SendServerCommand( -1, va("print \"%s" S_COLOR_WHITE " %s %s\n\"", oldname, G_GetStringEdString("MP_SVGAME", "PLRENAME"), client->pers.netname) );
+			{
+				trap_SendServerCommand(-1, va("print \"%s" S_COLOR_WHITE " %s %s\n\"", oldname, G_GetStringEdString("MP_SVGAME", "PLRENAME"), client->pers.netname));
 				//if(!g_entities[clientNum].r.svFlags & SVF_BOT){
 				G_LogPrintf("Renamed: (client %i [%s]) <%s> --> <%s>\n", clientNum,
 					g_entities[clientNum].client->sess.myip, oldname, client->pers.netname);
@@ -2349,24 +2349,34 @@ void ClientUserinfoChanged( int clientNum ) {
 				client->pers.netnameTime = level.time + 700;
 			}
 		}
-		if (Q_stristr(client->pers.netname, cm_clanTag.string)){
-		if (!(ent->r.svFlags & SVF_CLANSAY) && *cm_clanTag.string && cm_clanTag.string[0]){
-			if (ent->client->pers.clantimer == 0){
-				ent->client->pers.clantimer = 30;
-			}
+		if (Q_stristr(client->pers.netname, cm_clanTag.string)) {
+			if (!(ent->r.svFlags & SVF_CLANSAY) && *cm_clanTag.string && cm_clanTag.string[0]) {
+				if (ent->client->pers.clantimer == 0) {
+					ent->client->pers.clantimer = 30;
+				}
 				ent->client->pers.amclanreserved = 1;
 			}
-	} else {
-		client->pers.amclanreserved = 0;
-	}
-	if (Q_stristr(client->pers.netname, "Padawan")){
-			if (*cm_noPadawanNames.string && cm_noPadawanNames.string[0] && *cm_newName.string && cm_newName.string[0] && cm_noPadawanNames.integer != 0){
+		}
+		else {
+			client->pers.amclanreserved = 0;
+		}
+		if (Q_stristr(client->pers.netname, "Padawan")) {
+			if (*cm_noPadawanNames.string && cm_noPadawanNames.string[0] && *cm_newName.string && cm_newName.string[0] && cm_noPadawanNames.integer != 0) {
 				client->pers.padawantimer = 30;
 				client->pers.ampadawan = 1;
 			}
-	} else {
-		client->pers.ampadawan = 0;
-	}
+		}
+		else
+			client->pers.ampadawan = 0;
+
+		if (Q_stristr(client->pers.netname, "server")) {
+			if (*cm_noServerNames.string && cm_noServerNames.string[0] && *cm_newName.string && cm_newName.string[0] && cm_noServerNames.integer != 0) {
+				client->pers.servernametimer = 30;
+				client->pers.amservername = 1;
+			}
+		}
+		else
+			client->pers.amservername = 0;
 	}
 
 	// set model
