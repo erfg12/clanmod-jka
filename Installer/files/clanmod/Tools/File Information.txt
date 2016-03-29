@@ -11,6 +11,11 @@ Credits
 All credits received for the mod including permissions and help received.
 
 
+Tools
+--------------
+Bitvalue calculators mostly.
+
+
 mp_effects
 --------------
 Saved effects given to a map from the /addeffect command.
@@ -56,7 +61,7 @@ description.txt
 Mod name shown when trying to load mod from in-game menu.
 
 
-jampgamei386.so
+jampgamei386.so / jampgamex86_64.so
 --------------
 Mod file for Linux servers.
 
