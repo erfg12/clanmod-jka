@@ -1,6 +1,7 @@
 // Copyright (C) 1999-2000 Id Software, Inc.
 //
 #include "g_local.h"
+#include <stdint.h>
 //undo re-routing for calls actually defined here
 #undef trap_Trace
 #undef trap_G2Trace
