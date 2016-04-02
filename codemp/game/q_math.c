@@ -1429,7 +1429,8 @@ void NormalToLatLong( const vec3_t normal, byte bytes[2] )
 // eg the typical tint = (rand() * 255) / 32768
 // becomes tint = irand(0, 255)
 
-static unsigned long	holdrand = 0x89abcdef;
+//static unsigned long	holdrand = 0x89abcdef;
+static unsigned long long	holdrand = 0x89abcdef;
 
 void Rand_Init(int seed)
 {

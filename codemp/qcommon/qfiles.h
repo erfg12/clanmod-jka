@@ -307,10 +307,10 @@ typedef struct {
 	int			mins[3];			// for frustum culling
 	int			maxs[3];
 
-	int			firstLeafSurface;
+	intptr_t	firstLeafSurface;
 	int			numLeafSurfaces;
 
-	int			firstLeafBrush;
+	intptr_t	firstLeafBrush;
 	int			numLeafBrushes;
 } dleaf_t;
 
