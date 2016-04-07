@@ -232,7 +232,7 @@ intptr_t vmMain( int command, intptr_t arg0, intptr_t arg1, intptr_t arg2, intpt
 		return 0;
 
 	case CG_GET_GHOUL2:
-		return (int)cg_entities[arg0].ghoul2; //NOTE: This is used by the effect bolting which is actually not used at all.
+		return (intptr_t)cg_entities[arg0].ghoul2; //NOTE: This is used by the effect bolting which is actually not used at all.
 											  //I'm fairly sure if you try to use it with vm's it will just give you total
 											  //garbage. In other words, use at your own risk.
 
@@ -294,10 +294,10 @@ intptr_t vmMain( int command, intptr_t arg0, intptr_t arg1, intptr_t arg2, intpt
 		return 0;
 
 	case CG_GET_ORIGIN_TRAJECTORY:
-		return (int)&cg_entities[arg0].nextState.pos;
+		return /*(int)*/&cg_entities[arg0].nextState.pos;
 
 	case CG_GET_ANGLE_TRAJECTORY:
-		return (int)&cg_entities[arg0].nextState.apos;
+		return /*(int)*/&cg_entities[arg0].nextState.apos;
 
 	case CG_ROFF_NOTETRACK_CALLBACK:
 		CG_ROFF_NotetrackCallback( &cg_entities[arg0], (const char *)arg1 );

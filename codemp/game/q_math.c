@@ -2,7 +2,7 @@
 //
 // q_math.c -- stateless support routines that are included in each code module
 #include "q_shared.h"
-
+#include <stdint.h>
 
 vec3_t	vec3_origin = {0,0,0};
 vec3_t	axisDefault[3] = { { 1, 0, 0 }, { 0, 1, 0 }, { 0, 0, 1 } };
@@ -1430,7 +1430,7 @@ void NormalToLatLong( const vec3_t normal, byte bytes[2] )
 // becomes tint = irand(0, 255)
 
 //static unsigned long	holdrand = 0x89abcdef;
-static unsigned long long	holdrand = 0x89abcdef;
+static uint32_t	holdrand = 0x89abcdef;
 
 void Rand_Init(int seed)
 {
