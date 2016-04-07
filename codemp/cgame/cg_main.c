@@ -237,7 +237,7 @@ intptr_t vmMain( int command, intptr_t arg0, intptr_t arg1, intptr_t arg2, intpt
 											  //garbage. In other words, use at your own risk.
 
 	case CG_GET_MODEL_LIST:
-		return /*(int)*/cgs.gameModels;
+		return (intptr_t)cgs.gameModels;
 
 	case CG_CALC_LERP_POSITIONS:
 		CG_CalcEntityLerpPositions( &cg_entities[arg0] );
@@ -294,10 +294,10 @@ intptr_t vmMain( int command, intptr_t arg0, intptr_t arg1, intptr_t arg2, intpt
 		return 0;
 
 	case CG_GET_ORIGIN_TRAJECTORY:
-		return /*(int)*/&cg_entities[arg0].nextState.pos;
+		return (intptr_t)&cg_entities[arg0].nextState.pos;
 
 	case CG_GET_ANGLE_TRAJECTORY:
-		return /*(int)*/&cg_entities[arg0].nextState.apos;
+		return (intptr_t)&cg_entities[arg0].nextState.apos;
 
 	case CG_ROFF_NOTETRACK_CALLBACK:
 		CG_ROFF_NotetrackCallback( &cg_entities[arg0], (const char *)arg1 );
