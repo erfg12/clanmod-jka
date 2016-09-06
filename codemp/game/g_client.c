@@ -2066,7 +2066,7 @@ void ClientUserinfoChanged( int clientNum ) {
 	}
 
 	s = Info_ValueForKey( userinfo, "c_Clanpassword" );
-	if ( !Q_stricmp(s, "") ) { //Blank? Don't log in!
+	if ( !Q_stricmp(s, "")) { //Blank? Don't log in!
 	}
 	else if ( !Q_stricmp(s, g_clanPassword.string) ) {
 		if (!(ent->r.svFlags & SVF_BOT)){
@@ -3692,7 +3692,7 @@ extern qboolean WP_HasForcePowers( const playerState_t *ps );
 
 	//qboolean			savedClientPlugIn10; //v1.10 BETA
 
-	index = ent - g_entities;
+	index = ent-g_entities;
 	client = ent->client;
 
 	//first we want the userinfo so we can see if we should update this client's saber -rww
