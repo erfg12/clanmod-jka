@@ -1745,6 +1745,18 @@ void G_ReadLevelFix()
 	}
 }
 
+/*void createNamedPipe() {
+	int fd;
+	char * myfifo = "/tmp/cmPipe";
+	char buf[1024];
+
+	// open, read, and display the message from the FIFO
+	fd = open(myfifo, 00);
+	read(fd, buf, 1024);
+	printf("Received: %s\n", buf);
+	close(fd);
+}*/
+
 char gSharedBuffer[MAX_G_SHARED_BUFFER_SIZE];
 
 #include "../namespace_begin.h"
@@ -1776,11 +1788,11 @@ void G_InitGame( int levelTime, int randomSeed, int restart ) {
 	vmCvar_t	ckSum;
 
 //BobaFett's download hack fix
-#ifdef _WIN32
-if (!strncmp((char *)0x4A88AC, "(internal)JAmp:", 15)) {
-	JKG_PatchEngine();
-}
-#endif
+/*#ifdef _WIN32
+	if (!strncmp((char *)0x4A88AC, "(internal)JAmp:", 15)) {
+		JKG_PatchEngine(); //crashes openjkded on some computers
+	}
+#endif*/
 #ifdef __linux__
 	void JKG_PatchEngine();
 #endif
@@ -2046,6 +2058,7 @@ if (!strncmp((char *)0x4A88AC, "(internal)JAmp:", 15)) {
 	}
 	//[/OLDGAMETYPES]
 	trap_SendConsoleCommand( EXEC_INSERT, va( "exec mp_models/%s ; wait ; wait ; exec mp_effects/%s ; wait ; wait ; exec mp_weather/%s", mapname.string, mapname.string, mapname.string ) );
+	//createNamedPipe();
 }
 
 
@@ -2064,12 +2077,12 @@ void G_ShutdownGame( int restart ) {
 	gentity_t *ent;
 
 	
-#ifdef _WIN32
+/*#ifdef _WIN32
 if (!strncmp((char *)0x4A88AC, "(internal)JAmp:", 15)) {
     // If we get here, its jamp.exe and not jampded
-	JKG_UnpatchEngine();
+	JKG_UnpatchEngine(); //crashes openjkded on some computers
 }
-#endif
+#endif*/
 
 //	G_Printf ("==== ShutdownGame ====\n");
 
