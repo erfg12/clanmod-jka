@@ -15,12 +15,6 @@ extern void G_LetGoOfWall( gentity_t *ent );
 extern void BG_ClearRocketLock( playerState_t *ps );
 extern void G_Say( gentity_t *ent, gentity_t *target, int mode, const char *chatText );
 
-extern void GiveMoney( gentity_t *ent, int amount );
-extern void TakeMoney( gentity_t *ent, int amount );
-
-extern void GiveExperience( gentity_t *ent, int amount );
-extern void TakeExperience( gentity_t *ent, int amount );
-
 //rww - pd
 void BotDamageNotification(gclient_t *bot, gentity_t *attacker);
 //end rww
@@ -2537,14 +2531,16 @@ extern void RunEmplacedWeapon( gentity_t *ent, usercmd_t **ucmd );
 		self->client->pers.netname, obit );
 
 	//increase kills/deaths (self = death+, attacker = kill+)
-	if (level.numPlayingClients >= 2) {
-		if (self && self->client && self->s.eType != ET_NPC && self->client->pers.userID > 0) {
-			trap_SendServerCommand(self->client->ps.clientNum, va("print \"^3Deaths increased in DB.\n\""));
-			sqliteUpdateStats("UPDATE stats SET deaths = deaths + 1 WHERE user_id = '%i'", self->client->pers.userID);
-		}
-		if (attacker && attacker->client && attacker->s.eType != ET_NPC && attacker->client->pers.userID > 0) {
-			trap_SendServerCommand(attacker->client->ps.clientNum, va("print \"^3Kills increased in DB.\n\""));
-			sqliteUpdateStats("UPDATE stats SET kills = kills + 1 WHERE user_id = '%i'", attacker->client->pers.userID);
+	if (cm_database.integer >= 1) {
+		if (level.numPlayingClients >= 2) {
+			if (self && self->client && self->s.eType != ET_NPC && self->client->pers.userID > 0) {
+				trap_SendServerCommand(self->client->ps.clientNum, va("print \"^3Deaths increased in DB.\n\""));
+				sqliteUpdateStats("UPDATE stats SET deaths = deaths + 1 WHERE user_id = '%i'", self->client->pers.userID);
+			}
+			if (attacker && attacker->client && attacker->s.eType != ET_NPC && attacker->client->pers.userID > 0) {
+				trap_SendServerCommand(attacker->client->ps.clientNum, va("print \"^3Kills increased in DB.\n\""));
+				sqliteUpdateStats("UPDATE stats SET kills = kills + 1 WHERE user_id = '%i'", attacker->client->pers.userID);
+			}
 		}
 	}
 
@@ -2560,13 +2556,15 @@ extern void RunEmplacedWeapon( gentity_t *ent, usercmd_t **ucmd );
 		{
 			//todo: TEST THIS
 			//duel wins/loses for GT_DUEL gametype
-			if (self && self->client && self->client->pers.userID > 0) {
-				trap_SendServerCommand(self->client->ps.clientNum, va("print \"^3Duel Loses increased in DB.\n\""));
-				sqliteUpdateStats("UPDATE stats SET duel_loses = duel_loses + 1 WHERE user_id = '%i'", self->client->pers.userID);
-			}
-			if (attacker->client->pers.userID > 0) {
-				trap_SendServerCommand(attacker->client->ps.clientNum, va("print \"^3Duel Wins increased in DB.\n\""));
-				sqliteUpdateStats("UPDATE stats SET duel_wins = duel_wins + 1 WHERE user_id = '%i'", attacker->client->pers.userID);
+			if (cm_database.integer >= 1) {
+				if (self && self->client && self->client->pers.userID > 0) {
+					trap_SendServerCommand(self->client->ps.clientNum, va("print \"^3Duel Loses increased in DB.\n\""));
+					sqliteUpdateStats("UPDATE stats SET duel_loses = duel_loses + 1 WHERE user_id = '%i'", self->client->pers.userID);
+				}
+				if (attacker->client->pers.userID > 0) {
+					trap_SendServerCommand(attacker->client->ps.clientNum, va("print \"^3Duel Wins increased in DB.\n\""));
+					sqliteUpdateStats("UPDATE stats SET duel_wins = duel_wins + 1 WHERE user_id = '%i'", attacker->client->pers.userID);
+				}
 			}
 			G_LogPrintf("killer: %s, hits on enemy %d, health: %d\n", attacker->client->pers.netname, attacker->client->ps.persistant[PERS_HITS], attacker->health );
 			//also - if MOD_SABER, list the animation and saber style

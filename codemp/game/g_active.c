@@ -3169,13 +3169,15 @@ void ClientThink_real( gentity_t *ent ) {
 			}
 
 			//duel wins/loses for FFA duel (duelAgainst = loser, ent = winner)
-			if (duelAgainst->client->pers.userID > 0) {
-				trap_SendServerCommand(duelAgainst->client->ps.clientNum, va("print \"^3Duel Loses increased in DB.\n\""));
-				sqliteUpdateStats("UPDATE stats SET duel_loses = duel_loses + 1 WHERE user_id = '%i'", duelAgainst->client->pers.userID);
-			}
-			if (ent->client->pers.userID > 0) {
-				trap_SendServerCommand(ent->client->ps.clientNum, va("print \"^3Duel Wins increased in DB.\n\""));
-				sqliteUpdateStats("UPDATE stats SET duel_wins = duel_wins + 1 WHERE user_id = '%i'", ent->client->pers.userID);
+			if (cm_database.integer >= 1) {
+				if (duelAgainst->client->pers.userID > 0) {
+					trap_SendServerCommand(duelAgainst->client->ps.clientNum, va("print \"^3Duel Loses increased in DB.\n\""));
+					sqliteUpdateStats("UPDATE stats SET duel_loses = duel_loses + 1 WHERE user_id = '%i'", duelAgainst->client->pers.userID);
+				}
+				if (ent->client->pers.userID > 0) {
+					trap_SendServerCommand(ent->client->ps.clientNum, va("print \"^3Duel Wins increased in DB.\n\""));
+					sqliteUpdateStats("UPDATE stats SET duel_wins = duel_wins + 1 WHERE user_id = '%i'", ent->client->pers.userID);
+				}
 			}
 			//RoAR mod END
 

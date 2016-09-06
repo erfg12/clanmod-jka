@@ -880,7 +880,7 @@ void NPC_Begin (gentity_t *ent)
 			{
 				//if ( ent->client && ent->NPC && ent->classname && ent->classname[0] )
 				//{
-				//	G_DebugPrint( WL_DEBUG, "%d %s could not spawn, waiting %4.2 secs to try again\n", ent - g_entities, ent->targetname, ent->wait/1000.0f );
+				//	G_DebugPrint( WL_DEBUG, "%d %s could not spawn, waiting %4.2 secs to try again\n", ent-g_entities, ent->targetname, ent->wait/1000.0f );
 				//	ent->think = NPC_Begin;
 				//	ent->nextthink = level.time + ent->wait;//try again in half a second
 				//}
@@ -1063,7 +1063,7 @@ void NPC_Begin (gentity_t *ent)
 	// clear entity state values
 	//ent->s.eType = ET_PLAYER;
 	ent->s.eType = ET_NPC;
-//	ent->s.skinNum = ent - g_entities - 1;	// used as index to get custom models
+//	ent->s.skinNum = ent-g_entities - 1;	// used as index to get custom models
 
 	VectorCopy (spawn_origin, ent->s.origin);
 //	ent->s.origin[2] += 1;	// make sure off ground

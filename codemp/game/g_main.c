@@ -408,6 +408,7 @@ vmCvar_t		roar_enable_NormalDuel;
 vmCvar_t		roar_duel_begin_autobow;
 vmCvar_t		cm_empower_infforce;
 vmCvar_t		cm_terminator_infammo;
+vmCvar_t		cm_database;
 vmCvar_t		cm_AllowKnockDownPull;
 vmCvar_t		cm_forcekickflip;
 
@@ -627,6 +628,7 @@ static cvarTable_t		gameCvarTable[] = {
 	{ &cm_empower_infforce,	"cm_empower_infforce",		"0",	CVAR_ARCHIVE,					0, qtrue },
 	{ &cm_terminator_infammo,	"cm_terminator_infammo",		"0",	CVAR_ARCHIVE,					0, qtrue },
 	{ &cm_forcekickflip,	"cm_forcekickflip",		"0",	CVAR_ARCHIVE,					0, qtrue },
+	{ &cm_database,	"cm_database",		"1",	CVAR_ARCHIVE,					0, qtrue },
 
 	{ &cm_adminPassword1,	"cm_adminPassword1",		"",	CVAR_INTERNAL,					0, qfalse },
 	{ &cm_adminPassword2,	"cm_adminPassword2",		"admin",	CVAR_INTERNAL,					0, qfalse },

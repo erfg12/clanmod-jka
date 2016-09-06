@@ -2077,6 +2077,8 @@ extern vmCvar_t		cm_empower_infforce;
 extern vmCvar_t		cm_terminator_infammo;
 extern vmCvar_t		cm_forcekickflip;
 
+extern vmCvar_t		cm_database;
+
 extern vmCvar_t		cm_adminPassword1;
 extern vmCvar_t		cm_adminPassword2;
 extern vmCvar_t		cm_adminPassword3;
