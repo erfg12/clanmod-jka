@@ -6,6 +6,7 @@
 #include "g_local.h"
 #include "g_adminshared.h"
 #include "timestamp.h"
+#include <stdio.h>
 
 
 /*
@@ -3116,8 +3117,15 @@ qboolean	ConsoleCommand( void ) {
 			G_Printf("Usage: /cmregister <playername> <password>");
 			return;
 		}
-		sqliteRegisterUser("INSERT INTO users (user, pass, ipaddress) VALUES ('%s', '%s', '127.0.0.1')", user, pass);
-		G_Printf("User %s now registered.", user);
+
+		if (cm_database.integer == 1) {
+			sqliteRegisterUser("INSERT INTO users (user, pass, ipaddress) VALUES ('%s', '%s', '127.0.0.1')", user, pass);
+			G_Printf("User %s now registered.", user);
+		}
+		else if (cm_database.integer == 2) {
+			if (strstr(parse_output(va("curl --data \"key=%s&p=register&user=%s&pass=%s&ipaddress=%s\" %s"), cm_mysql_secret.string, user, pass, "127.0.0.1", cm_mysql_url.string), "successful"));
+			G_Printf("User %s now registered.", user);
+		}
 	}
 	if (Q_stricmp(cmd, "cmfinduser") == 0){
 		char *user[MAX_STRING_CHARS];
@@ -3129,11 +3137,30 @@ qboolean	ConsoleCommand( void ) {
 			G_Printf("Usage: /cmfinduser <playername>");
 			return;
 		}
-		int getID = sqliteSelectUserID("SELECT * FROM users WHERE user = '%s'", user);
-		if (getID > 0)
-			G_Printf("USER FOUND - ID: %i", getID);
-		else
+
+		int userID = 0;
+
+		if (cm_database.integer == 1)
+			userID = sqliteSelectUserID("SELECT * FROM users WHERE user = '%s'", user);
+		else if (cm_database.integer == 2)
+			userID = atoi(parse_output(va("curl --data \"key=%s&p=find&user=%s\" %s"), cm_mysql_secret.string, user, cm_mysql_url.string));
+
+		if (userID > 0)
+			G_Printf("USER FOUND - ID: %i\n", userID);
+		else {
 			G_Printf("USER NOT FOUND");
+		}
+	}
+	if (Q_stricmp(cmd, "shapass") == 0) {
+		char   arg1[MAX_STRING_CHARS];
+		char test[40] = "";
+		if (trap_Argc() < 2)
+		{
+			G_Printf("Usage: /shapass <password>\n");
+			return;
+		}
+		trap_Argv(1, arg1, sizeof(arg1));
+		G_Printf(SHA1ThisPass(arg1));
 	}
 	if (Q_stricmp(cmd, "cmstats") == 0) {
 		char *user[MAX_STRING_CHARS];

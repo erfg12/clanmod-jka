@@ -317,6 +317,12 @@
     <ClCompile Include="timestamp.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="sha.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="sha1.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\ui\menudef.h">
@@ -473,6 +479,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="timestamp.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="sha1.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

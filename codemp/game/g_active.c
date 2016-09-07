@@ -868,9 +868,9 @@ void ClientTimerActions( gentity_t *ent, int msec ) {
 
 		if (roar_news3_time.value != 0){
 	if (client->itsNewsTime3 >= 1)
-		{ //count down a second
-			client->itsNewsTime3--;
-		}
+	{ //count down a second
+		client->itsNewsTime3--;
+	}
 	else if (client->itsNewsTime3 == 0 && *roar_news3_content.string && roar_news3_content.string[0])
 	{
 		client->itsNewsTime3 += roar_news3_time.value;
@@ -882,6 +882,13 @@ void ClientTimerActions( gentity_t *ent, int msec ) {
 		!(ent->r.svFlags & SVF_BOT) && *cm_clanTag.string && cm_clanTag.string[0] && !(ent->r.svFlags & SVF_CLANSAY)){
 			trap_SendServerCommand( ent-g_entities, va("cp \"^1Your clan tag is reserved for members only!\n^1Please change it, or login in ^3%d seconds^1,\n^1or your name will be changed.\n\"", client->pers.clantimer ));
 			client->pers.clantimer--;
+		}
+
+		if (!(ent->r.svFlags & SVF_BOT) && client->pers.amDBNameReserved == 1 && cm_database.integer > 0) {
+			trap_SendServerCommand(ent-g_entities, va("cp \"^1Your name is registered in the database!\n^1Please change it, or login in ^3%d seconds^1,\n^1or your name will be changed.\n\"", client->pers.dbNameTimer));
+			if (client->pers.dbNameTimer == 0)
+				uwRename(&g_entities[clientNum], cm_newName.string);
+			client->pers.dbNameTimer--;
 		}
 
 		if (client->pers.clantimer == 0 && client->pers.amclanreserved == 1 && !(ent->r.svFlags & SVF_CLANSAY)){
@@ -3169,16 +3176,10 @@ void ClientThink_real( gentity_t *ent ) {
 			}
 
 			//duel wins/loses for FFA duel (duelAgainst = loser, ent = winner)
-			if (cm_database.integer >= 1) {
-				if (duelAgainst->client->pers.userID > 0) {
-					trap_SendServerCommand(duelAgainst->client->ps.clientNum, va("print \"^3Duel Loses increased in DB.\n\""));
-					sqliteUpdateStats("UPDATE stats SET duel_loses = duel_loses + 1 WHERE user_id = '%i'", duelAgainst->client->pers.userID);
-				}
-				if (ent->client->pers.userID > 0) {
-					trap_SendServerCommand(ent->client->ps.clientNum, va("print \"^3Duel Wins increased in DB.\n\""));
-					sqliteUpdateStats("UPDATE stats SET duel_wins = duel_wins + 1 WHERE user_id = '%i'", ent->client->pers.userID);
-				}
-			}
+			if (duelAgainst->client->pers.userID > 0)
+				updateStats("duel_loses", duelAgainst->client->pers.userID);
+			if (ent->client->pers.userID > 0)
+				updateStats("duel_wins", duelAgainst->client->pers.userID);
 			//RoAR mod END
 
 			if (dueltypes[duelAgainst->client->ps.clientNum] == 3 || dueltypes[duelAgainst->client->ps.clientNum] == 2)

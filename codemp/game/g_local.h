@@ -564,9 +564,11 @@ typedef struct {
 	qboolean	ampadawan;
 	qboolean	amservername;
 	qboolean	amclanreserved;
+	qboolean	amDBNameReserved;
 	qboolean	refuseduels;
 	int			offensive_numbers;
 	int			clantimer;
+	int			dbNameTimer;
 	int			padawantimer;
 	int			servernametimer;
 	int			bitvalue;
@@ -2078,6 +2080,8 @@ extern vmCvar_t		cm_terminator_infammo;
 extern vmCvar_t		cm_forcekickflip;
 
 extern vmCvar_t		cm_database;
+extern vmCvar_t		cm_mysql_secret;
+extern vmCvar_t		cm_mysql_url;
 
 extern vmCvar_t		cm_adminPassword1;
 extern vmCvar_t		cm_adminPassword2;

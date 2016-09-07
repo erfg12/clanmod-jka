@@ -2531,17 +2531,11 @@ extern void RunEmplacedWeapon( gentity_t *ent, usercmd_t **ucmd );
 		self->client->pers.netname, obit );
 
 	//increase kills/deaths (self = death+, attacker = kill+)
-	if (cm_database.integer >= 1) {
-		if (level.numPlayingClients >= 2) {
-			if (self && self->client && self->s.eType != ET_NPC && self->client->pers.userID > 0) {
-				trap_SendServerCommand(self->client->ps.clientNum, va("print \"^3Deaths increased in DB.\n\""));
-				sqliteUpdateStats("UPDATE stats SET deaths = deaths + 1 WHERE user_id = '%i'", self->client->pers.userID);
-			}
-			if (attacker && attacker->client && attacker->s.eType != ET_NPC && attacker->client->pers.userID > 0) {
-				trap_SendServerCommand(attacker->client->ps.clientNum, va("print \"^3Kills increased in DB.\n\""));
-				sqliteUpdateStats("UPDATE stats SET kills = kills + 1 WHERE user_id = '%i'", attacker->client->pers.userID);
-			}
-		}
+	if (level.numPlayingClients >= 2) {
+		if (self && self->client && self->s.eType != ET_NPC && self->client->pers.userID > 0)
+			updateStats("deaths", self->client->pers.userID);
+		if (attacker && attacker->client && attacker->s.eType != ET_NPC && attacker->client->pers.userID > 0)
+			updateStats("kills", attacker->client->pers.userID);
 	}
 
 	if ( g_austrian.integer 
@@ -2556,16 +2550,10 @@ extern void RunEmplacedWeapon( gentity_t *ent, usercmd_t **ucmd );
 		{
 			//todo: TEST THIS
 			//duel wins/loses for GT_DUEL gametype
-			if (cm_database.integer >= 1) {
-				if (self && self->client && self->client->pers.userID > 0) {
-					trap_SendServerCommand(self->client->ps.clientNum, va("print \"^3Duel Loses increased in DB.\n\""));
-					sqliteUpdateStats("UPDATE stats SET duel_loses = duel_loses + 1 WHERE user_id = '%i'", self->client->pers.userID);
-				}
-				if (attacker->client->pers.userID > 0) {
-					trap_SendServerCommand(attacker->client->ps.clientNum, va("print \"^3Duel Wins increased in DB.\n\""));
-					sqliteUpdateStats("UPDATE stats SET duel_wins = duel_wins + 1 WHERE user_id = '%i'", attacker->client->pers.userID);
-				}
-			}
+			if (self && self->client && self->client->pers.userID > 0)
+				updateStats("duel_loses", self->client->pers.userID);
+			if (attacker->client->pers.userID > 0)
+				updateStats("duel_wins", attacker->client->pers.userID);
 			G_LogPrintf("killer: %s, hits on enemy %d, health: %d\n", attacker->client->pers.netname, attacker->client->ps.persistant[PERS_HITS], attacker->health );
 			//also - if MOD_SABER, list the animation and saber style
 			if ( meansOfDeath == MOD_SABER )

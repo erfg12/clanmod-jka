@@ -5,6 +5,9 @@
 #include "g_adminshared.h"
 #include "timestamp.h"
 #include "../sqlite3/sqlite3.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include "sha1.h"
 
 #include "../../ui/menudef.h"			// for the voice chats
 
@@ -25,6 +28,27 @@ void CG_CenterPrint( const char *str, int y, int charWidth );
 void SetTeamQuick(gentity_t *ent, int team, qboolean doBegin);
 extern int G_ClientNumberFromArg( char *str);
 void ChangeWeapon( gentity_t *ent, int newWeapon ) ;
+
+char *parse_output(char *cmd) {
+	char buf[128];
+	char myString[1024];
+	FILE *fp;
+
+	if ((fp = _popen(cmd, "r")) == NULL) {
+		return "Error opening pipe!\n";
+	}
+
+	while (fgets(buf, 128, fp) != NULL) {
+		//strcat(myString, va("%s", buf));
+		strcpy(myString, va("%s", buf));
+	}
+
+	if (_pclose(fp)) {
+		return "Command not found or exited with error status\n";
+	}
+
+	return myString;
+}
 
 /*
 ===================
@@ -188,6 +212,36 @@ char *sqliteGetName(char *SQLStmnt, ...) {
 	}
 	else
 		return "ERROR CANT OPEN DB FILE";
+}
+
+char *SHA1ThisPass(char *myPass) {
+	SHA1Context sha;
+	int i;
+
+	SHA1Reset(&sha);
+	SHA1Input(&sha, myPass, strlen(myPass));
+
+	if (!SHA1Result(&sha))
+		fprintf(stderr, "ERROR-- could not compute message digest\n");
+	else
+	{
+		for (i = 0; i < 5; i++)
+		{
+			G_Printf("%X", sha.Message_Digest[i]);
+		}
+	}
+	return "";
+}
+
+void updateStats(char *item, char *userid) {
+	if (cm_database.integer <= 0)
+		return;
+
+	if (cm_database.integer == 1)
+		sqliteUpdateStats("UPDATE stats SET %s = %s + 1 WHERE user_id = '%i'", item, item, atoi(userid));
+	else if (cm_database.integer == 2)
+		parse_output(va("curl --data \"key=%s&p=increase&c=%s&id=%s\" %s", cm_mysql_url.string, cm_mysql_secret.string, item, userid));
+	trap_SendServerCommand(atoi(userid), va("print \"^1[DEBUG] ^3%s increased in DB.\n\"", item));
 }
 
 char *replace_str(char *str, char *orig, char *rep)
@@ -5018,8 +5072,14 @@ void ClientCommand( int clientNum ) {
 			return;
 		}
 
-		sqliteRegisterUser("INSERT INTO users (user, pass, ipaddress) VALUES ('%s', '%s', '%s')", cleanName(g_entities[client_id].client->pers.netname), pass, g_entities[client_id].client->sess.myip);
-		trap_SendServerCommand(client_id, va("print \"^3User %s ^3is now registered.\n\"", g_entities[client_id].client->pers.netname));
+		if (cm_database.integer == 1) {
+			sqliteRegisterUser("INSERT INTO users (user, pass, ipaddress) VALUES ('%s', '%s', '%s')", cleanName(g_entities[client_id].client->pers.netname), SHA1ThisPass(pass), g_entities[client_id].client->sess.myip);
+			trap_SendServerCommand(client_id, va("print \"^3User %s ^3is now registered.\n\"", g_entities[client_id].client->pers.netname));
+		}
+		else if (cm_database.integer == 2) {
+			if (strstr(parse_output(va("curl --data \"key=%s&p=register&user=%s&pass=%s&ipaddress=%s\" %s"), cm_mysql_secret.string, cleanName(g_entities[client_id].client->pers.netname), SHA1ThisPass(pass), g_entities[client_id].client->sess.myip, cm_mysql_url.string),"successful"))
+				trap_SendServerCommand(client_id, va("print \"^3User %s ^3is now registered.\n\"", g_entities[client_id].client->pers.netname));
+		}
 	}
 	else if (Q_stricmp(cmd, "cmleaderboard") == 0 || Q_stricmp(cmd, "cmleaders") == 0) {
 		cmLeaders(ent);
@@ -5042,13 +5102,25 @@ void ClientCommand( int clientNum ) {
 			return;
 		}
 
-		int userID = sqliteSelectUserID("SELECT * FROM users WHERE user = '%s' AND pass = '%s'", g_entities[client_id].client->pers.netname, pass);
+		int userID = 0;
+
+		if (cm_database.integer == 1)
+			userID = sqliteSelectUserID("SELECT * FROM users WHERE user = '%s' AND pass = '%s'", cleanName(g_entities[client_id].client->pers.netname), SHA1ThisPass(pass));
+		else if (cm_database.integer == 2)
+			userID = atoi(parse_output(va("curl --data \"key=%s&p=register&user=%s&pass=%s\" %s"), cm_mysql_secret.string, cleanName(g_entities[client_id].client->pers.netname), SHA1ThisPass(pass), cm_mysql_url.string));
+
 		if (userID > 0) {
 			ent->client->pers.userID = userID;
 			trap_SendServerCommand(client_id, va("print \"^3You are now logged in.\n\""));
 		}
 		else
 			trap_SendServerCommand(client_id, va("print \"^1User not found\n\""));
+
+		if (cm_database.integer == 1){ //only sqlite needs to check if stats table exists
+			int stat_id = sqliteSelectUserID("SELECT user_id FROM stats WHERE user_id = '%s'", userID);
+			if (stat_id <= 0)
+				sqliteRegisterUser("INSERT INTO stats (user_id) VALUES ('%s')", userID);
+		}
 	}
 	else if (Q_stricmp(cmd, "cmstats") == 0) {
 		char user[MAX_STRING_CHARS];

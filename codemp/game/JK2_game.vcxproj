@@ -440,6 +440,8 @@
     <ClCompile Include="NPC_utils.c" />
     <ClCompile Include="q_math.c" />
     <ClCompile Include="q_shared.c" />
+    <ClCompile Include="sha.c" />
+    <ClCompile Include="sha1.c" />
     <ClCompile Include="SpeederNPC.c" />
     <ClCompile Include="timestamp.c" />
     <ClCompile Include="tri_coll_test.c" />
@@ -495,6 +497,7 @@
     <ClInclude Include="npc_headers.h" />
     <ClInclude Include="q_shared.h" />
     <ClInclude Include="say.h" />
+    <ClInclude Include="sha1.h" />
     <ClInclude Include="surfaceflags.h" />
     <ClInclude Include="syn.h" />
     <ClInclude Include="teams.h" />

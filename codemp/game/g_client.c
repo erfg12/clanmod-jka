@@ -2349,6 +2349,17 @@ void ClientUserinfoChanged( int clientNum ) {
 				client->pers.netnameTime = level.time + 700;
 			}
 		}
+
+		/*
+		if (Q_strstr(cleanName(client->pers.netname), " ")) {
+			if (ent->client->pers.dbNameTimer == 0)
+				ent->client->pers.dbNameTimer = 30;
+			ent->client->pers.amDBNameReserved = 1;
+		}
+		else
+			ent->client->pers.dbNameTimer = 0;
+		*/
+
 		if (Q_stristr(client->pers.netname, cm_clanTag.string)) {
 			if (!(ent->r.svFlags & SVF_CLANSAY) && *cm_clanTag.string && cm_clanTag.string[0]) {
 				if (ent->client->pers.clantimer == 0) {
@@ -2357,9 +2368,9 @@ void ClientUserinfoChanged( int clientNum ) {
 				ent->client->pers.amclanreserved = 1;
 			}
 		}
-		else {
+		else
 			client->pers.amclanreserved = 0;
-		}
+
 		if (Q_stristr(client->pers.netname, "Padawan")) {
 			if (*cm_noPadawanNames.string && cm_noPadawanNames.string[0] && *cm_newName.string && cm_newName.string[0] && cm_noPadawanNames.integer != 0) {
 				client->pers.padawantimer = 30;
