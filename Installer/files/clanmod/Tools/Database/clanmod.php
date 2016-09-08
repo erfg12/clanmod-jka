@@ -41,7 +41,6 @@ if (strstr($_POST['p'],"login")){
 }
 
 if (strstr($_POST['p'],"find")){
-	$encPass = crypt($_POST['pass'],$passSalt);
 	$sql = "SELECT * FROM users WHERE username = '$_POST[user]'";
 	$result = $conn->query($sql);
 
@@ -53,8 +52,48 @@ if (strstr($_POST['p'],"find")){
     	echo "0";
 }
 
+if (strstr($_POST['p'],"stats")){
+	$sql = "SELECT * FROM ". $_POST['g'] ." WHERE user_id = '$_POST[id]'";
+	$result = $conn->query($sql);
+	$array = array();
+	
+	$numFields = $result->field_count - 1;
+
+	if ($result->num_rows > 0) {
+    	while($row = $result->fetch_array ()) {
+			for ($i=0;$i<$numFields;$i++){
+				array_push($array, $row[$i]);
+			}
+    	}
+		echo implode (",",$array);
+	} else
+    	echo "0";
+}
+
+if (strstr($_POST['p'],"leaders")){ //outputs 3 integers divided by a semicolon
+	$sql = "SELECT ". $_POST['r'] ." FROM ". $_POST['g'] ." ORDER BY ". $_POST['o'] ." DESC LIMIT 5";
+	$result = $conn->query($sql);
+	$arrayC = array();
+	
+	$numFields = $result->field_count;
+
+	if ($result->num_rows > 0) {
+    	while($row = $result->fetch_array ()) {
+			$array = array();
+			for ($i=0;$i<$numFields;$i++){
+				array_push($array, $row[$i]);
+			}
+			$imp = implode (",",$array);
+			array_push($arrayC, $imp);
+			unset($array);
+    	}
+		echo implode (";",$arrayC);
+	} else
+    	echo "0";
+}
+
 if (strstr($_POST['p'],"increase")){
-	$sql = "UPDATE jedi_academy SET ". $_POST['c'] ." = ". $_POST['c'] ." + 1 WHERE id = '$_POST[id]'";
+	$sql = "UPDATE ". $_POST['g'] ." SET ". $_POST['c'] ." = ". $_POST['c'] ." + 1 WHERE id = '$_POST[id]'";
 	if ($conn->query($sql) === TRUE){
     	echo "successful"; 
 	} else

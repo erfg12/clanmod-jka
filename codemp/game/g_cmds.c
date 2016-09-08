@@ -30,24 +30,26 @@ extern int G_ClientNumberFromArg( char *str);
 void ChangeWeapon( gentity_t *ent, int newWeapon ) ;
 
 char *parse_output(char *cmd) {
-	char buf[128];
-	char myString[1024];
+	char buf[1024];
+	char * s;
 	FILE *fp;
 
 	if ((fp = _popen(cmd, "r")) == NULL) {
 		return "Error opening pipe!\n";
 	}
 
-	while (fgets(buf, 128, fp) != NULL) {
+	while (fgets(buf, 1024, fp) != NULL) {
 		//strcat(myString, va("%s", buf));
-		strcpy(myString, va("%s", buf));
+		//strcpy(myString, va("%s", buf));
+		s = malloc(snprintf(NULL, 0, "%s", buf) + 1);
+		sprintf(s, "%s", buf);
 	}
 
 	if (_pclose(fp)) {
 		return "Command not found or exited with error status\n";
 	}
 
-	return myString;
+	return s;
 }
 
 /*
@@ -217,6 +219,7 @@ char *sqliteGetName(char *SQLStmnt, ...) {
 char *SHA1ThisPass(char *myPass) {
 	SHA1Context sha;
 	int i;
+	char *balance[5];
 
 	SHA1Reset(&sha);
 	SHA1Input(&sha, myPass, strlen(myPass));
@@ -227,10 +230,13 @@ char *SHA1ThisPass(char *myPass) {
 	{
 		for (i = 0; i < 5; i++)
 		{
-			G_Printf("%X", sha.Message_Digest[i]);
+			balance[i] = va("%X", sha.Message_Digest[i]);
 		}
 	}
-	return "";
+	char * s = malloc(snprintf(NULL, 0, "%s%s%s%s%s", balance[0], balance[1], balance[2], balance[3], balance[4]) + 1);
+	sprintf(s, "%s%s%s%s%s", balance[0], balance[1], balance[2], balance[3], balance[4]);
+
+	return s;
 }
 
 void updateStats(char *item, char *userid) {
@@ -240,7 +246,7 @@ void updateStats(char *item, char *userid) {
 	if (cm_database.integer == 1)
 		sqliteUpdateStats("UPDATE stats SET %s = %s + 1 WHERE user_id = '%i'", item, item, atoi(userid));
 	else if (cm_database.integer == 2)
-		parse_output(va("curl --data \"key=%s&p=increase&c=%s&id=%s\" %s", cm_mysql_url.string, cm_mysql_secret.string, item, userid));
+		parse_output(va("curl --data \"key=%s&p=increase&g=jedi_academy&c=%s&id=%i\" %s", cm_mysql_secret.string, item, userid, cm_mysql_url.string));
 	trap_SendServerCommand(atoi(userid), va("print \"^1[DEBUG] ^3%s increased in DB.\n\"", item));
 }
 
@@ -335,7 +341,6 @@ char *sqliteGetStats(char *SQLStmnt, ...) {
 
 	if (sqlite3_open("clanmod.db", &db) == SQLITE_OK)
 	{
-		//G_Printf(text);
 		int rc = sqlite3_prepare_v2(db, text, -1, &stmt, NULL);
 		if (rc != SQLITE_OK)
 			fprintf(stderr, "SQL error: %s\n", zErrMsg);
@@ -373,11 +378,51 @@ char *sqliteGetStats(char *SQLStmnt, ...) {
 		sprintf(data, "Kills/Deaths: %i/%i \n", kills, deaths);
 		sprintf(data + strlen(data), "Duel Wins/Loses: %i/%i \n", duel_wins, duel_loses);
 		sprintf(data + strlen(data), "Flag Captures: %i \n", flag_captures);
-		//todo: add more later
+		sprintf(data + strlen(data), "FFA Wins/Loses: %i/%i \n", ffa_wins, ffa_loses);
+		sprintf(data + strlen(data), "TDM Wins/Loses: %i/%i \n", tdm_wins, tdm_loses);
+		sprintf(data + strlen(data), "CTF Wins/Loses: %i/%i \n", ctf_wins, ctf_loses);
+		sprintf(data + strlen(data), "Siege Wins/Loses: %i/%i \n", siege_wins, siege_loses);
 		return data;
 	}
 	else
 		return "ERROR CANT OPEN DB FILE";
+}
+
+char *mysqlGetLeaders(char *stmt) {
+	char *data = malloc(1024);
+	sprintf(data, "CURRENT GAMETYPE LEADERBOARD \n");
+
+	char** tokens;
+	const char *my_str_literal = stmt;
+	char *str = strdup(my_str_literal);
+	tokens = str_split(&str, ';');
+	if (tokens)
+	{
+		int i;
+		for (i = 0; *(tokens + i); i++)
+		{
+			//inside
+			char** tokens2;
+			const char *my_str_literal2 = tokens[i];
+			char *str2 = strdup(my_str_literal2);
+			tokens2 = str_split(&str2, ',');
+			if (tokens2)
+			{
+				int ii;
+				for (ii = 0; *(tokens2 + ii); ii++)
+				{
+					free(*(tokens2 + ii));
+				}
+				sprintf(data + strlen(data), "%s: %i/%i \n", tokens2[0], tokens2[1], tokens2[2]);
+				free(tokens2);
+			}
+			//
+			free(*(tokens + i));
+		}
+		free(tokens);
+	}
+
+	return data;
 }
 
 char *sqliteGetLeaders(char *SQLStmnt, ...) {
@@ -387,7 +432,6 @@ char *sqliteGetLeaders(char *SQLStmnt, ...) {
 	
 	if (sqlite3_open("clanmod.db", &db) == SQLITE_OK)
 	{
-		//G_Printf(text);
 		int rc = sqlite3_prepare_v2(db, SQLStmnt, -1, &stmt, NULL);
 		if (rc != SQLITE_OK)
 			fprintf(stderr, "SQL error: %s\n", zErrMsg);
@@ -408,6 +452,49 @@ char *sqliteGetLeaders(char *SQLStmnt, ...) {
 	}
 	else
 		return "ERROR CANT OPEN DB FILE";
+}
+
+char *mysqlGetStats(char *stmt) {
+	char** tokens;
+
+	const char *my_str_literal = stmt;
+	char *str = strdup(my_str_literal);  // We own str's memory now.
+
+	tokens = str_split(&str, ',');
+
+	if (tokens)
+	{
+		int i;
+		for (i = 0; *(tokens + i); i++)
+		{
+			free(*(tokens + i));
+		}
+		free(tokens);
+	}
+
+		int kills = tokens[0];
+		int deaths = tokens[1];
+		int duel_wins = tokens[2];
+		int duel_loses = tokens[3];
+		int flag_captures = tokens[4];
+		int ffa_wins = tokens[5];
+		int ffa_loses = tokens[6];
+		int tdm_wins = tokens[7];
+		int tdm_loses = tokens[8];
+		int siege_wins = tokens[9];
+		int siege_loses = tokens[10];
+		int ctf_wins = tokens[11];
+		int ctf_loses = tokens[12];
+
+		char *data = malloc(1024);
+		sprintf(data, "Kills/Deaths: %i/%i \n", kills, deaths);
+		sprintf(data + strlen(data), "Duel Wins/Loses: %i/%i \n", duel_wins, duel_loses);
+		sprintf(data + strlen(data), "Flag Captures: %i \n", flag_captures);
+		sprintf(data + strlen(data), "FFA Wins/Loses: %i/%i \n", ffa_wins, ffa_loses);
+		sprintf(data + strlen(data), "TDM Wins/Loses: %i/%i \n", tdm_wins, tdm_loses);
+		sprintf(data + strlen(data), "CTF Wins/Loses: %i/%i \n", ctf_wins, ctf_loses);
+		sprintf(data + strlen(data), "Siege Wins/Loses: %i/%i \n", siege_wins, siege_loses);
+		return data;
 }
 
 /*
@@ -2127,7 +2214,7 @@ void hideMOTD(gentity_t *ent) {
 	strcpy(ent->client->csMessage, G_NewString(va(" \n")));
 }
 
-void cmStats(gentity_t *ent, const char *user) {
+void cmStats(gentity_t *ent, const char *user) { //MYSQL NEEDS TESTING
 	int client_id = ent->client->ps.clientNum;
 
 	if (cm_database.integer <= 0) {
@@ -2137,17 +2224,32 @@ void cmStats(gentity_t *ent, const char *user) {
 
 	if ((user != NULL) && (user[0] == '\0')) { //no user
 		if (ent->client->pers.userID > 0) {
-			trap_SendServerCommand(client_id, va("print \"^3===^1YOUR PLAYER STATUS^3===\n\n%s\n\"", sqliteGetStats("SELECT * FROM stats WHERE user_id = '%i'", ent->client->pers.userID)));
-			strcpy(ent->client->csMessage, G_NewString(va("^3===^1YOUR PLAYER STATUS^3===\n\n%s\n\"", sqliteGetStats("SELECT * FROM stats WHERE user_id = '%i'", ent->client->pers.userID))));
-			ent->client->csTimeLeft = x_cstime.integer;
+			if (cm_database.integer == 1) {
+				trap_SendServerCommand(client_id, va("print \"^3===^1YOUR PLAYER STATUS^3===\n\n%s\n\"", sqliteGetStats("SELECT * FROM stats WHERE user_id = '%i'", ent->client->pers.userID)));
+				strcpy(ent->client->csMessage, G_NewString(va("^3===^1YOUR PLAYER STATUS^3===\n\n%s\n\"", sqliteGetStats("SELECT * FROM stats WHERE user_id = '%i'", ent->client->pers.userID))));
+			}
+			else if (cm_database.integer == 2) {
+				trap_SendServerCommand(client_id, va("print \"^3===^1YOUR PLAYER STATUS^3===\n\n%s\n\"", mysqlGetStats(parse_output(va("curl --data \"key=%s&p=stats&g=jedi_academy&id=%i\" %s"), cm_mysql_secret.string, ent->client->pers.userID, cm_mysql_url.string))));
+				strcpy(ent->client->csMessage, G_NewString(va("^3===^1YOUR PLAYER STATUS^3===\n\n%s\n\"", mysqlGetStats(parse_output(va("curl --data \"key=%s&p=stats&g=jedi_academy&id=%i\" %s"), cm_mysql_secret.string, ent->client->pers.userID, cm_mysql_url.string)))));
+			}
+			ent->client->csTimeLeft = 10;
 		}
 		else
 			trap_SendServerCommand(client_id, va("print \"^1Login first using the /cmlogin command.\n\""));
 	}
 	else {
 		int userID = sqliteSelectUserID("SELECT * FROM users WHERE user = '%s'", user);
-		if (userID > 0)
-			trap_SendServerCommand(client_id, va("print \"^3===^1PLAYER %s ^1STATUS^3===\n%s\n\"", user, sqliteGetStats("SELECT * FROM stats WHERE user_id = '%i'", ent->client->pers.userID)));
+		if (cm_database.integer == 1)
+			userID = sqliteSelectUserID("SELECT * FROM users WHERE user = '%s'", cleanName(g_entities[client_id].client->pers.netname));
+		else if (cm_database.integer == 2)
+			userID = atoi(parse_output(va("curl --data \"key=%s&p=find&user=%s\" %s"), cm_mysql_secret.string, cleanName(g_entities[client_id].client->pers.netname), cm_mysql_url.string));
+
+		if (userID > 0) {
+			if (cm_database.integer == 1)
+				trap_SendServerCommand(client_id, va("print \"^3===^1PLAYER %s ^1STATUS^3===\n%s\n\"", user, sqliteGetStats("SELECT * FROM stats WHERE user_id = '%i'", ent->client->pers.userID)));
+			else if (cm_database.integer == 2)
+				trap_SendServerCommand(client_id, va("print \"^3===^1PLAYER %s ^1STATUS^3===\n%s\n\"", mysqlGetStats(parse_output(va("curl --data \"key=%s&p=stats&g=jedi_academy&id=%i\" %s"), cm_mysql_secret.string, ent->client->pers.userID, cm_mysql_url.string))));
+		}
 		else
 			trap_SendServerCommand(client_id, va("print \"^1Player name %s not found in DB.\n\"", user));
 	}
@@ -2190,37 +2292,39 @@ void cmJetpack(gentity_t *ent) {
 }
 
 void cmLeaders(gentity_t *ent) {
-	if (cm_database.integer <= 0) {
+	if (cm_database.integer <= 0)
 		trap_SendServerCommand(ent->client->ps.clientNum, va("print \"^1Database commands have been disabled on this server.\n\""));
-		return;
-	}
 
 	char rows[255];
 	char column[60];
 	char query[MAX_STRING_CHARS];
 
 	if (g_gametype.integer == GT_FFA || g_gametype.integer == GT_HOLOCRON || g_gametype.integer == GT_JEDIMASTER) {
-		Q_strcat(rows, sizeof(rows), "user_id,kills,deaths");
-		Q_strcat(column, sizeof(column), "kills");
+		Q_strncpyz(rows, "user_id,kills,deaths", sizeof(rows));
+		Q_strncpyz(column, "kills", sizeof(column));
 	}
 	else if (g_gametype.integer == GT_DUEL || g_gametype.integer == GT_POWERDUEL) {
-		Q_strcat(rows, sizeof(rows), "user_id,duel_wins,duel_loses");
-		Q_strcat(column, sizeof(column), "duel_wins");
+		Q_strncpyz(rows, "user_id,duel_wins,duel_loses", sizeof(rows));
+		Q_strncpyz(column, "duel_wins", sizeof(column));
 	}
 	else if (g_gametype.integer == GT_TEAM) {
-		Q_strcat(rows, sizeof(rows), "user_id,tdm_wins,tdm_loses");
-		Q_strcat(column, sizeof(column), "tdm_wins");
+		Q_strncpyz(rows, "user_id,tdm_wins,tdm_loses", sizeof(rows));
+		Q_strncpyz(column, "tdm_wins", sizeof(column));
 	}
 	else if (g_gametype.integer == GT_SIEGE) {
-		Q_strcat(rows, sizeof(rows), "user_id,siege_wins,siege_loses");
-		Q_strcat(column, sizeof(column), "siege_wins");
+		Q_strncpyz(rows, "user_id,siege_wins,siege_loses", sizeof(rows));
+		Q_strncpyz(column, "siege_wins", sizeof(column));
 	}
 	else if (g_gametype.integer == GT_CTF || g_gametype.integer == GT_CTY) {
-		Q_strcat(rows, sizeof(rows), "user_id,ctf_wins,ctf_loses");
-		Q_strcat(column, sizeof(column), "ctf_wins");
+		Q_strncpyz(rows, "user_id,ctf_wins,ctf_loses", sizeof(rows));
+		Q_strncpyz(column, "ctf_wins", sizeof(column));
 	}
 
-	Q_strcat(query, sizeof(query), va(sqliteGetLeaders("SELECT %s FROM stats ORDER BY %s DESC LIMIT 5", rows, column)));
+	if (cm_database.integer == 1)
+		Q_strcat(query, sizeof(query), sqliteGetLeaders("SELECT %s FROM stats ORDER BY %s DESC LIMIT 5", rows, column));
+	else if (cm_database.integer == 2)
+		Q_strncpyz(query, mysqlGetLeaders(parse_output(va("curl --data \"key=%s&p=leaders&g=jedi_academy&r=%s&o=%s\" %s"), cm_mysql_secret.string, rows, column, cm_mysql_url.string)), sizeof(query));
+
 	trap_SendServerCommand(ent->client->ps.clientNum, va("print \"%s\n\"", query));
 	strcpy(ent->client->csMessage, G_NewString(va("%s", query)));
 	ent->client->csTimeLeft = 5;
@@ -5128,8 +5232,8 @@ void ClientCommand( int clientNum ) {
 		trap_Argv(1, user, sizeof(user));
 
 		if (cm_database.integer <= 0) {
-		trap_SendServerCommand(client_id, va("print \"^1Database commands have been disabled on this server.\n\""));
-		return;
+			trap_SendServerCommand(client_id, va("print \"^1Database commands have been disabled on this server.\n\""));
+			return;
 		}
 
 		if (trap_Argc() > 1)

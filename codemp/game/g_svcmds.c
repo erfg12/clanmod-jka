@@ -3164,25 +3164,64 @@ qboolean	ConsoleCommand( void ) {
 	}
 	if (Q_stricmp(cmd, "cmstats") == 0) {
 		char *user[MAX_STRING_CHARS];
+		int getID = 0;
 
 		trap_Argv(1, user, sizeof(user));
-		int getID = sqliteSelectUserID("SELECT * FROM users WHERE user = '%s'", user);
-		if (getID > 0)
-			G_Printf("%s", sqliteGetStats("SELECT * FROM stats WHERE user_id = '%i'", getID));
+		G_Printf("Getting stats for %s...\n", user);
+
+		if (cm_database.integer == 1)
+			getID = sqliteSelectUserID("SELECT * FROM users WHERE user = '%s'", user);
+		else if (cm_database.integer == 2)
+			getID = atoi(parse_output(va("curl --data \"key=%s&p=find&user=%s\" %s"), cm_mysql_secret.string, user, cm_mysql_url.string));
+
+		if (getID > 0) {
+			G_Printf("USER FOUND - ID: %i\n", getID);
+			if (cm_database.integer == 1)
+				G_Printf("%s\n", sqliteGetStats("SELECT * FROM stats WHERE user_id = '%i'", getID));
+			else if (cm_database.integer == 2) {
+				G_Printf("%s\n", parse_output(va("curl --data \"key=%s&p=stats&g=jedi_academy&id=%i\" %s"), cm_mysql_secret.string, getID, cm_mysql_url.string));
+				G_Printf("kills,deaths,duel_wins,duel_loses,flag_captures,ffa_wins,ffa_loses,tdm_wins,tdm_loses,siege_wins,siege_loses,ctf_wins,ctf_loses\n");
+			}
+		} 
 		else
 			G_Printf("USER NOT FOUND");
 	}
 	if (Q_stricmp(cmd, "cmleaderboard") == 0 || Q_stricmp(cmd, "cmleaders") == 0) {
-		if (g_gametype.integer == GT_FFA || g_gametype.integer == GT_HOLOCRON || g_gametype.integer == GT_JEDIMASTER)
-			G_Printf("%s", sqliteGetLeaders("SELECT user_id,kills,deaths FROM stats ORDER BY kills DESC LIMIT 5"));
-		else if (g_gametype.integer == GT_DUEL || g_gametype.integer == GT_POWERDUEL)
-			G_Printf("%s", sqliteGetLeaders("SELECT user_id,duel_wins,duel_loses FROM stats ORDER BY duel_wins DESC LIMIT 5"));
-		else if (g_gametype.integer == GT_TEAM)
-			G_Printf("%s", sqliteGetLeaders("SELECT user_id,tdm_wins,tdm_loses FROM stats ORDER BY tdm_wins DESC LIMIT 5"));
-		else if (g_gametype.integer == GT_SIEGE)
-			G_Printf("%s", sqliteGetLeaders("SELECT user_id,siege_wins,siege_loses FROM siege_wins ORDER BY tdm_wins DESC LIMIT 5"));
-		else if (g_gametype.integer == GT_CTF || g_gametype.integer == GT_CTY)
-			G_Printf("%s", sqliteGetLeaders("SELECT user_id,ctf_wins,ctf_loses FROM stats ORDER BY ctf_wins DESC LIMIT 5"));
+
+		if (cm_database.integer <= 0)
+			G_Printf("Database commands have been disabled on this server.\n");
+
+		char rows[255];
+		char column[60];
+		char query[MAX_STRING_CHARS];
+
+		if (g_gametype.integer == GT_FFA || g_gametype.integer == GT_HOLOCRON || g_gametype.integer == GT_JEDIMASTER) {
+			Q_strncpyz(rows, "user_id,kills,deaths", sizeof(rows));
+			Q_strncpyz(column, "kills", sizeof(column));
+		}
+		else if (g_gametype.integer == GT_DUEL || g_gametype.integer == GT_POWERDUEL) {
+			Q_strncpyz(rows, "user_id,duel_wins,duel_loses", sizeof(rows));
+			Q_strncpyz(column, "duel_wins", sizeof(column));
+		}
+		else if (g_gametype.integer == GT_TEAM) {
+			Q_strncpyz(rows, "user_id,tdm_wins,tdm_loses", sizeof(rows));
+			Q_strncpyz(column, "tdm_wins", sizeof(column));
+		}
+		else if (g_gametype.integer == GT_SIEGE) {
+			Q_strncpyz(rows, "user_id,siege_wins,siege_loses", sizeof(rows));
+			Q_strncpyz(column, "siege_wins", sizeof(column));
+		}
+		else if (g_gametype.integer == GT_CTF || g_gametype.integer == GT_CTY) {
+			Q_strncpyz(rows, "user_id,ctf_wins,ctf_loses", sizeof(rows));
+			Q_strncpyz(column, "ctf_wins", sizeof(column));
+		}
+
+		if (cm_database.integer == 1)
+			Q_strcat(query, sizeof(query), sqliteGetLeaders("SELECT %s FROM stats ORDER BY %s DESC LIMIT 5", rows, column));
+		else if (cm_database.integer == 2)
+			Q_strncpyz(query, mysqlGetLeaders(parse_output(va("curl --data \"key=%s&p=leaders&g=jedi_academy&r=%s&o=%s\" %s"), cm_mysql_secret.string, rows, column, cm_mysql_url.string)), sizeof(query));
+
+		G_Printf(query);
 	}
 
 	if (Q_stricmp (cmd, "amvstr") == 0) {
