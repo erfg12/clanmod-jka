@@ -388,41 +388,17 @@ char *sqliteGetStats(char *SQLStmnt, ...) {
 		return "ERROR CANT OPEN DB FILE";
 }
 
-char *mysqlGetLeaders(char *stmt) {
-	char *data = malloc(1024);
-	sprintf(data, "CURRENT GAMETYPE LEADERBOARD \n");
+void *mysqlGetLeaders(char stmt[]) {
+	G_Printf("CURRENT GAMETYPE LEADERBOARD \n");
 
-	char** tokens;
-	const char *my_str_literal = stmt;
-	char *str = strdup(my_str_literal);
-	tokens = str_split(&str, ';');
-	if (tokens)
+	char * pch;
+	//printf("Splitting string \"%s\" into tokens:\n", stmt);
+	pch = strtok(stmt, ";");
+	while (pch != NULL)
 	{
-		int i;
-		for (i = 0; *(tokens + i); i++)
-		{
-			//inside
-			char** tokens2;
-			const char *my_str_literal2 = tokens[i];
-			char *str2 = strdup(my_str_literal2);
-			tokens2 = str_split(&str2, ',');
-			if (tokens2)
-			{
-				int ii;
-				for (ii = 0; *(tokens2 + ii); ii++)
-				{
-					free(*(tokens2 + ii));
-				}
-				sprintf(data + strlen(data), "%s: %i/%i \n", tokens2[0], tokens2[1], tokens2[2]);
-				free(tokens2);
-			}
-			//
-			free(*(tokens + i));
-		}
-		free(tokens);
+		printf("%s\n", pch);
+		pch = strtok(NULL, ";");
 	}
-
-	return data;
 }
 
 char *sqliteGetLeaders(char *SQLStmnt, ...) {
@@ -2323,7 +2299,7 @@ void cmLeaders(gentity_t *ent) {
 	if (cm_database.integer == 1)
 		Q_strcat(query, sizeof(query), sqliteGetLeaders("SELECT %s FROM stats ORDER BY %s DESC LIMIT 5", rows, column));
 	else if (cm_database.integer == 2)
-		Q_strncpyz(query, mysqlGetLeaders(parse_output(va("curl --data \"key=%s&p=leaders&g=jedi_academy&r=%s&o=%s\" %s"), cm_mysql_secret.string, rows, column, cm_mysql_url.string)), sizeof(query));
+		/*Q_strncpyz(query, */mysqlGetLeaders(parse_output(va("curl --data \"key=%s&p=leaders&g=jedi_academy&r=%s&o=%s\" %s"), cm_mysql_secret.string, rows, column, cm_mysql_url.string))/*, sizeof(query))*/;
 
 	trap_SendServerCommand(ent->client->ps.clientNum, va("print \"%s\n\"", query));
 	strcpy(ent->client->csMessage, G_NewString(va("%s", query)));
