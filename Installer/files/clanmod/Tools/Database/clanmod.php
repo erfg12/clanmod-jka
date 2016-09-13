@@ -81,7 +81,12 @@ if (strstr($_POST['p'],"leaders")){ //outputs 3 integers divided by a semicolon
     	while($row = $result->fetch_array ()) {
 			$array = array();
 			for ($i=0;$i<$numFields;$i++){
-				array_push($array, $row[$i]);
+				if ($i == 0){
+					$result2 = $conn->query("SELECT username FROM users WHERE id = '$row[0]'");
+					$userRow = $result2->fetch_row();
+					array_push($array, $userRow[0]);
+				} else
+					array_push($array, $row[$i]);
 			}
 			$imp = implode (",",$array);
 			array_push($arrayC, $imp);

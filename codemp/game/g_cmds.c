@@ -388,17 +388,29 @@ char *sqliteGetStats(char *SQLStmnt, ...) {
 		return "ERROR CANT OPEN DB FILE";
 }
 
-void *mysqlGetLeaders(char stmt[]) {
-	G_Printf("CURRENT GAMETYPE LEADERBOARD \n");
+char *mysqlGetLeaders(char stmt[]) {
+	char *data = malloc(1024);
+	sprintf(data, "CURRENT GAMETYPE LEADERBOARD \n");
 
 	char * pch;
-	//printf("Splitting string \"%s\" into tokens:\n", stmt);
-	pch = strtok(stmt, ";");
+	int i = 0;
+	//printf("[DEBUG] Splitting string \"%s\" into tokens:\n", stmt);
+	pch = strtok(stmt, ",");
 	while (pch != NULL)
 	{
-		printf("%s\n", pch);
-		pch = strtok(NULL, ";");
+		sprintf(data + strlen(data), "%s", pch);
+		if (i == 0)
+			sprintf(data + strlen(data), ": ");
+		if (i == 1)
+			sprintf(data + strlen(data), "/");
+		//printf("%s\n", pch);
+		i++;
+		if (i == 2)
+			i = 0;
+		pch = strtok(NULL, ",");
 	}
+	strcpy(data, replace_str(data, ";", "\n"));
+	return data;
 }
 
 char *sqliteGetLeaders(char *SQLStmnt, ...) {
@@ -2299,7 +2311,7 @@ void cmLeaders(gentity_t *ent) {
 	if (cm_database.integer == 1)
 		Q_strcat(query, sizeof(query), sqliteGetLeaders("SELECT %s FROM stats ORDER BY %s DESC LIMIT 5", rows, column));
 	else if (cm_database.integer == 2)
-		/*Q_strncpyz(query, */mysqlGetLeaders(parse_output(va("curl --data \"key=%s&p=leaders&g=jedi_academy&r=%s&o=%s\" %s"), cm_mysql_secret.string, rows, column, cm_mysql_url.string))/*, sizeof(query))*/;
+		Q_strncpyz(query, mysqlGetLeaders(parse_output(va("curl --data \"key=%s&p=leaders&g=jedi_academy&r=%s&o=%s\" %s"), cm_mysql_secret.string, rows, column, cm_mysql_url.string)), sizeof(query));
 
 	trap_SendServerCommand(ent->client->ps.clientNum, va("print \"%s\n\"", query));
 	strcpy(ent->client->csMessage, G_NewString(va("%s", query)));

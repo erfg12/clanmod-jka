@@ -3219,9 +3219,9 @@ qboolean	ConsoleCommand( void ) {
 		if (cm_database.integer == 1)
 			Q_strcat(query, sizeof(query), sqliteGetLeaders("SELECT %s FROM stats ORDER BY %s DESC LIMIT 5", rows, column));
 		else if (cm_database.integer == 2)
-			/*Q_strncpyz(query,*/ mysqlGetLeaders(parse_output(va("curl --data \"key=%s&p=leaders&g=jedi_academy&r=%s&o=%s\" %s"), cm_mysql_secret.string, rows, column, cm_mysql_url.string)), sizeof(query)/*)*/;
+			Q_strncpyz(query, mysqlGetLeaders(parse_output(va("curl --data \"key=%s&p=leaders&g=jedi_academy&r=%s&o=%s\" %s"), cm_mysql_secret.string, rows, column, cm_mysql_url.string)), sizeof(query));
 
-		//G_Printf(query);
+		G_Printf(query);
 	}
 
 	if (Q_stricmp (cmd, "amvstr") == 0) {
