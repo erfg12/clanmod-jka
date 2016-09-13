@@ -875,6 +875,7 @@ struct gclient_s {
 	int			chatDebounceTime;
 	int			saberDebounceTime;
 	int			hookDebounceTime;
+	int			mysqlDebounceTime;
 
 	qboolean	emote_freeze;
 	//qboolean	ojpClientPlugIn10; //v1.10 BETA2

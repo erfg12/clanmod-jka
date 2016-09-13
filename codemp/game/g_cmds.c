@@ -2210,6 +2210,15 @@ void cmStats(gentity_t *ent, const char *user) { //MYSQL NEEDS TESTING
 		return;
 	}
 
+	if (ent->client && ent->client->mysqlDebounceTime > level.time)
+	{
+		if (ent->client->mysqlDebounceTime > 0)
+			trap_SendServerCommand(ent->s.number, va("print \"^2wait %.2f seconds before trying again.\n\"", ((float)5000 / (float)1000)));
+		return;
+	}
+	else
+		ent->client->mysqlDebounceTime = level.time + 5000;
+
 	if ((user != NULL) && (user[0] == '\0')) { //no user
 		if (ent->client->pers.userID > 0) {
 			if (cm_database.integer == 1) {
@@ -2282,6 +2291,15 @@ void cmJetpack(gentity_t *ent) {
 void cmLeaders(gentity_t *ent) {
 	if (cm_database.integer <= 0)
 		trap_SendServerCommand(ent->client->ps.clientNum, va("print \"^1Database commands have been disabled on this server.\n\""));
+
+	if (ent->client && ent->client->mysqlDebounceTime > level.time)
+	{
+		if (ent->client->mysqlDebounceTime > 0)
+			trap_SendServerCommand(ent->s.number, va("print \"^2wait %.2f seconds before trying again.\n\"", ((float)5000 / (float)1000)));
+		return;
+	}
+	else
+		ent->client->mysqlDebounceTime = level.time + 5000;
 
 	char rows[255];
 	char column[60];
@@ -2379,10 +2397,8 @@ void G_Say( gentity_t *ent, gentity_t *target, int mode, const char *chatText ) 
 			}
 			return;
 		}
-		else
-		{//we can chat, bump the debouncer
+		else //we can chat, bump the debouncer
 			ent->client->chatDebounceTime = level.time + 250;
-		}
 	}
 	//[/ChatSpamProtection]
 
