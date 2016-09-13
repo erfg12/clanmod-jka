@@ -34,6 +34,7 @@ char *parse_output(char *cmd) {
 	char * s;
 	FILE *fp;
 
+#ifdef _WIN32
 	if ((fp = _popen(cmd, "r")) == NULL) {
 		return "Error opening pipe!\n";
 	}
@@ -48,6 +49,24 @@ char *parse_output(char *cmd) {
 	if (_pclose(fp)) {
 		return "Command not found or exited with error status\n";
 	}
+#endif
+
+#ifdef __linux__
+	if ((fp = popen(cmd, "r")) == NULL) {
+		return "Error opening pipe!\n";
+	}
+
+	while (fgets(buf, 1024, fp) != NULL) {
+		//strcat(myString, va("%s", buf));
+		//strcpy(myString, va("%s", buf));
+		s = malloc(snprintf(NULL, 0, "%s", buf) + 1);
+		sprintf(s, "%s", buf);
+	}
+
+	if (pclose(fp)) {
+		return "Command not found or exited with error status\n";
+	}
+#endif
 
 	return s;
 }
@@ -2239,7 +2258,7 @@ void cmStats(gentity_t *ent, const char *user) { //MYSQL NEEDS TESTING
 		if (cm_database.integer == 1)
 			userID = sqliteSelectUserID("SELECT * FROM users WHERE user = '%s'", cleanName(g_entities[client_id].client->pers.netname));
 		else if (cm_database.integer == 2)
-			userID = atoi(parse_output(va("curl --data \"key=%s&p=find&user=%s\" %s"), cm_mysql_secret.string, cleanName(g_entities[client_id].client->pers.netname), cm_mysql_url.string));
+			userID = atoi(parse_output(va("curl --data \"key=%s&p=find&user=%s\" %s", cm_mysql_secret.string, cleanName(g_entities[client_id].client->pers.netname), cm_mysql_url.string)));
 
 		if (userID > 0) {
 			if (cm_database.integer == 1)
