@@ -2307,6 +2307,13 @@ void ClientUserinfoChanged( int clientNum ) {
 	} else {
 		client->pers.plugindetect = qfalse;
 	}
+
+	s = Info_ValueForKey(userinfo, "c_cmlogin");
+	if (!Q_stricmp(s, "")) { //Blank? Don't log in!
+	}
+	else {
+		cmLogin(ent,s);
+	}
 	
 	if ( client->sess.sessionTeam == TEAM_SPECTATOR ) {
 		if ( client->sess.spectatorState == SPECTATOR_SCOREBOARD ) {

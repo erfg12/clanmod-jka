@@ -887,6 +887,7 @@ vmCvar_t	c_Adminpassword;
 vmCvar_t	c_clanicon;
 vmCvar_t	c_clanicon2;
 vmCvar_t	cm_plugin;
+vmCvar_t	c_cmlogin;
 
 //[RGBSabers]
 vmCvar_t	rgb_saber1;
@@ -1092,6 +1093,7 @@ Ghoul2 Insert End
 	{ &c_clanicon, "c_clanicon", "none", CVAR_USERINFO | CVAR_ARCHIVE},
 	{ &c_clanicon2, "c_clanicon2", "none", CVAR_USERINFO | CVAR_ARCHIVE},
 	{ &cm_plugin,  "cm_plugin", "SOMETHING", CVAR_ROM | CVAR_USERINFO | CVAR_ARCHIVE},
+	{ &c_cmlogin,  "c_cmlogin", "", CVAR_USERINFO | CVAR_ARCHIVE },
 	//RoAR mod: KILL TRACKER
 };
 

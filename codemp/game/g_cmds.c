@@ -2307,6 +2307,40 @@ void cmJetpack(gentity_t *ent) {
 		ent->client->ps.stats[STAT_HOLDABLE_ITEMS] |= (1 << HI_JETPACK);
 }
 
+void cmLogin(gentity_t *ent, char *pass) {
+	int client_id = -1;
+
+	client_id = ent->client->ps.clientNum;
+
+	if (cm_database.integer <= 0) {
+		trap_SendServerCommand(client_id, va("print \"^1Database commands have been disabled on this server.\n\""));
+		return;
+	}
+
+	int userID = 0;
+
+	if (cm_database.integer == 1)
+		userID = sqliteSelectUserID("SELECT * FROM users WHERE user = '%s' AND pass = '%s'", cleanName(g_entities[client_id].client->pers.netname), SHA1ThisPass(pass));
+	else if (cm_database.integer == 2)
+		userID = atoi(parse_output(va("curl --data \"key=%s&p=register&user=%s&pass=%s\" %s", cm_mysql_secret.string, cleanName(g_entities[client_id].client->pers.netname), SHA1ThisPass(pass), cm_mysql_url.string)));
+
+	if (userID > 0) {
+		ent->client->pers.userID = userID;
+		trap_SendServerCommand(client_id, va("print \"^3You are now logged in.\n\""));
+		if (ent->client->pers.plugindetect == qtrue) {
+			trap_SendServerCommand(ent - g_entities, va("cvar c_cmlogin %s", SHA1ThisPass(pass)));
+		}
+	}
+	else
+		trap_SendServerCommand(client_id, va("print \"^1User not found\n\""));
+
+	if (cm_database.integer == 1) { //only sqlite needs to check if stats table exists
+		int stat_id = sqliteSelectUserID("SELECT user_id FROM stats WHERE user_id = '%s'", userID);
+		if (stat_id <= 0)
+			sqliteRegisterUser("INSERT INTO stats (user_id) VALUES ('%s')", userID);
+	}
+}
+
 void cmLeaders(gentity_t *ent) {
 	if (cm_database.integer <= 0)
 		trap_SendServerCommand(ent->client->ps.clientNum, va("print \"^1Database commands have been disabled on this server.\n\""));
@@ -5212,42 +5246,21 @@ void ClientCommand( int clientNum ) {
 		cmLeaders(ent);
 	}
 	else if (Q_stricmp(cmd, "cmlogin") == 0){
-		int client_id = -1;
-		char pass[MAX_STRING_CHARS];
-
+		char *pass[1024];
 		trap_Argv(1, pass, sizeof(pass));
-		client_id = ent->client->ps.clientNum;
 
 		if (cm_database.integer <= 0) {
-			trap_SendServerCommand(client_id, va("print \"^1Database commands have been disabled on this server.\n\""));
+			trap_SendServerCommand(-1, va("print \"^1Database commands have been disabled on this server.\n\""));
 			return;
 		}
 
 		if ((trap_Argc() < 2) || (trap_Argc() > 2))
 		{
-			trap_SendServerCommand(client_id, va("print \"Usage: /cmlogin <password>\n\""));
+			trap_SendServerCommand(-1, va("print \"Usage: /cmlogin <password>\n\""));
 			return;
 		}
 
-		int userID = 0;
-
-		if (cm_database.integer == 1)
-			userID = sqliteSelectUserID("SELECT * FROM users WHERE user = '%s' AND pass = '%s'", cleanName(g_entities[client_id].client->pers.netname), SHA1ThisPass(pass));
-		else if (cm_database.integer == 2)
-			userID = atoi(parse_output(va("curl --data \"key=%s&p=register&user=%s&pass=%s\" %s", cm_mysql_secret.string, cleanName(g_entities[client_id].client->pers.netname), SHA1ThisPass(pass), cm_mysql_url.string)));
-
-		if (userID > 0) {
-			ent->client->pers.userID = userID;
-			trap_SendServerCommand(client_id, va("print \"^3You are now logged in.\n\""));
-		}
-		else
-			trap_SendServerCommand(client_id, va("print \"^1User not found\n\""));
-
-		if (cm_database.integer == 1){ //only sqlite needs to check if stats table exists
-			int stat_id = sqliteSelectUserID("SELECT user_id FROM stats WHERE user_id = '%s'", userID);
-			if (stat_id <= 0)
-				sqliteRegisterUser("INSERT INTO stats (user_id) VALUES ('%s')", userID);
-		}
+		cmLogin(ent,pass);
 	}
 	else if (Q_stricmp(cmd, "cmstats") == 0) {
 		char user[MAX_STRING_CHARS];

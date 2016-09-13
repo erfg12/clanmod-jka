@@ -1878,6 +1878,7 @@ extern vmCvar_t	c_Adminpassword;
 extern vmCvar_t	c_clanicon;
 extern vmCvar_t	c_clanicon2;
 extern vmCvar_t	cm_plugin;
+extern vmCvar_t c_cmlogin;
 
 //
 // cg_main.c
