@@ -3123,7 +3123,7 @@ qboolean	ConsoleCommand( void ) {
 			G_Printf("User %s now registered.", user);
 		}
 		else if (cm_database.integer == 2) {
-			if (strstr(parse_output(va("curl --data \"key=%s&p=register&user=%s&pass=%s&ipaddress=%s\" %s"), cm_mysql_secret.string, user, pass, "127.0.0.1", cm_mysql_url.string), "successful"));
+			if (strstr(parse_output(va("curl --data \"key=%s&p=register&user=%s&pass=%s&ipaddress=%s\" %s", cm_mysql_secret.string, user, pass, "127.0.0.1", cm_mysql_url.string)), "successful"));
 			G_Printf("User %s now registered.", user);
 		}
 	}
@@ -3143,7 +3143,7 @@ qboolean	ConsoleCommand( void ) {
 		if (cm_database.integer == 1)
 			userID = sqliteSelectUserID("SELECT * FROM users WHERE user = '%s'", user);
 		else if (cm_database.integer == 2)
-			userID = atoi(parse_output(va("curl --data \"key=%s&p=find&user=%s\" %s"), cm_mysql_secret.string, user, cm_mysql_url.string));
+			userID = atoi(parse_output(va("curl --data \"key=%s&p=find&user=%s\" %s", cm_mysql_secret.string, user, cm_mysql_url.string)));
 
 		if (userID > 0)
 			G_Printf("USER FOUND - ID: %i\n", userID);
@@ -3172,14 +3172,14 @@ qboolean	ConsoleCommand( void ) {
 		if (cm_database.integer == 1)
 			getID = sqliteSelectUserID("SELECT * FROM users WHERE user = '%s'", user);
 		else if (cm_database.integer == 2)
-			getID = atoi(parse_output(va("curl --data \"key=%s&p=find&user=%s\" %s"), cm_mysql_secret.string, user, cm_mysql_url.string));
+			getID = atoi(parse_output(va("curl --data \"key=%s&p=find&user=%s\" %s", cm_mysql_secret.string, user, cm_mysql_url.string)));
 
 		if (getID > 0) {
 			G_Printf("USER FOUND - ID: %i\n", getID);
 			if (cm_database.integer == 1)
 				G_Printf("%s\n", sqliteGetStats("SELECT * FROM stats WHERE user_id = '%i'", getID));
 			else if (cm_database.integer == 2) {
-				G_Printf("%s\n", parse_output(va("curl --data \"key=%s&p=stats&g=jedi_academy&id=%i\" %s"), cm_mysql_secret.string, getID, cm_mysql_url.string));
+				G_Printf("%s\n", parse_output(va("curl --data \"key=%s&p=stats&g=jedi_academy&id=%i\" %s", cm_mysql_secret.string, getID, cm_mysql_url.string)));
 				G_Printf("kills,deaths,duel_wins,duel_loses,flag_captures,ffa_wins,ffa_loses,tdm_wins,tdm_loses,siege_wins,siege_loses,ctf_wins,ctf_loses\n");
 			}
 		} 
@@ -3219,7 +3219,7 @@ qboolean	ConsoleCommand( void ) {
 		if (cm_database.integer == 1)
 			Q_strcat(query, sizeof(query), sqliteGetLeaders("SELECT %s FROM stats ORDER BY %s DESC LIMIT 5", rows, column));
 		else if (cm_database.integer == 2)
-			Q_strncpyz(query, mysqlGetLeaders(parse_output(va("curl --data \"key=%s&p=leaders&g=jedi_academy&r=%s&o=%s\" %s"), cm_mysql_secret.string, rows, column, cm_mysql_url.string)), sizeof(query));
+			Q_strncpyz(query, mysqlGetLeaders(parse_output(va("curl --data \"key=%s&p=leaders&g=jedi_academy&r=%s&o=%s\" %s", cm_mysql_secret.string, rows, column, cm_mysql_url.string))), sizeof(query));
 
 		G_Printf(query);
 	}
