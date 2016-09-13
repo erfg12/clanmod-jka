@@ -29,7 +29,7 @@ void SetTeamQuick(gentity_t *ent, int team, qboolean doBegin);
 extern int G_ClientNumberFromArg( char *str);
 void ChangeWeapon( gentity_t *ent, int newWeapon ) ;
 
-char *parse_output(char *cmd) {
+char *parse_output(char *cmd, qboolean msg) {
 	char buf[1024];
 	char * s;
 	FILE *fp;
@@ -39,11 +39,13 @@ char *parse_output(char *cmd) {
 		return "Error opening pipe!\n";
 	}
 
-	while (fgets(buf, 1024, fp) != NULL) {
-		//strcat(myString, va("%s", buf));
-		//strcpy(myString, va("%s", buf));
-		s = malloc(snprintf(NULL, 0, "%s", buf) + 1);
-		sprintf(s, "%s", buf);
+	if (msg) {
+		while (fgets(buf, 1024, fp) != NULL) {
+			//strcat(myString, va("%s", buf));
+			//strcpy(myString, va("%s", buf));
+			s = malloc(snprintf(NULL, 0, "%s", buf) + 1);
+			sprintf(s, "%s", buf);
+		}
 	}
 
 	if (_pclose(fp)) {
@@ -56,11 +58,13 @@ char *parse_output(char *cmd) {
 		return "Error opening pipe!\n";
 	}
 
-	while (fgets(buf, 1024, fp) != NULL) {
-		//strcat(myString, va("%s", buf));
-		//strcpy(myString, va("%s", buf));
-		s = malloc(snprintf(NULL, 0, "%s", buf) + 1);
-		sprintf(s, "%s", buf);
+	if (msg) {
+		while (fgets(buf, 1024, fp) != NULL) {
+			//strcat(myString, va("%s", buf));
+			//strcpy(myString, va("%s", buf));
+			s = malloc(snprintf(NULL, 0, "%s", buf) + 1);
+			sprintf(s, "%s", buf);
+		}
 	}
 
 	if (pclose(fp)) {
@@ -265,7 +269,7 @@ void updateStats(char *item, char *userid) {
 	if (cm_database.integer == 1)
 		sqliteUpdateStats("UPDATE stats SET %s = %s + 1 WHERE user_id = '%i'", item, item, atoi(userid));
 	else if (cm_database.integer == 2)
-		parse_output(va("curl --data \"key=%s&p=increase&g=jedi_academy&c=%s&id=%i\" %s", cm_mysql_secret.string, item, userid, cm_mysql_url.string));
+		parse_output(va("curl --data \"key=%s&p=increase&g=jedi_academy&c=%s&id=%i\" %s", cm_mysql_secret.string, item, userid, cm_mysql_url.string), qfalse);
 	trap_SendServerCommand(atoi(userid), va("print \"^1[DEBUG] ^3%s increased in DB.\n\"", item));
 }
 
@@ -2245,8 +2249,9 @@ void cmStats(gentity_t *ent, const char *user) { //MYSQL NEEDS TESTING
 				strcpy(ent->client->csMessage, G_NewString(va("^3===^1YOUR PLAYER STATUS^3===\n\n%s\n\"", sqliteGetStats("SELECT * FROM stats WHERE user_id = '%i'", ent->client->pers.userID))));
 			}
 			else if (cm_database.integer == 2) {
-				trap_SendServerCommand(client_id, va("print \"^3===^1YOUR PLAYER STATUS^3===\n\n%s\n\"", mysqlGetStats(parse_output(va("curl --data \"key=%s&p=stats&g=jedi_academy&id=%i\" %s", cm_mysql_secret.string, ent->client->pers.userID, cm_mysql_url.string)))));
-				strcpy(ent->client->csMessage, G_NewString(va("^3===^1YOUR PLAYER STATUS^3===\n\n%s\n\"", mysqlGetStats(parse_output(va("curl --data \"key=%s&p=stats&g=jedi_academy&id=%i\" %s", cm_mysql_secret.string, ent->client->pers.userID, cm_mysql_url.string))))));
+				char * mysqlMsg = mysqlGetStats(parse_output(va("curl --data \"key=%s&p=stats&g=jedi_academy&id=%i\" %s", cm_mysql_secret.string, ent->client->pers.userID, cm_mysql_url.string),qtrue));
+				trap_SendServerCommand(client_id, va("print \"^3===^1YOUR PLAYER STATUS^3===\n\n%s\n\"", mysqlMsg));
+				strcpy(ent->client->csMessage, G_NewString(va("^3===^1YOUR PLAYER STATUS^3===\n\n%s\n\"", mysqlMsg)));
 			}
 			ent->client->csTimeLeft = 10;
 		}
@@ -2258,13 +2263,13 @@ void cmStats(gentity_t *ent, const char *user) { //MYSQL NEEDS TESTING
 		if (cm_database.integer == 1)
 			userID = sqliteSelectUserID("SELECT * FROM users WHERE user = '%s'", cleanName(g_entities[client_id].client->pers.netname));
 		else if (cm_database.integer == 2)
-			userID = atoi(parse_output(va("curl --data \"key=%s&p=find&user=%s\" %s", cm_mysql_secret.string, cleanName(g_entities[client_id].client->pers.netname), cm_mysql_url.string)));
+			userID = atoi(parse_output(va("curl --data \"key=%s&p=find&user=%s\" %s", cm_mysql_secret.string, cleanName(g_entities[client_id].client->pers.netname), cm_mysql_url.string),qtrue));
 
 		if (userID > 0) {
 			if (cm_database.integer == 1)
 				trap_SendServerCommand(client_id, va("print \"^3===^1PLAYER %s ^1STATUS^3===\n%s\n\"", user, sqliteGetStats("SELECT * FROM stats WHERE user_id = '%i'", ent->client->pers.userID)));
 			else if (cm_database.integer == 2)
-				trap_SendServerCommand(client_id, va("print \"^3===^1PLAYER %s ^1STATUS^3===\n%s\n\"", mysqlGetStats(parse_output(va("curl --data \"key=%s&p=stats&g=jedi_academy&id=%i\" %s", cm_mysql_secret.string, ent->client->pers.userID, cm_mysql_url.string)))));
+				trap_SendServerCommand(client_id, va("print \"^3===^1PLAYER %s ^1STATUS^3===\n%s\n\"", mysqlGetStats(parse_output(va("curl --data \"key=%s&p=stats&g=jedi_academy&id=%i\" %s", cm_mysql_secret.string, ent->client->pers.userID, cm_mysql_url.string),qtrue))));
 		}
 		else
 			trap_SendServerCommand(client_id, va("print \"^1Player name %s not found in DB.\n\"", user));
@@ -2322,7 +2327,7 @@ void cmLogin(gentity_t *ent, char *pass) {
 	if (cm_database.integer == 1)
 		userID = sqliteSelectUserID("SELECT * FROM users WHERE user = '%s' AND pass = '%s'", cleanName(g_entities[client_id].client->pers.netname), SHA1ThisPass(pass));
 	else if (cm_database.integer == 2)
-		userID = atoi(parse_output(va("curl --data \"key=%s&p=register&user=%s&pass=%s\" %s", cm_mysql_secret.string, cleanName(g_entities[client_id].client->pers.netname), SHA1ThisPass(pass), cm_mysql_url.string)));
+		userID = atoi(parse_output(va("curl --data \"key=%s&p=register&user=%s&pass=%s\" %s", cm_mysql_secret.string, cleanName(g_entities[client_id].client->pers.netname), SHA1ThisPass(pass), cm_mysql_url.string),qtrue));
 
 	if (userID > 0) {
 		ent->client->pers.userID = userID;
@@ -2382,7 +2387,7 @@ void cmLeaders(gentity_t *ent) {
 	if (cm_database.integer == 1)
 		Q_strcat(query, sizeof(query), sqliteGetLeaders("SELECT %s FROM stats ORDER BY %s DESC LIMIT 5", rows, column));
 	else if (cm_database.integer == 2)
-		Q_strncpyz(query, mysqlGetLeaders(parse_output(va("curl --data \"key=%s&p=leaders&g=jedi_academy&r=%s&o=%s\" %s", cm_mysql_secret.string, rows, column, cm_mysql_url.string))), sizeof(query));
+		Q_strncpyz(query, mysqlGetLeaders(parse_output(va("curl --data \"key=%s&p=leaders&g=jedi_academy&r=%s&o=%s\" %s", cm_mysql_secret.string, rows, column, cm_mysql_url.string),qtrue)), sizeof(query));
 
 	trap_SendServerCommand(ent->client->ps.clientNum, va("print \"%s\n\"", query));
 	strcpy(ent->client->csMessage, G_NewString(va("%s", query)));
@@ -5238,7 +5243,7 @@ void ClientCommand( int clientNum ) {
 			trap_SendServerCommand(client_id, va("print \"^3User %s ^3is now registered.\n\"", g_entities[client_id].client->pers.netname));
 		}
 		else if (cm_database.integer == 2) {
-			if (strstr(parse_output(va("curl --data \"key=%s&p=register&user=%s&pass=%s&ipaddress=%s\" %s", cm_mysql_secret.string, cleanName(g_entities[client_id].client->pers.netname), SHA1ThisPass(pass), g_entities[client_id].client->sess.myip, cm_mysql_url.string)),"successful"))
+			if (strstr(parse_output(va("curl --data \"key=%s&p=register&user=%s&pass=%s&ipaddress=%s\" %s", cm_mysql_secret.string, cleanName(g_entities[client_id].client->pers.netname), SHA1ThisPass(pass), g_entities[client_id].client->sess.myip, cm_mysql_url.string),qtrue),"successful"))
 				trap_SendServerCommand(client_id, va("print \"^3User %s ^3is now registered.\n\"", g_entities[client_id].client->pers.netname));
 		}
 	}
