@@ -466,46 +466,43 @@ char *sqliteGetLeaders(char *SQLStmnt, ...) {
 }
 
 char *mysqlGetStats(char *stmt) {
-	char** tokens;
+	char *data = malloc(1024);
+	sprintf(data, "");
 
-	const char *my_str_literal = stmt;
-	char *str = strdup(my_str_literal);  // We own str's memory now.
-
-	tokens = str_split(&str, ',');
-
-	if (tokens)
+	char * pch;
+	int i = 0;
+	const char *a[20];
+	//printf("[DEBUG] Splitting string \"%s\" into tokens:\n", stmt);
+	pch = strtok(stmt, ",");
+	while (pch != NULL)
 	{
-		int i;
-		for (i = 0; *(tokens + i); i++)
-		{
-			free(*(tokens + i));
-		}
-		free(tokens);
+		a[i] = pch;
+		i++;
+		pch = strtok(NULL, ",");
 	}
 
-		int kills = tokens[0];
-		int deaths = tokens[1];
-		int duel_wins = tokens[2];
-		int duel_loses = tokens[3];
-		int flag_captures = tokens[4];
-		int ffa_wins = tokens[5];
-		int ffa_loses = tokens[6];
-		int tdm_wins = tokens[7];
-		int tdm_loses = tokens[8];
-		int siege_wins = tokens[9];
-		int siege_loses = tokens[10];
-		int ctf_wins = tokens[11];
-		int ctf_loses = tokens[12];
+		char * kills = a[0];
+		char * deaths = a[1];
+		char * duel_wins = a[2];
+		char * duel_loses = a[3];
+		char * flag_captures = a[4];
+		char * ffa_wins = a[5];
+		char * ffa_loses = a[6];
+		char * tdm_wins = a[7];
+		char * tdm_loses = a[8];
+		char * siege_wins = a[9];
+		char * siege_loses = a[10];
+		char * ctf_wins = a[11];
+		char * ctf_loses = a[12];
 
-		char *data = malloc(1024);
-		sprintf(data, "Kills/Deaths: %i/%i \n", kills, deaths);
-		sprintf(data + strlen(data), "Duel Wins/Loses: %i/%i \n", duel_wins, duel_loses);
-		sprintf(data + strlen(data), "Flag Captures: %i \n", flag_captures);
-		sprintf(data + strlen(data), "FFA Wins/Loses: %i/%i \n", ffa_wins, ffa_loses);
-		sprintf(data + strlen(data), "TDM Wins/Loses: %i/%i \n", tdm_wins, tdm_loses);
-		sprintf(data + strlen(data), "CTF Wins/Loses: %i/%i \n", ctf_wins, ctf_loses);
-		sprintf(data + strlen(data), "Siege Wins/Loses: %i/%i \n", siege_wins, siege_loses);
-		return data;
+		sprintf(data, "Kills/Deaths: %s/%s \n", kills, deaths);
+		sprintf(data + strlen(data), "Duel Wins/Loses: %s/%s \n", duel_wins, duel_loses);
+		sprintf(data + strlen(data), "Flag Captures: %s \n", flag_captures);
+		sprintf(data + strlen(data), "FFA Wins/Loses: %s/%s \n", ffa_wins, ffa_loses);
+		sprintf(data + strlen(data), "TDM Wins/Loses: %s/%s \n", tdm_wins, tdm_loses);
+		sprintf(data + strlen(data), "CTF Wins/Loses: %s/%s \n", ctf_wins, ctf_loses);
+		sprintf(data + strlen(data), "Siege Wins/Loses: %s/%s \n", siege_wins, siege_loses);
+	return data;
 }
 
 /*
@@ -2326,15 +2323,17 @@ void cmLogin(gentity_t *ent, char *pass) {
 
 	if (cm_database.integer == 1)
 		userID = sqliteSelectUserID("SELECT * FROM users WHERE user = '%s' AND pass = '%s'", cleanName(g_entities[client_id].client->pers.netname), SHA1ThisPass(pass));
-	else if (cm_database.integer == 2)
-		userID = atoi(parse_output(va("curl --data \"key=%s&p=register&user=%s&pass=%s\" %s", cm_mysql_secret.string, cleanName(g_entities[client_id].client->pers.netname), SHA1ThisPass(pass), cm_mysql_url.string),qtrue));
+	else if (cm_database.integer == 2) {
+		G_Printf("[DEBUG] USER:[%s] PASS:[%s] SHA:[%s]", cleanName(g_entities[client_id].client->pers.netname), pass, SHA1ThisPass(pass));
+		userID = atoi(parse_output(va("curl --data \"key=%s&p=login&user=%s&pass=%s\" %s", cm_mysql_secret.string, cleanName(g_entities[client_id].client->pers.netname), SHA1ThisPass(pass), cm_mysql_url.string), qtrue));
+	}
 
 	if (userID > 0) {
 		ent->client->pers.userID = userID;
 		trap_SendServerCommand(client_id, va("print \"^3You are now logged in.\n\""));
-		if (ent->client->pers.plugindetect == qtrue) {
-			trap_SendServerCommand(ent - g_entities, va("cvar c_cmlogin %s", SHA1ThisPass(pass)));
-		}
+		/*if (ent->client->pers.plugindetect == qtrue) {
+			trap_SendServerCommand(ent-g_entities, va("cvar c_cmlogin %s", SHA1ThisPass(pass)));
+		}*/
 	}
 	else
 		trap_SendServerCommand(client_id, va("print \"^1User not found\n\""));

@@ -57,11 +57,14 @@ if (strstr($_POST['p'],"stats")){
 	$result = $conn->query($sql);
 	$array = array();
 	
-	$numFields = $result->field_count - 1;
+	$numFields = $result->field_count;
 
 	if ($result->num_rows > 0) {
     	while($row = $result->fetch_array ()) {
 			for ($i=0;$i<$numFields;$i++){
+				if ($i == 0)
+					continue;
+					
 				array_push($array, $row[$i]);
 			}
     	}
