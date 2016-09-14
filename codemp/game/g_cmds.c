@@ -8,6 +8,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "sha1.h"
+#if defined(_WIN32) 
+#include "windows.h"
+#endif
 
 #include "../../ui/menudef.h"			// for the voice chats
 
@@ -27,33 +30,72 @@ extern vmCvar_t bot_wp_edit;
 void CG_CenterPrint( const char *str, int y, int charWidth );
 void SetTeamQuick(gentity_t *ent, int team, qboolean doBegin);
 extern int G_ClientNumberFromArg( char *str);
-void ChangeWeapon( gentity_t *ent, int newWeapon ) ;
-
-char *parse_output(char *cmd, qboolean msg) {
-	char buf[1024];
-	char * s;
-	FILE *fp;
+void ChangeWeapon( gentity_t *ent, int newWeapon );
 
 #ifdef _WIN32
-	if ((fp = _popen(cmd, "r")) == NULL) {
+DWORD WINAPI ThreadFunc(LPVOID sntCmd) {
+	// Do stuff.  This will be the first function called on the new thread.
+	// When this function returns, the thread goes away.  See MSDN for more details.
+	FILE *fp;
+	char buf[1024];
+	char * s = "";
+	char cmd[50] = "";
+
+	DWORD dwNumSeconds = (DWORD)sntCmd;
+	sprintf(cmd, "%s", dwNumSeconds);
+	//cmd = *((char*)sntCmd);
+	//sprintf(cmd, sntCmd);
+
+	char *test = (char *)malloc(strlen(cmd) + 1); //need to convert to const char *
+	if ((fp = _popen(test, "r")) == NULL) {
 		return "Error opening pipe!\n";
 	}
 
-	if (msg) {
+	//if (msg) {
 		while (fgets(buf, 1024, fp) != NULL) {
 			//strcat(myString, va("%s", buf));
 			//strcpy(myString, va("%s", buf));
 			s = malloc(snprintf(NULL, 0, "%s", buf) + 1);
 			sprintf(s, "%s", buf);
 		}
-	}
+	//}
 
 	if (_pclose(fp)) {
 		return "Command not found or exited with error status\n";
 	}
+
+	//G_Printf(s);
+
+	return s;
+}
 #endif
 
-#ifdef __linux__
+char *parse_output(char *cmd, qboolean msg) {
+	char buf[1024];
+	char s[50] = "";
+	FILE *fp;
+
+	#ifdef _WIN32
+		DWORD dwExitCode;
+		HANDLE thread = CreateThread(NULL, 0, ThreadFunc, (LPVOID)cmd, 0, NULL);
+		if (thread) {
+			// Optionally do stuff, such as wait on the thread.
+		}
+		while (TRUE) {
+			GetExitCodeThread(thread, &dwExitCode);
+			if (dwExitCode == STILL_ACTIVE) {
+				printf("Thread is still running.\n");
+				Sleep(20);
+				continue;
+			}
+			//printf("Thread exit code was %s.\n", dwExitCode);
+			//memcpy(s, &dwExitCode, sizeof(dwExitCode));
+			sprintf(s, "%s", dwExitCode);
+			break;
+		}
+	#endif
+
+	#ifdef __linux__
 	if ((fp = popen(cmd, "r")) == NULL) {
 		return "Error opening pipe!\n";
 	}
@@ -70,7 +112,7 @@ char *parse_output(char *cmd, qboolean msg) {
 	if (pclose(fp)) {
 		return "Command not found or exited with error status\n";
 	}
-#endif
+	#endif
 
 	return s;
 }
@@ -411,14 +453,17 @@ char *sqliteGetStats(char *SQLStmnt, ...) {
 		return "ERROR CANT OPEN DB FILE";
 }
 
-char *mysqlGetLeaders(char stmt[]) {
+char *mysqlGetLeaders(char * stmt) {
+	char newStmt[512];
+	strcpy(newStmt, stmt);
+	
 	char *data = malloc(1024);
 	sprintf(data, "CURRENT GAMETYPE LEADERBOARD \n");
 
 	char * pch;
 	int i = 0;
 	//printf("[DEBUG] Splitting string \"%s\" into tokens:\n", stmt);
-	pch = strtok(stmt, ",");
+	pch = strtok(newStmt, ",");
 	while (pch != NULL)
 	{
 		sprintf(data + strlen(data), "%s", pch);
@@ -433,6 +478,7 @@ char *mysqlGetLeaders(char stmt[]) {
 		pch = strtok(NULL, ",");
 	}
 	strcpy(data, replace_str(data, ";", "\n"));
+	
 	return data;
 }
 
