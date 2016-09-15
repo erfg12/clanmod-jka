@@ -34,7 +34,7 @@ OFILES = ai_main.o ai_util.o ai_wpnav.o AnimalNPC.o bg_g2_utils.o bg_misc.o bg_p
          SpeederNPC.o tri_coll_test.o WalkerNPC.o w_force.o w_saber.o g_Xmod.o aotctc_holocron.o g_nox_syscalls.o g_emotes.o ../sqlite3/sqlite3.o timestamp.o sha.o sha1.o
 
 $(TARGET): $(OFILES)
-	$(CC) -shared -o $(TARGET) $(OFILES) -lm
+	$(CC) -shared -o $(TARGET) $(OFILES) -lm -pthread
 	strip $(TARGET)
 
 .c.o:

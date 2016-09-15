@@ -8,8 +8,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "sha1.h"
-#if defined(_WIN32) 
+#ifdef _WIN32
 #include "windows.h"
+#endif
+#ifdef __linux__
+#include <pthread.h>
 #endif
 
 #include "../../ui/menudef.h"			// for the voice chats
@@ -59,6 +62,7 @@ DWORD WINAPI ThreadFunc(LPVOID sntCmd) {
 }
 #endif
 #ifdef __linux__
+
 void *linuxThread(void *sntCmd)
 {
 	FILE *fp;
@@ -68,7 +72,7 @@ void *linuxThread(void *sntCmd)
 
 	sprintf(cmd, "%s", sntCmd);
 
-	if ((fp = _popen(cmd, "r")) == NULL) {
+	if ((fp = popen(cmd, "r")) == NULL) {
 		return "Error opening pipe!\n";
 	}
 
@@ -77,7 +81,7 @@ void *linuxThread(void *sntCmd)
 		sprintf(s, "%s", buf);
 	}
 
-	if (_pclose(fp)) {
+	if (pclose(fp)) {
 		return "Command not found or exited with error status\n";
 	}
 
@@ -108,6 +112,7 @@ char *parse_output(char *cmd) {
 	#endif
 
 	#ifdef __linux__
+		int err;
 		pthread_t tid;
 		err = pthread_create(&tid, NULL, &linuxThread, &cmd);
 		if (err != 0)
