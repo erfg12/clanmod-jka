@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost:3306
--- Generation Time: Sep 07, 2016 at 03:24 PM
+-- Generation Time: Sep 15, 2016 at 10:45 AM
 -- Server version: 5.6.31
 -- PHP Version: 5.6.20
 
@@ -40,7 +40,8 @@ CREATE TABLE IF NOT EXISTS `jedi_academy` (
   `siege_wins` int(255) NOT NULL DEFAULT '0',
   `siege_loses` int(255) NOT NULL DEFAULT '0',
   `ctf_wins` int(255) NOT NULL DEFAULT '0',
-  `ctf_loses` int(255) NOT NULL DEFAULT '0'
+  `ctf_loses` int(255) NOT NULL DEFAULT '0',
+  UNIQUE KEY `user_id` (`user_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -56,7 +57,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   `ipaddress` varchar(20) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `username` (`username`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=4 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=7 ;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;

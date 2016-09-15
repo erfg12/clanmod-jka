@@ -16,7 +16,7 @@ if ($conn->connect_error)
     die("Connection failed: " . $conn->connect_error);
 
 if (strstr($_POST['p'],"register")){
-	$sql = "INSERT INTO users (username, password) VALUES ('$_POST[user]', '$_POST[pass]')";
+	$sql = "INSERT INTO users (username, password, ipaddress) VALUES ('$_POST[user]', '$_POST[pass]', '$_POST[ipaddress]')";
 	if ($conn->query($sql) === TRUE){
 		$insertedID = $conn->insert_id;
     	$sql2 = "INSERT INTO jedi_academy (user_id) VALUES ('$insertedID')";
