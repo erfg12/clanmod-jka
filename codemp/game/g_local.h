@@ -1525,6 +1525,7 @@ void BlowDetpacks(gentity_t *ent);
 //
 void MoveClientToIntermission (gentity_t *client);
 void G_SetStats (gentity_t *ent);
+char * mysqlGetLeaders(char * stmt);
 void DeathmatchScoreboardMessage (gentity_t *client);
 
 //

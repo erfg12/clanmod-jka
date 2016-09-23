@@ -7,7 +7,12 @@
 #include "g_adminshared.h"
 #include "timestamp.h"
 #include <stdio.h>
-
+#ifdef _WIN32
+#include "windows.h"
+#endif
+#ifdef __linux__
+#include <pthread.h>
+#endif
 
 /*
 ==============================================================================
@@ -65,6 +70,10 @@ static ipFilter2_t	ipAdminFilters[MAX_IPFILTERS];
 static int			numIPFilters;
 static int			numIPAdminFilters;
 
+void *parse_server_output(char *cmd);
+char * replace_str(const char *string, const char *substr, const char *replacement);
+char * mysqlGetLeaders(char * stmt);
+
 /*
 =================
 StringToFilter
@@ -110,6 +119,192 @@ static qboolean StringToFilter (char *s, ipFilter_t *f)
 	f->compare = *(unsigned *)b;
 	
 	return qtrue;
+}
+
+char *replace_one(char *str, char *orig, char *rep) //replaces only the first occurance of orig
+{
+	static char buffer[4096];
+	char *p;
+
+	if (!(p = strstr(str, orig)))  // Is 'orig' even in 'str'?
+		return str;
+
+	strncpy(buffer, str, p-str); // Copy characters from 'str' start to 'orig' st$
+	buffer[p - str] = '\0';
+
+	sprintf(buffer + (p - str), "%s%s", rep, p + strlen(orig));
+
+	return buffer;
+}
+
+#ifdef _WIN32
+DWORD WINAPI ThreadFunc2(__in LPVOID sntCmd) {
+	FILE *fp;
+	char buf[2048];
+	char * s = "";
+	char cmd[2048] = "";
+	int * type = 0;
+
+	DWORD dwNumSeconds = (DWORD)sntCmd;
+
+	sprintf(cmd, "%s", dwNumSeconds);
+
+	if (strstr(cmd, "mysqlGetLeaders") != NULL) {
+		type = 1;
+		strcpy(cmd, replace_str(cmd, "mysqlGetLeaders ", ""));
+	}
+	else if (strstr(cmd, "mysqlRegisterUser")) {
+		type = 2;
+		strcpy(cmd, replace_str(cmd, "mysqlRegisterUser ", ""));
+	}
+	else if (strstr(cmd, "mysqlFindUser")) {
+		type = 3;
+		strcpy(cmd, replace_str(cmd, "mysqlFindUser ", ""));
+	}
+	else if (strstr(cmd, "mysqlUserStats")) {
+		type = 4;
+		strcpy(cmd, replace_str(cmd, "mysqlUserStats ", ""));
+	}
+	else if (strstr(cmd, "mysqlStats2")) {
+		type = 5;
+		strcpy(cmd, replace_str(cmd, "mysqlStats2 ", ""));
+	}
+
+	if ((fp = _popen(cmd, "r")) == NULL) {
+		return "Error opening pipe!\n";
+	}
+
+	while (fgets(buf, 1024, fp) != NULL) {
+		s = malloc(snprintf(NULL, 0, "%s", buf) + 1);
+		sprintf(s, "%s", buf);
+	}
+
+	if (type == 1)
+		printf("%s\n", mysqlGetLeaders(s));
+	if (type == 2) {
+		if (strstr(s, "success"))
+			printf("User now registered.");
+	}
+	if (type == 3) {
+		int * userID = atoi(s);
+		if (userID > 0)
+			printf("USER FOUND - ID: %i\n", userID);
+		else
+			printf("USER NOT FOUND");
+	}
+	if (type == 4) {
+		int * getID = atoi(s);
+
+		if (getID > 0) {
+			printf("USER FOUND - ID: %i\n", getID);
+			parse_server_output(va("mysqlStats2 curl --data \"key=%s&p=stats&g=jedi_academy&id=%i\" %s", cm_mysql_secret.string, getID, cm_mysql_url.string));
+		}
+		else
+			printf("USER NOT FOUND");
+	}
+	if (type == 5) {
+		printf("%s\n", s);
+		printf("kills,deaths,duel_wins,duel_loses,flag_captures,ffa_wins,ffa_loses,tdm_wins,tdm_loses,siege_wins,siege_loses,ctf_wins,ctf_loses\n");
+	}
+
+	if (_pclose(fp)) {
+		return "Command not found or exited with error status\n";
+	}
+
+	return 0;
+}
+#endif
+#ifdef __linux__
+
+void *linuxThread2(void *sntCmd)
+{
+	FILE *fp;
+	char buf[2048];
+	char * s = "";
+	char cmd[2048] = "";
+	int * type = 0;
+
+	sprintf(cmd, "%s", sntCmd);
+
+	if (strstr(cmd, "mysqlGetLeaders") != NULL) {
+		type = 1;
+		strcpy(cmd, replace_str(cmd, "mysqlGetLeaders ", ""));
+	}
+	else if (strstr(cmd, "mysqlRegisterUser")) {
+		type = 2;
+		strcpy(cmd, replace_str(cmd, "mysqlRegisterUser ", ""));
+	}
+	else if (strstr(cmd, "mysqlFindUser")) {
+		type = 3;
+		strcpy(cmd, replace_str(cmd, "mysqlFindUser ", ""));
+	}
+	else if (strstr(cmd, "mysqlUserStats")) {
+		type = 4;
+		strcpy(cmd, replace_str(cmd, "mysqlUserStats ", ""));
+	}
+	else if (strstr(cmd, "mysqlStats2")) {
+		type = 5;
+		strcpy(cmd, replace_str(cmd, "mysqlStats2 ", ""));
+	}
+
+	if ((fp = popen(cmd, "r")) == NULL) {
+		printf( "Error opening pipe!\n");
+	}
+
+	while (fgets(buf, 1024, fp) != NULL) {
+		s = malloc(snprintf(NULL, 0, "%s", buf) + 1);
+		sprintf(s, "%s", buf);
+	}
+
+	if (pclose(fp)) {
+		printf ("Command not found or exited with error status\n");
+	}
+
+	if (type == 1)
+		printf("%s\n", mysqlGetLeaders(s));
+	if (type == 2) {
+		if (strstr(s, "success"))
+			printf("User now registered.\n");
+	}
+	if (type == 3) {
+		int * userID = atoi(s);
+		if (userID > 0)
+			printf("USER FOUND - ID: %i\n", userID);
+		else
+			printf("USER NOT FOUND");
+	}
+	if (type == 4) {
+		int * getID = atoi(s);
+
+		if (getID > 0) {
+			printf("USER FOUND - ID: %i\n", getID);
+			return parse_server_output(va("mysqlStats2 curl --data \"key=%s&p=stats&g=jedi_academy&id=%i\" %s", cm_mysql_secret.string, getID, cm_mysql_url.string));
+		}
+		else
+			printf("USER NOT FOUND");
+	}
+	if (type == 5) {
+		printf("%s\n", s);
+		printf("kills,deaths,duel_wins,duel_loses,flag_captures,ffa_wins,ffa_loses,tdm_wins,tdm_loses,siege_wins,siege_loses,ctf_wins,ctf_loses\n");
+	}
+
+	return NULL;
+}
+#endif
+
+void *parse_server_output(char *cmd) {
+	char s[2048] = "";
+
+#ifdef _WIN32
+	HANDLE thread = CreateThread(NULL, 0, ThreadFunc2, (LPVOID)cmd, 0, NULL);
+#endif
+
+#ifdef __linux__
+	pthread_t tid;
+	pthread_create(&tid, NULL, linuxThread2, (void*)cmd);
+#endif
+
+	return NULL;
 }
 
 static qboolean StringToAdminFilter (char *s, ipFilter2_t *f)
@@ -3114,17 +3309,16 @@ qboolean	ConsoleCommand( void ) {
 
 		if ((trap_Argc() < 2) || (trap_Argc() > 3))
 		{
-			G_Printf("Usage: /cmregister <playername> <password>");
+			G_Printf("Usage: /cmregister <playername> <password>\n");
 			return;
 		}
 
 		if (cm_database.integer == 1) {
 			sqliteRegisterUser("INSERT INTO users (user, pass, ipaddress) VALUES ('%s', '%s', '127.0.0.1')", user, pass);
-			G_Printf("User %s now registered.", user);
+			G_Printf("User %s now registered.\n", user);
 		}
 		else if (cm_database.integer == 2) {
-			if (strstr(parse_output(va("curl --data \"key=%s&p=register&user=%s&pass=%s&ipaddress=%s\" %s", cm_mysql_secret.string, user, pass, "127.0.0.1", cm_mysql_url.string)), "successful"));
-			G_Printf("User %s now registered.", user);
+			parse_server_output(va("mysqlRegisterUser curl --data \"key=%s&p=register&user=%s&pass=%s&ipaddress=%s\" %s", cm_mysql_secret.string, user, pass, "127.0.0.1", cm_mysql_url.string));
 		}
 	}
 	if (Q_stricmp(cmd, "cmfinduser") == 0){
@@ -3140,16 +3334,16 @@ qboolean	ConsoleCommand( void ) {
 
 		int userID = 0;
 
-		if (cm_database.integer == 1)
+		if (cm_database.integer == 1) {
 			userID = sqliteSelectUserID("SELECT * FROM users WHERE user = '%s'", user);
-		else if (cm_database.integer == 2)
-			userID = atoi(parse_output(va("curl --data \"key=%s&p=find&user=%s\" %s", cm_mysql_secret.string, user, cm_mysql_url.string)));
-
-		if (userID > 0)
-			G_Printf("USER FOUND - ID: %i\n", userID);
-		else {
-			G_Printf("USER NOT FOUND");
+			if (userID > 0)
+				G_Printf("USER FOUND - ID: %i\n", userID);
+			else {
+				G_Printf("USER NOT FOUND");
+			}
 		}
+		else if (cm_database.integer == 2)
+			parse_server_output(va("mysqlFindUser curl --data \"key=%s&p=find&user=%s\" %s", cm_mysql_secret.string, user, cm_mysql_url.string));
 	}
 	if (Q_stricmp(cmd, "shapass") == 0) {
 		char   arg1[MAX_STRING_CHARS];
@@ -3169,22 +3363,17 @@ qboolean	ConsoleCommand( void ) {
 		trap_Argv(1, user, sizeof(user));
 		G_Printf("Getting stats for %s...\n", user);
 
-		if (cm_database.integer == 1)
+		if (cm_database.integer == 1) {
 			getID = sqliteSelectUserID("SELECT * FROM users WHERE user = '%s'", user);
-		else if (cm_database.integer == 2)
-			getID = atoi(parse_output(va("curl --data \"key=%s&p=find&user=%s\" %s", cm_mysql_secret.string, user, cm_mysql_url.string)));
-
-		if (getID > 0) {
-			G_Printf("USER FOUND - ID: %i\n", getID);
-			if (cm_database.integer == 1)
+			if (getID > 0) {
+				G_Printf("USER FOUND - ID: %i\n", getID);
 				G_Printf("%s\n", sqliteGetStats("SELECT * FROM stats WHERE user_id = '%i'", getID));
-			else if (cm_database.integer == 2) {
-				G_Printf("%s\n", parse_output(va("curl --data \"key=%s&p=stats&g=jedi_academy&id=%i\" %s", cm_mysql_secret.string, getID, cm_mysql_url.string)));
-				G_Printf("kills,deaths,duel_wins,duel_loses,flag_captures,ffa_wins,ffa_loses,tdm_wins,tdm_loses,siege_wins,siege_loses,ctf_wins,ctf_loses\n");
 			}
-		} 
-		else
-			G_Printf("USER NOT FOUND");
+			else
+				G_Printf("USER NOT FOUND");
+		}
+		else if (cm_database.integer == 2)
+			parse_server_output(va("mysqlUserStats curl --data \"key=%s&p=find&user=%s\" %s", cm_mysql_secret.string, user, cm_mysql_url.string));
 	}
 	if (Q_stricmp(cmd, "cmleaderboard") == 0 || Q_stricmp(cmd, "cmleaders") == 0) {
 
@@ -3216,13 +3405,14 @@ qboolean	ConsoleCommand( void ) {
 			Q_strncpyz(column, "ctf_wins", sizeof(column));
 		}
 
-		if (cm_database.integer == 1)
+		if (cm_database.integer == 1) {
 			Q_strcat(query, sizeof(query), sqliteGetLeaders("SELECT %s FROM stats ORDER BY %s DESC LIMIT 5", rows, column));
+			G_Printf(query);
+		}
 		else if (cm_database.integer == 2)
-			sprintf(query, "%s", mysqlGetLeaders(parse_output(va("curl --data \"key=%s&p=leaders&g=jedi_academy&r=%s&o=%s\" %s", cm_mysql_secret.string, rows, column, cm_mysql_url.string))));
+			parse_server_output(va("mysqlGetLeaders curl --data \"key=%s&p=leaders&g=jedi_academy&r=%s&o=%s\" %s", cm_mysql_secret.string, rows, column, cm_mysql_url.string));
+			//sprintf(query, "%s", mysqlGetLeaders(parse_output(va("curl --data \"key=%s&p=leaders&g=jedi_academy&r=%s&o=%s\" %s", cm_mysql_secret.string, rows, column, cm_mysql_url.string))));
 			//Q_strcat(query, sizeof(query), mysqlGetLeaders(parse_output(va("curl --data \"key=%s&p=leaders&g=jedi_academy&r=%s&o=%s\" %s", cm_mysql_secret.string, rows, column, cm_mysql_url.string))));
-
-		G_Printf(query);
 	}
 
 	if (Q_stricmp (cmd, "amvstr") == 0) {

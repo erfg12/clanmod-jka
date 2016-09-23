@@ -486,6 +486,7 @@
     <ClInclude Include="disasm.h" />
     <ClInclude Include="global.h" />
     <ClInclude Include="g_adminshared.h" />
+    <ClInclude Include="g_cmds.h" />
     <ClInclude Include="g_headers.h" />
     <ClInclude Include="g_ICARUScb.h" />
     <ClInclude Include="g_local.h" />

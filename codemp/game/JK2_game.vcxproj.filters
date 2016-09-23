@@ -484,6 +484,9 @@
     <ClInclude Include="sha1.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="g_cmds.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="..\win32\JK2game.rc">

@@ -3177,9 +3177,9 @@ void ClientThink_real( gentity_t *ent ) {
 
 			//duel wins/loses for FFA duel (duelAgainst = loser, ent = winner)
 			if (duelAgainst->client->pers.userID > 0)
-				updateStats("duel_loses", duelAgainst->client->pers.userID);
+				updateStats(duelAgainst, "duel_loses", duelAgainst->client->pers.userID);
 			if (ent->client->pers.userID > 0)
-				updateStats("duel_wins", duelAgainst->client->pers.userID);
+				updateStats(ent, "duel_wins", duelAgainst->client->pers.userID);
 			//RoAR mod END
 
 			if (dueltypes[duelAgainst->client->ps.clientNum] == 3 || dueltypes[duelAgainst->client->ps.clientNum] == 2)
