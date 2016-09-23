@@ -1,7 +1,7 @@
 DEVELOPING NOTES...
 
 -------------------------------------------------
-| Fix searching in VS 2003 on Win Vista, 7 or 8 |
+| Fix searching in VS 2003 on Vista or newer OS |
 -------------------------------------------------
 Go to the VS 2003 directory, right click on the binary .exe and click Properties.
 Then click on the Compatability tab, and check Disable visual themes, 
@@ -16,24 +16,24 @@ click on Preprocessor. On Preprocessor Definitions on the end, add...
 ";_CRT_SECURE_NO_WARNINGS;_CRT_NONSTDC_NO_DEPRECATE"
 
 
-------------------
-| Debug Clan Mod |
-------------------
+--------------------
+| Debug in Windows |
+--------------------
 1. Open JKA_mp(SDK).sln
 2. Select the JK2Game item underJKA_mp(SDK) and right click Project->Properties
 3. Select Debugging under Configuration Properties: 
    -set the "Command" to your jaMP.exe (e.g. C:\Program Files (x86)\LucasArts\Star Wars Jedi Knight Jedi Academy\GameData\jamp.exe)
-
    -set the "Command arguments" to:  +set fs_cdpath "C:\Program Files (x86)\LucasArts\Star Wars Jedi Knight Jedi Academy\GameData" +set fs_dirbeforepak 1 +set sv_pure 0 +set r_fullscreen 0 +set viewlog 1 +set fs_game clanmod
-
    -set the "Working Directory" to your code path.  e.g. "I:\Projects\ClanMod\codemp\Debug"
 4. hit f5 to launch the game.
 
 
----------------------
-| Building on Linux |
----------------------
-- I have had success with ICC version 9.0.32 on an older version of Fedora x86 (i386) and GCC 2015 on CentOS 5 x86 (i386).
-- GCC will NOT compile the source on an x86_64 64bit system, you need i386. 
-- ICC will compile, but not work on 2015 (both i386 and x86_64), both jampded and ojpded crash. Not sure why.
-- To use ICC Version 9.0.32, replace the current Makefile with the Makefile_9 file and use the build_9.sh to begin the compile.
+------------------
+| Debug in Linux |
+------------------
+1. Open the Makefile with gedit or vi and add the "-g" argument to the compile to build a debug jampgame file.
+2. Open a terminal if you're using Desktop and use the command "gdb". Install GDB if you're missing the command.
+NOTE: Try "sudo apt-get install libc6-dbg gdb valgrind" to install gdb if you're using Ubuntu.
+3. Once the "gdb" prefix shows to the left in terminal, type in "file (path to openjkded)/openjkded.debug.x86_64"
+4. After that, use the command "run (path to openjkded)/openjkded.debug.x86_64 +set fs_game clanmod +exec server.cfg"
+5. If it crashes, use the command "where" to be given the path of executation before the crash happened.
