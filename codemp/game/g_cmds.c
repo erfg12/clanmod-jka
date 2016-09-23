@@ -91,25 +91,31 @@ DWORD WINAPI ThreadFunc(LPVOID sntCmd) {
 
 	args *twoCmds = (args*)sntCmd;
 
+	printf("cmd: %s\n", twoCmds->cmd);
+
 	gentity_t *ent = twoCmds->ent;
 
 	sprintf(cmd, "%s", twoCmds->cmd);
-
+	
 	if (strstr(cmd, "mysqlGetLeaders") != NULL) {
 		type = 1;
 		strcpy(cmd, replace_str(cmd, "mysqlGetLeaders ", ""));
 	}
-	else if (strstr(cmd, "mysqlRegisterUser")) {
+	if (strstr(cmd, "mysqlRegisterUser")) {
 		type = 2;
 		strcpy(cmd, replace_str(cmd, "mysqlRegisterUser ", ""));
 	}
-	else if (strstr(cmd, "mysqlUserLogin")) {
+	if (strstr(cmd, "mysqlUserLogin")) {
 		type = 3;
 		strcpy(cmd, replace_str(cmd, "mysqlUserLogin ", ""));
 	}
-	else if (strstr(cmd, "mysqlUserStats")) {
+	if (strstr(cmd, "mysqlUserStats")) {
 		type = 4;
 		strcpy(cmd, replace_str(cmd, "mysqlUserStats ", ""));
+	}
+	if (strstr(cmd, "mysqlUpdateStats")) {
+		type = 5;
+		strcpy(cmd, replace_str(cmd, "mysqlUpdateStats ", ""));
 	}
 
 	if ((fp = _popen(cmd, "r")) == NULL) {
@@ -143,6 +149,9 @@ DWORD WINAPI ThreadFunc(LPVOID sntCmd) {
 		trap_SendServerCommand(ent-g_entities, va("print \"^3===^1YOUR PLAYER STATUS^3===\n\n%s\n\"", mysqlMsg));
 		strcpy(ent->client->csMessage, G_NewString(va("^3===^1YOUR PLAYER STATUS^3===\n\n%s\n\"", mysqlMsg)));
 	}
+	if (type == 5) {
+		trap_SendServerCommand(ent-g_entities, va("print \"^1[DEBUG] Increased in DB.\n\""));
+	}
 
 	if (_pclose(fp)) {
 		printf("Command not found or exited with error status\n");
@@ -171,15 +180,15 @@ void *linuxThread(void *sntCmd)
 		type = 1;
 		strcpy(cmd, replace_str(cmd, "mysqlGetLeaders ", ""));
 	}
-	else if (strstr(cmd, "mysqlRegisterUser")) {
+	if (strstr(cmd, "mysqlRegisterUser")) {
 		type = 2;
 		strcpy(cmd, replace_str(cmd, "mysqlRegisterUser ", ""));
 	}
-	else if (strstr(cmd, "mysqlUserLogin")) {
+	if (strstr(cmd, "mysqlUserLogin")) {
 		type = 3;
 		strcpy(cmd, replace_str(cmd, "mysqlUserLogin ", ""));
 	}
-	else if (strstr(cmd, "mysqlUserStats")) {
+	if (strstr(cmd, "mysqlUserStats")) {
 		type = 4;
 		strcpy(cmd, replace_str(cmd, "mysqlUserStats ", ""));
 	}
@@ -227,6 +236,7 @@ char *parse_output(gentity_t *ent, char *cmd) {
 	char s[2048] = "";
 
 	#ifdef _WIN32
+		printf("ent: %i cmd: %s", ent-g_entities, cmd);
 		args argys = { ent, cmd };
 		HANDLE thread = CreateThread(NULL, 0, ThreadFunc, &argys, 0, NULL);
 	#endif
@@ -429,14 +439,14 @@ char *SHA1ThisPass(char *myPass) {
 	return s;
 }
 
-void updateStats(gentity_t *ent, char *item, char *userid) {
+void updateStats(gentity_t *ent, const char *item) {
+	//printf("[DEBUG] UPDATE c=%s id=%i", item, userid);
 	if (cm_database.integer <= 0)
 		return;
 	if (cm_database.integer == 1)
-		sqliteUpdateStats("UPDATE stats SET %s = %s + 1 WHERE user_id = '%i'", item, item, atoi(userid));
+		sqliteUpdateStats("UPDATE stats SET %s = %s + 1 WHERE user_id = '%i'", item, item, ent->client->pers.userID);
 	else if (cm_database.integer == 2)
-		parse_output(ent, va("curl --data \"key=%s&p=increase&g=jedi_academy&c=%s&id=%i\" %s", cm_mysql_secret.string, item, userid, cm_mysql_url.string));
-	trap_SendServerCommand(atoi(userid), va("print \"^1[DEBUG] ^3%s increased in DB.\n\"", item));
+		parse_output(ent, va("mysqlUpdateStats curl --data \"key=%s&p=increase&g=jedi_academy&c=%s&id=%i\" %s", cm_mysql_secret.string, item, ent->client->pers.userID, cm_mysql_url.string));
 }
 
 char * replace_str(const char *string, const char *substr, const char *replacement) {
@@ -2459,9 +2469,10 @@ void cmLogin(gentity_t *ent, char *pass) {
 	int userID = 0;
 
 	//G_Printf("[DEBUG] USER:[%s] PASS:[%s] SHA:[%s]", cleanName(g_entities[client_id].client->pers.netname), pass, SHA1ThisPass(pass));
-
+	const char * thename = g_entities[client_id].client->pers.netname;
+	char * myname = cleanName(thename);
 	if (cm_database.integer == 1){
-		userID = sqliteSelectUserID("SELECT * FROM users WHERE user = '%s' AND pass = '%s'", cleanName(g_entities[client_id].client->pers.netname), SHA1ThisPass(pass));
+		userID = sqliteSelectUserID("SELECT * FROM users WHERE user = '%s' AND pass = '%s'", myname, SHA1ThisPass(pass));
 
 	if (userID > 0) {
 		ent->client->pers.userID = userID;
@@ -2471,7 +2482,7 @@ void cmLogin(gentity_t *ent, char *pass) {
 		trap_SendServerCommand(client_id, va("print \"^1User not found\n\""));
 	}
 	else if (cm_database.integer == 2) {
-		parse_output(ent, va("mysqlUserLogin curl --data \"key=%s&p=login&user=%s&pass=%s\" %s", cm_mysql_secret.string, cleanName(g_entities[client_id].client->pers.netname), SHA1ThisPass(pass), cm_mysql_url.string));
+		parse_output(ent, va("mysqlUserLogin curl --data \"key=%s&p=login&user=%s&pass=%s\" %s", cm_mysql_secret.string, myname, SHA1ThisPass(pass), cm_mysql_url.string));
 	}
 
 	if (cm_database.integer == 1) { //only sqlite needs to check if stats table exists
@@ -5404,6 +5415,14 @@ void ClientCommand( int clientNum ) {
 
 		cmLogin(ent,pass);
 	}
+	/*else if (Q_stricmp(cmd, "cmraisestats") == 0) {
+		if (cm_database.integer <= 0) {
+			trap_SendServerCommand(ent, va("print \"^1Database commands have been disabled on this server.\n\""));
+			return;
+		}
+		if (cm_database.integer == 2)
+			parse_output(ent, va("mysqlUpdateStats curl --data \"key=%s&p=increase&g=jedi_academy&c=%s&id=%i\" %s", cm_mysql_secret.string, "kills", ent->client->pers.userID, cm_mysql_url.string));
+	}*/
 	else if (Q_stricmp(cmd, "cmstats") == 0) {
 		char user[MAX_STRING_CHARS];
 		int client_id = ent->client->ps.clientNum;

@@ -17,6 +17,7 @@ typedef struct teamgame_s {
 teamgame_t teamgame;
 
 void Team_SetFlagStatus( int team, flagStatus_t status );
+void updateStats(gentity_t *ent, char *item);
 
 void Team_InitGame( void ) {
 	memset(&teamgame, 0, sizeof teamgame);
@@ -772,7 +773,7 @@ int Team_TouchOurFlag( gentity_t *ent, gentity_t *other, int team ) {
 	//other->client->ps.persistant[PERS_CAPTURES]++;
 
 	if (other->client->pers.userID > 0)
-		updateStats("flag_captures", other->client->pers.userID);
+		updateStats(other, "flag_captures");
 
 	// other gets another 10 frag bonus
 	AddScore(other, ent->r.currentOrigin, CTF_CAPTURE_BONUS);

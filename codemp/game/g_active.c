@@ -16,6 +16,7 @@ qboolean WP_SaberStyleValidForSaber( saberInfo_t *saber1, saberInfo_t *saber2, i
 #include "../namespace_end.h"
 qboolean saberCheckKnockdown_DuelLoss(gentity_t *saberent, gentity_t *saberOwner, gentity_t *other);
 extern void G_Say( gentity_t *ent, gentity_t *target, int mode, const char *chatText );
+void updateStats(gentity_t *ent, const char *item);
 
 extern vmCvar_t g_saberLockRandomNess;
 
@@ -3177,9 +3178,9 @@ void ClientThink_real( gentity_t *ent ) {
 
 			//duel wins/loses for FFA duel (duelAgainst = loser, ent = winner)
 			if (duelAgainst->client->pers.userID > 0)
-				updateStats(duelAgainst, "duel_loses", duelAgainst->client->pers.userID);
+				updateStats(duelAgainst, "duel_loses");
 			if (ent->client->pers.userID > 0)
-				updateStats(ent, "duel_wins", duelAgainst->client->pers.userID);
+				updateStats(ent, "duel_wins");
 			//RoAR mod END
 
 			if (dueltypes[duelAgainst->client->ps.clientNum] == 3 || dueltypes[duelAgainst->client->ps.clientNum] == 2)

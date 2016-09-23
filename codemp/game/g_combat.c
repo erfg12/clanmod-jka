@@ -14,6 +14,7 @@ extern void G_VehUpdateShields( gentity_t *targ );
 extern void G_LetGoOfWall( gentity_t *ent );
 extern void BG_ClearRocketLock( playerState_t *ps );
 extern void G_Say( gentity_t *ent, gentity_t *target, int mode, const char *chatText );
+void updateStats(gentity_t *ent, char *item);
 
 //rww - pd
 void BotDamageNotification(gclient_t *bot, gentity_t *attacker);
@@ -2533,9 +2534,10 @@ extern void RunEmplacedWeapon( gentity_t *ent, usercmd_t **ucmd );
 	//increase kills/deaths (self = death+, attacker = kill+)
 	if (level.numPlayingClients >= 2) {
 		if (self && self->client && self->s.eType != ET_NPC && self->client->pers.userID > 0)
-			updateStats("deaths", self->client->pers.userID);
-		if (attacker && attacker->client && attacker->s.eType != ET_NPC && attacker->client->pers.userID > 0)
-			updateStats("kills", attacker->client->pers.userID);
+			updateStats(self, "deaths");
+		if (attacker && attacker->client && attacker->s.eType != ET_NPC && attacker->client->pers.userID > 0) {
+			updateStats(attacker, "kills");
+		}
 	}
 
 	if ( g_austrian.integer 
@@ -2551,9 +2553,9 @@ extern void RunEmplacedWeapon( gentity_t *ent, usercmd_t **ucmd );
 			//todo: TEST THIS
 			//duel wins/loses for GT_DUEL gametype
 			if (self && self->client && self->client->pers.userID > 0)
-				updateStats("duel_loses", self->client->pers.userID);
+				updateStats(self, "duel_loses");
 			if (attacker->client->pers.userID > 0)
-				updateStats("duel_wins", attacker->client->pers.userID);
+				updateStats(attacker, "duel_wins");
 			G_LogPrintf("killer: %s, hits on enemy %d, health: %d\n", attacker->client->pers.netname, attacker->client->ps.persistant[PERS_HITS], attacker->health );
 			//also - if MOD_SABER, list the animation and saber style
 			if ( meansOfDeath == MOD_SABER )

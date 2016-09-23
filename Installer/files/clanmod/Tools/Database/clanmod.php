@@ -101,7 +101,7 @@ if (strstr($_POST['p'],"leaders")){ //outputs 3 integers divided by a semicolon
 }
 
 if (strstr($_POST['p'],"increase")){
-	$sql = "UPDATE ". $_POST['g'] ." SET ". $_POST['c'] ." = ". $_POST['c'] ." + 1 WHERE id = '$_POST[id]'";
+	$sql = "UPDATE ". $_POST['g'] ." SET ". $_POST['c'] ." = ". $_POST['c'] ." + 1 WHERE user_id = '$_POST[id]'";
 	if ($conn->query($sql) === TRUE){
     	echo "successful"; 
 	} else
