@@ -36,7 +36,7 @@ void SetTeamQuick(gentity_t *ent, int team, qboolean doBegin);
 extern int G_ClientNumberFromArg( char *str);
 void ChangeWeapon( gentity_t *ent, int newWeapon );
 
-char *mysqlGetStats(char *stmt) {
+char *mysqlGetStats(gentity_t *ent, char *stmt) {
 	char *data = malloc(1024);
 	sprintf(data, "");
 
@@ -52,19 +52,19 @@ char *mysqlGetStats(char *stmt) {
 		pch = strtok(NULL, ",");
 	}
 
-	char * kills = a[0];
-	char * deaths = a[1];
-	char * duel_wins = a[2];
-	char * duel_loses = a[3];
-	char * flag_captures = a[4];
-	char * ffa_wins = a[5];
-	char * ffa_loses = a[6];
-	char * tdm_wins = a[7];
-	char * tdm_loses = a[8];
-	char * siege_wins = a[9];
-	char * siege_loses = a[10];
-	char * ctf_wins = a[11];
-	char * ctf_loses = a[12];
+	char * kills = a[0] + ent->client->pers.sql_kills;
+	char * deaths = a[1] + ent->client->pers.sql_deaths;
+	char * duel_wins = a[2] + ent->client->pers.sql_duelwins;
+	char * duel_loses = a[3] + ent->client->pers.sql_duelloses;
+	char * flag_captures = a[4] + ent->client->pers.sql_flagcaps;
+	char * ffa_wins = a[5] + ent->client->pers.sql_ffawins;
+	char * ffa_loses = a[6] + ent->client->pers.sql_ffaloses;
+	char * tdm_wins = a[7] + ent->client->pers.sql_tdmwins;
+	char * tdm_loses = a[8] + ent->client->pers.sql_tdmloses;
+	char * siege_wins = a[9] + ent->client->pers.sql_siegewins;
+	char * siege_loses = a[10] + ent->client->pers.sql_siegeloses;
+	char * ctf_wins = a[11] + ent->client->pers.sql_ctfwins;
+	char * ctf_loses = a[12] + ent->client->pers.sql_ctfloses;
 
 	sprintf(data, "Kills/Deaths: %s/%s \n", kills, deaths);
 	sprintf(data + strlen(data), "Duel Wins/Loses: %s/%s \n", duel_wins, duel_loses);
@@ -145,7 +145,7 @@ DWORD WINAPI ThreadFunc(LPVOID sntCmd) {
 			trap_SendServerCommand(ent-g_entities, "USER NOT FOUND");
 	}
 	if (type == 4) {
-		char * mysqlMsg = mysqlGetStats(s);
+		char * mysqlMsg = mysqlGetStats(ent,s);
 		trap_SendServerCommand(ent-g_entities, va("print \"^3===^1YOUR PLAYER STATUS^3===\n\n%s\n\"", mysqlMsg));
 		strcpy(ent->client->csMessage, G_NewString(va("^3===^1YOUR PLAYER STATUS^3===\n\n%s\n\"", mysqlMsg)));
 	}
@@ -219,7 +219,7 @@ void *linuxThread(void *sntCmd)
 			trap_SendServerCommand(ent-g_entities, "USER NOT FOUND");
 	}
 	if (type == 4) {
-		char * mysqlMsg = mysqlGetStats(s);
+		char * mysqlMsg = mysqlGetStats(ent,s);
 		trap_SendServerCommand(ent-g_entities, va("print \"^3===^1YOUR PLAYER STATUS^3===\n\n%s\n\"", mysqlMsg));
 		strcpy(ent->client->csMessage, G_NewString(va("^3===^1YOUR PLAYER STATUS^3===\n\n%s\n\"", mysqlMsg)));
 	}
@@ -444,10 +444,10 @@ void updateStats(gentity_t *ent) {
 	if (cm_database.integer <= 0)
 		return;
 	if (cm_database.integer == 1)
-		sqliteUpdateStats("UPDATE stats SET kills=kills+%i, deaths=deaths+%i, duel_wins=duel_wins+%i, duel_loses=duel_loses+%i, flag_captures=flag_captures+%i, ffa_wins=ffa_wins+%i, ffa_loses=ffa_loses+%i, tdm_wins=tdm_wins+%i, tdm_loses=tdm_loses+%i, siege_wins=siege_wins+%i, siege_loses=siege_loses+%i, ctf_wins=ctf_wins+%i, ctf_loses=ctf_loses+%i WHERE user_id = '%i'", ent->client->pers.sql_kills, ent->client->pers.sql_deaths, ent->client->pers.sql_duelwins, ent->client->pers.sql_duelloses, ent->client->pers.sql_flagcaps, ent->client->pers.sql_ffawins, ent->client->pers.sql_ffaloses, ent->client->pers.sql_tdmkills, ent->client->pers.sql_tdmdeaths, ent->client->pers.sql_siegewins, ent->client->pers.sql_siegeloses, ent->client->pers.sql_ctfwins, ent->client->pers.sql_ctfloses, atoi(ent->client->pers.userID));
+		sqliteUpdateStats("UPDATE stats SET kills=kills+%i, deaths=deaths+%i, duel_wins=duel_wins+%i, duel_loses=duel_loses+%i, flag_captures=flag_captures+%i, ffa_wins=ffa_wins+%i, ffa_loses=ffa_loses+%i, tdm_wins=tdm_wins+%i, tdm_loses=tdm_loses+%i, siege_wins=siege_wins+%i, siege_loses=siege_loses+%i, ctf_wins=ctf_wins+%i, ctf_loses=ctf_loses+%i WHERE user_id = '%i'", ent->client->pers.sql_kills, ent->client->pers.sql_deaths, ent->client->pers.sql_duelwins, ent->client->pers.sql_duelloses, ent->client->pers.sql_flagcaps, ent->client->pers.sql_ffawins, ent->client->pers.sql_ffaloses, ent->client->pers.sql_tdmwins, ent->client->pers.sql_tdmloses, ent->client->pers.sql_siegewins, ent->client->pers.sql_siegeloses, ent->client->pers.sql_ctfwins, ent->client->pers.sql_ctfloses, atoi(ent->client->pers.userID));
 	else if (cm_database.integer == 2)
-		parse_output(ent, va("curl --data \"key=%s&p=increase&g=jedi_academy&query=%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i&id=%i\" %s", cm_mysql_secret.string, ent->client->pers.sql_kills, ent->client->pers.sql_deaths, ent->client->pers.sql_duelwins, ent->client->pers.sql_duelloses, ent->client->pers.sql_flagcaps, ent->client->pers.sql_ffawins, ent->client->pers.sql_ffaloses, ent->client->pers.sql_tdmkills, ent->client->pers.sql_tdmdeaths, ent->client->pers.sql_siegewins, ent->client->pers.sql_siegeloses, ent->client->pers.sql_ctfwins, ent->client->pers.sql_ctfloses, ent->client->pers.userID, cm_mysql_url.string));
-	G_LogPrintf("Stat updated for user ID:%i - DATA[%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i]", ent->client->pers.userID, ent->client->pers.sql_kills, ent->client->pers.sql_deaths, ent->client->pers.sql_duelwins, ent->client->pers.sql_duelloses, ent->client->pers.sql_flagcaps, ent->client->pers.sql_ffawins, ent->client->pers.sql_ffaloses, ent->client->pers.sql_tdmkills, ent->client->pers.sql_tdmdeaths, ent->client->pers.sql_siegewins, ent->client->pers.sql_siegeloses, ent->client->pers.sql_ctfwins, ent->client->pers.sql_ctfloses);
+		parse_output(ent, va("curl --data \"key=%s&p=increase&g=jedi_academy&query=%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i&id=%i\" %s", cm_mysql_secret.string, ent->client->pers.sql_kills, ent->client->pers.sql_deaths, ent->client->pers.sql_duelwins, ent->client->pers.sql_duelloses, ent->client->pers.sql_flagcaps, ent->client->pers.sql_ffawins, ent->client->pers.sql_ffaloses, ent->client->pers.sql_tdmwins, ent->client->pers.sql_tdmloses, ent->client->pers.sql_siegewins, ent->client->pers.sql_siegeloses, ent->client->pers.sql_ctfwins, ent->client->pers.sql_ctfloses, ent->client->pers.userID, cm_mysql_url.string));
+	G_LogPrintf("Stat updated for user ID:%i - DATA[%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i]", ent->client->pers.userID, ent->client->pers.sql_kills, ent->client->pers.sql_deaths, ent->client->pers.sql_duelwins, ent->client->pers.sql_duelloses, ent->client->pers.sql_flagcaps, ent->client->pers.sql_ffawins, ent->client->pers.sql_ffaloses, ent->client->pers.sql_tdmwins, ent->client->pers.sql_tdmloses, ent->client->pers.sql_siegewins, ent->client->pers.sql_siegeloses, ent->client->pers.sql_ctfwins, ent->client->pers.sql_ctfloses);
 }
 
 char * replace_str(const char *string, const char *substr, const char *replacement) {
@@ -527,18 +527,20 @@ char** str_split(char* a_str, const char a_delim)
 	return result;
 }
 
-char *cleanName(char *name) {
-	strcpy(name, replace_str(name, "^0", ""));
-	strcpy(name, replace_str(name, "^1", ""));
-	strcpy(name, replace_str(name, "^2", ""));
-	strcpy(name, replace_str(name, "^3", ""));
-	strcpy(name, replace_str(name, "^4", ""));
-	strcpy(name, replace_str(name, "^5", ""));
-	strcpy(name, replace_str(name, "^6", ""));
-	strcpy(name, replace_str(name, "^7", ""));
-	strcpy(name, replace_str(name, "^8", ""));
-	strcpy(name, replace_str(name, "^9", ""));
-	return name;
+char *cleanName(char name[1024]) {
+	char newName[1024];
+	strcpy(newName, name);
+	strcpy(newName, replace_str(newName, "^0", ""));
+	strcpy(newName, replace_str(newName, "^1", ""));
+	strcpy(newName, replace_str(newName, "^2", ""));
+	strcpy(newName, replace_str(newName, "^3", ""));
+	strcpy(newName, replace_str(newName, "^4", ""));
+	strcpy(newName, replace_str(newName, "^5", ""));
+	strcpy(newName, replace_str(newName, "^6", ""));
+	strcpy(newName, replace_str(newName, "^7", ""));
+	strcpy(newName, replace_str(newName, "^8", ""));
+	strcpy(newName, replace_str(newName, "^9", ""));
+	return newName;
 }
 
 char *sqliteGetStats(char *SQLStmnt, ...) {
@@ -2470,17 +2472,18 @@ void cmLogin(gentity_t *ent, char *pass) {
 	int userID = 0;
 
 	//G_Printf("[DEBUG] USER:[%s] PASS:[%s] SHA:[%s]", cleanName(g_entities[client_id].client->pers.netname), pass, SHA1ThisPass(pass));
-	const char * thename = g_entities[client_id].client->pers.netname;
-	char * myname = cleanName(thename);
-	if (cm_database.integer == 1){
+	char myname[1024];
+	Q_strncpyz(myname, cleanName(g_entities[client_id].client->pers.netname), sizeof(myname));
+
+	if (cm_database.integer == 1) {
 		userID = sqliteSelectUserID("SELECT * FROM users WHERE user = '%s' AND pass = '%s'", myname, SHA1ThisPass(pass));
 
-	if (userID > 0) {
-		ent->client->pers.userID = userID;
-		trap_SendServerCommand(client_id, va("print \"^3You are now logged in.\n\""));
-	}
-	else
-		trap_SendServerCommand(client_id, va("print \"^1User not found\n\""));
+		if (userID > 0) {
+			ent->client->pers.userID = userID;
+			trap_SendServerCommand(client_id, va("print \"^3You are now logged in.\n\""));
+		}
+		else
+			trap_SendServerCommand(client_id, va("print \"^1User not found\n\""));
 	}
 	else if (cm_database.integer == 2) {
 		parse_output(ent, va("mysqlUserLogin curl --data \"key=%s&p=login&user=%s&pass=%s\" %s", cm_mysql_secret.string, myname, SHA1ThisPass(pass), cm_mysql_url.string));

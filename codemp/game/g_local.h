@@ -556,13 +556,13 @@ typedef struct {
 	//sql stuff
 	int			sql_kills;
 	int			sql_deaths;
-	int			sql_tdmkills;
-	int			sql_tdmdeaths;
 	int			sql_flagcaps;
 	int			sql_duelwins;
 	int			sql_duelloses;
 	int			sql_ffawins;
 	int			sql_ffaloses;
+	int			sql_tdmwins;
+	int			sql_tdmloses;
 	int			sql_siegewins;
 	int			sql_siegeloses;
 	int			sql_ctfwins;

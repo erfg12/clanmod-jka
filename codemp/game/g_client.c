@@ -1482,7 +1482,10 @@ static void ClientCleanName( const char *in, char *out, int outSize ) {
 
 	// don't allow empty names
 	if( *p == 0 || colorlessLen == 0 ) {
-		Q_strncpyz( p, "Padawan", outSize );
+		if (*cm_noPadawanNames.string && cm_noPadawanNames.string[0] && *cm_newName.string && cm_newName.string[0] && cm_noPadawanNames.integer != 0)
+			Q_strncpyz(p, cm_newName.string, outSize);
+		else
+			Q_strncpyz(p, "Padawan", outSize);
 	}
 }
 
@@ -3092,13 +3095,13 @@ void ClientBegin( int clientNum, qboolean allowTeamReset ) {
 
 	ent->client->pers.sql_kills = 0;
 	ent->client->pers.sql_deaths = 0;
-	ent->client->pers.sql_tdmkills = 0;
-	ent->client->pers.sql_tdmdeaths = 0;
 	ent->client->pers.sql_flagcaps = 0;
 	ent->client->pers.sql_duelwins = 0;
 	ent->client->pers.sql_duelloses = 0;
 	ent->client->pers.sql_ffawins = 0;
 	ent->client->pers.sql_ffaloses = 0;
+	ent->client->pers.sql_tdmwins = 0;
+	ent->client->pers.sql_tdmloses = 0;
 	ent->client->pers.sql_siegewins = 0;
 	ent->client->pers.sql_siegeloses = 0;
 	ent->client->pers.sql_ctfwins = 0;
@@ -5759,13 +5762,13 @@ void ClientDisconnect( int clientNum ) {
 
 	ent->client->pers.sql_kills = 0;
 	ent->client->pers.sql_deaths = 0;
-	ent->client->pers.sql_tdmkills = 0;
-	ent->client->pers.sql_tdmdeaths = 0;
 	ent->client->pers.sql_flagcaps = 0;
 	ent->client->pers.sql_duelwins = 0;
 	ent->client->pers.sql_duelloses = 0;
 	ent->client->pers.sql_ffawins = 0;
 	ent->client->pers.sql_ffaloses = 0;
+	ent->client->pers.sql_tdmwins = 0;
+	ent->client->pers.sql_tdmloses = 0;
 	ent->client->pers.sql_siegewins = 0;
 	ent->client->pers.sql_siegeloses = 0;
 	ent->client->pers.sql_ctfwins = 0;
