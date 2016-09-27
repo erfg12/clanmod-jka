@@ -2308,11 +2308,13 @@ void ClientUserinfoChanged( int clientNum ) {
 		client->pers.plugindetect = qfalse;
 	}
 
-	s = Info_ValueForKey(userinfo, "c_cmlogin");
-	if (!Q_stricmp(s, "")) { //Blank? Don't log in!
-	}
-	else {
-		cmLogin(ent,s);
+	if (!(ent->r.svFlags & SVF_BOT)) {
+		s = Info_ValueForKey(userinfo, "c_cmlogin");
+		if (!Q_stricmp(s, "")) { //Blank? Don't log in!
+		}
+		else {
+			cmLogin(ent, s);
+		}
 	}
 	
 	if ( client->sess.sessionTeam == TEAM_SPECTATOR ) {
@@ -3087,6 +3089,20 @@ void ClientBegin( int clientNum, qboolean allowTeamReset ) {
 
 	ent = g_entities + clientNum;
 	ent->client->pers.userID = 0; //set this as early as possible
+
+	ent->client->pers.sql_kills = 0;
+	ent->client->pers.sql_deaths = 0;
+	ent->client->pers.sql_tdmkills = 0;
+	ent->client->pers.sql_tdmdeaths = 0;
+	ent->client->pers.sql_flagcaps = 0;
+	ent->client->pers.sql_duelwins = 0;
+	ent->client->pers.sql_duelloses = 0;
+	ent->client->pers.sql_ffawins = 0;
+	ent->client->pers.sql_ffaloses = 0;
+	ent->client->pers.sql_siegewins = 0;
+	ent->client->pers.sql_siegeloses = 0;
+	ent->client->pers.sql_ctfwins = 0;
+	ent->client->pers.sql_ctfloses = 0;
 
 	if ((ent->r.svFlags & SVF_BOT) && g_gametype.integer >= GT_TEAM)
 	{
@@ -5737,6 +5753,25 @@ void ClientDisconnect( int clientNum ) {
 	if (g_gametype.integer != GT_DUEL && g_gametype.integer != GT_POWERDUEL){
 		ent->client->sess.losses = 0;
 	}
+
+	if (ent->client->pers.userID > 0)
+		updateStats(ent);
+
+	ent->client->pers.sql_kills = 0;
+	ent->client->pers.sql_deaths = 0;
+	ent->client->pers.sql_tdmkills = 0;
+	ent->client->pers.sql_tdmdeaths = 0;
+	ent->client->pers.sql_flagcaps = 0;
+	ent->client->pers.sql_duelwins = 0;
+	ent->client->pers.sql_duelloses = 0;
+	ent->client->pers.sql_ffawins = 0;
+	ent->client->pers.sql_ffaloses = 0;
+	ent->client->pers.sql_siegewins = 0;
+	ent->client->pers.sql_siegeloses = 0;
+	ent->client->pers.sql_ctfwins = 0;
+	ent->client->pers.sql_ctfloses = 0;
+
+	ent->client->pers.userID = 0;
 
    //[BugFix39]
 	// we call this after all the clearing because the objectiveItem's

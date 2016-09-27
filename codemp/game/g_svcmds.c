@@ -297,11 +297,15 @@ void *parse_server_output(char *cmd) {
 
 #ifdef _WIN32
 	HANDLE thread = CreateThread(NULL, 0, ThreadFunc2, (LPVOID)cmd, 0, NULL);
+	WaitForSingleObject(thread, INFINITE);
 #endif
 
 #ifdef __linux__
 	pthread_t tid;
 	pthread_create(&tid, NULL, linuxThread2, (void*)cmd);
+
+	if ((pthread_kill(tid, 0)) == 0)
+		pthread_join(tid, NULL);
 #endif
 
 	return NULL;

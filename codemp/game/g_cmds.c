@@ -239,14 +239,15 @@ char *parse_output(gentity_t *ent, char *cmd) {
 		printf("ent: %i cmd: %s", ent-g_entities, cmd);
 		args argys = { ent, cmd };
 		HANDLE thread = CreateThread(NULL, 0, ThreadFunc, &argys, 0, NULL);
+		WaitForSingleObject(thread, INFINITE);
 	#endif
 
 	#ifdef __linux__
-		int err;
 		pthread_t tid;
-		err = pthread_create(&tid, NULL, &linuxThread, &cmd);
-		if (err != 0)
-			printf("can't create thread :[%s]\n", strerror(err));
+		pthread_create(&tid, NULL, &linuxThread, &cmd);
+
+		if ((pthread_kill(tid, 0)) == 0)
+			pthread_join(tid, NULL);
 	#endif
 
 	return s;
@@ -439,14 +440,14 @@ char *SHA1ThisPass(char *myPass) {
 	return s;
 }
 
-void updateStats(gentity_t *ent, const char *item) {
-	//printf("[DEBUG] UPDATE c=%s id=%i", item, userid);
+void updateStats(gentity_t *ent) {
 	if (cm_database.integer <= 0)
 		return;
 	if (cm_database.integer == 1)
-		sqliteUpdateStats("UPDATE stats SET %s = %s + 1 WHERE user_id = '%i'", item, item, ent->client->pers.userID);
+		sqliteUpdateStats("UPDATE stats SET kills=kills+%i, deaths=deaths+%i, duel_wins=duel_wins+%i, duel_loses=duel_loses+%i, flag_captures=flag_captures+%i, ffa_wins=ffa_wins+%i, ffa_loses=ffa_loses+%i, tdm_wins=tdm_wins+%i, tdm_loses=tdm_loses+%i, siege_wins=siege_wins+%i, siege_loses=siege_loses+%i, ctf_wins=ctf_wins+%i, ctf_loses=ctf_loses+%i WHERE user_id = '%i'", ent->client->pers.sql_kills, ent->client->pers.sql_deaths, ent->client->pers.sql_duelwins, ent->client->pers.sql_duelloses, ent->client->pers.sql_flagcaps, ent->client->pers.sql_ffawins, ent->client->pers.sql_ffaloses, ent->client->pers.sql_tdmkills, ent->client->pers.sql_tdmdeaths, ent->client->pers.sql_siegewins, ent->client->pers.sql_siegeloses, ent->client->pers.sql_ctfwins, ent->client->pers.sql_ctfloses, atoi(ent->client->pers.userID));
 	else if (cm_database.integer == 2)
-		parse_output(ent, va("mysqlUpdateStats curl --data \"key=%s&p=increase&g=jedi_academy&c=%s&id=%i\" %s", cm_mysql_secret.string, item, ent->client->pers.userID, cm_mysql_url.string));
+		parse_output(ent, va("curl --data \"key=%s&p=increase&g=jedi_academy&query=%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i&id=%i\" %s", cm_mysql_secret.string, ent->client->pers.sql_kills, ent->client->pers.sql_deaths, ent->client->pers.sql_duelwins, ent->client->pers.sql_duelloses, ent->client->pers.sql_flagcaps, ent->client->pers.sql_ffawins, ent->client->pers.sql_ffaloses, ent->client->pers.sql_tdmkills, ent->client->pers.sql_tdmdeaths, ent->client->pers.sql_siegewins, ent->client->pers.sql_siegeloses, ent->client->pers.sql_ctfwins, ent->client->pers.sql_ctfloses, ent->client->pers.userID, cm_mysql_url.string));
+	G_LogPrintf("Stat updated for user ID:%i - DATA[%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i]", ent->client->pers.userID, ent->client->pers.sql_kills, ent->client->pers.sql_deaths, ent->client->pers.sql_duelwins, ent->client->pers.sql_duelloses, ent->client->pers.sql_flagcaps, ent->client->pers.sql_ffawins, ent->client->pers.sql_ffaloses, ent->client->pers.sql_tdmkills, ent->client->pers.sql_tdmdeaths, ent->client->pers.sql_siegewins, ent->client->pers.sql_siegeloses, ent->client->pers.sql_ctfwins, ent->client->pers.sql_ctfloses);
 }
 
 char * replace_str(const char *string, const char *substr, const char *replacement) {

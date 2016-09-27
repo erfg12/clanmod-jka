@@ -95,13 +95,14 @@ if (strstr($_POST['p'],"leaders")){ //outputs 3 integers divided by a semicolon
 			array_push($arrayC, $imp);
 			unset($array);
     	}
-		echo implode (";",$arrayC);
+		echo implode (";",$arrayC).';';
 	} else
     	echo "0";
 }
 
 if (strstr($_POST['p'],"increase")){
-	$sql = "UPDATE ". $_POST['g'] ." SET ". $_POST['c'] ." = ". $_POST['c'] ." + 1 WHERE user_id = '$_POST[id]'";
+	$data = explode(",",$_POST['query']);
+	$sql = "UPDATE ". $_POST['g'] . " SET kills=kills+$data[0],deaths=deaths+$data[1],duel_wins=duel_wins+$data[2],duel_loses=duel_loses+$data[3],flag_captures=flag_captures+$data[4],ffa_wins=ffa_wins+$data[5],ffa_loses=ffa_loses+$data[6],tdm_wins=tdm_wins+$data[7],tdm_loses=tdm_loses+$data[8],siege_wins=siege_wins+$data[9],siege_loses=siege_loses+$data[10],ctf_wins=ctf_wins+$data[11],ctf_loses=ctf_loses+$data[12] WHERE user_id = '$_POST[id]'";
 	if ($conn->query($sql) === TRUE){
     	echo "successful"; 
 	} else

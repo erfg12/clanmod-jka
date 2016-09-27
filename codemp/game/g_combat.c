@@ -2534,10 +2534,9 @@ extern void RunEmplacedWeapon( gentity_t *ent, usercmd_t **ucmd );
 	//increase kills/deaths (self = death+, attacker = kill+)
 	if (level.numPlayingClients >= 2) {
 		if (self && self->client && self->s.eType != ET_NPC && self->client->pers.userID > 0)
-			updateStats(self, "deaths");
-		if (attacker && attacker->client && attacker->s.eType != ET_NPC && attacker->client->pers.userID > 0) {
-			updateStats(attacker, "kills");
-		}
+			ent->client->pers.sql_deaths += 1;
+		if (attacker && attacker->client && attacker->s.eType != ET_NPC && attacker->client->pers.userID > 0)
+			ent->client->pers.sql_kills += 1;
 	}
 
 	if ( g_austrian.integer 
@@ -2553,9 +2552,9 @@ extern void RunEmplacedWeapon( gentity_t *ent, usercmd_t **ucmd );
 			//todo: TEST THIS
 			//duel wins/loses for GT_DUEL gametype
 			if (self && self->client && self->client->pers.userID > 0)
-				updateStats(self, "duel_loses");
+				self->client->pers.sql_duelloses++;
 			if (attacker->client->pers.userID > 0)
-				updateStats(attacker, "duel_wins");
+				attacker->client->pers.sql_duelwins++;
 			G_LogPrintf("killer: %s, hits on enemy %d, health: %d\n", attacker->client->pers.netname, attacker->client->ps.persistant[PERS_HITS], attacker->health );
 			//also - if MOD_SABER, list the animation and saber style
 			if ( meansOfDeath == MOD_SABER )

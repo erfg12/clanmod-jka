@@ -773,7 +773,7 @@ int Team_TouchOurFlag( gentity_t *ent, gentity_t *other, int team ) {
 	//other->client->ps.persistant[PERS_CAPTURES]++;
 
 	if (other->client->pers.userID > 0)
-		updateStats(other, "flag_captures");
+		other->client->pers.sql_flagcaps++;
 
 	// other gets another 10 frag bonus
 	AddScore(other, ent->r.currentOrigin, CTF_CAPTURE_BONUS);
