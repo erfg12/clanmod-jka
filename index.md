@@ -2,122 +2,74 @@
 layout: default
 ---
 
-Text can be **bold**, _italic_, or ~~strikethrough~~.
+# [](#header-1)About
 
-[Link to another page](another-page).
+This was made for server administrative control and to aid clan control. It comes with a bunch of ready admin commands for your enjoyment and security system to prevent crashing. It is very similar to Makermod & JA+ due to the ability to place objects and FX on any given map and the function to use emotions, admin commands, and along the lines everything else. It comes with 5 levels of admin powers for your clan if your into that sorta thing. Each with its own password protection and simple tool to customize the selection of admin powers for each.
 
-There should be whitespace between paragraphs.
+Everything is edited by the server.cfg file in its folder ClanMod along with other changable settings such as, Custom messages, Server name, force enable/disable.
 
-There should be whitespace between paragraphs. We recommend including a README, or a file with information about your project.
+## [](#header-2)Wiki Docs
 
-# [](#header-1)Header 1
+[Administrative Commands](https://github.com/erfg12/clanmod-jka/wiki/Admin-Commands)
 
-This is a normal paragraph following a header. GitHub is a code hosting platform for version control and collaboration. It lets you and others work together on projects from anywhere.
+[CVar Bitrates](https://github.com/erfg12/clanmod-jka/wiki/CVAR-Bitrates)
 
-## [](#header-2)Header 2
+[Emote Commands](https://github.com/erfg12/clanmod-jka/wiki/Emote-Commands)
 
-> This is a blockquote following a header.
->
-> When something is important enough, you do it even if the odds are not in your favor.
+[Saying Commands](https://github.com/erfg12/clanmod-jka/wiki/Saying-Commands)
 
-### [](#header-3)Header 3
+[Server Commands](https://github.com/erfg12/clanmod-jka/wiki/Server-Commands)
 
-```js
-// Javascript code with syntax highlighting.
-var fun = function lang(l) {
-  dateformat.i18n = require('./lang/' + l)
-  return true;
-}
-```
+[Server Settings](https://github.com/erfg12/clanmod-jka/wiki/Server-CVARs)
 
-```ruby
-# Ruby code with syntax highlighting
-GitHubPages::Dependencies.gems.each do |gem, version|
-  s.add_dependency(gem, "= #{version}")
-end
-```
+[Player Commands](https://github.com/erfg12/clanmod-jka/wiki/Standard-Commands)
 
-#### [](#header-4)Header 4
+[UI Commands](https://github.com/erfg12/clanmod-jka/wiki/UI-Commands)
 
-*   This is an unordered list following a header.
-*   This is an unordered list following a header.
-*   This is an unordered list following a header.
+## [](#header-2)Hosting a Server (Windows)
 
-##### [](#header-5)Header 5
+You need to have Jedi Knight: Jedi Academy installed either from Steam, GOG or CD.
 
-1.  This is an ordered list following a header.
-2.  This is an ordered list following a header.
-3.  This is an ordered list following a header.
+Download the .zip of ClanMod, navigate to the "GameData" folder and unzip the contents here.
 
-###### [](#header-6)Header 6
+Edit the "clanmod/server.cfg" file with notepad. These are your server settings.
 
-| head1        | head two          | three |
-|:-------------|:------------------|:------|
-| ok           | good swedish fish | nice  |
-| out of stock | good and plenty   | nice  |
-| ok           | good `oreos`      | hmm   |
-| ok           | good `zoute` drop | yumm  |
+Double click on "clanmod_server.bat" and your server will start up.
 
-### There's a horizontal rule below this.
+## [](#header-2)Hosting a Server (Linux x86_64)
 
-* * *
+All the commands below are done in a terminal interface.
 
-### Here is an unordered list:
+Make a directory (mkdir "game"). In the "game" folder, make another one called "base".
 
-*   Item foo
-*   Item bar
-*   Item baz
-*   Item zip
+You need the Jedi Knight: Jedi Academy base folder assets .pk3 files in the "base" directory.
 
-### And an ordered list:
+Download the .zip of ClanMod, and unarchive the contents to the "game" folder.
 
-1.  Item one
-1.  Item two
-1.  Item three
-1.  Item four
+Edit the "clanmod/server.cfg" file with vi. These are your server settings.
 
-### And a nested list:
+Press the "I" key to edit. Press "ESC" when done editing.
 
-- level 1 item
-  - level 2 item
-  - level 2 item
-    - level 3 item
-    - level 3 item
-- level 1 item
-  - level 2 item
-  - level 2 item
-  - level 2 item
-- level 1 item
-  - level 2 item
-  - level 2 item
-- level 1 item
+Press ":WQ" to write and quit the server.cfg file after you're done editing.
 
-### Small image
+Type in "chmod a+x ./clanmod_server.x86_64.sh".
 
-![](https://assets-cdn.github.com/images/icons/emoji/octocat.png)
+Now type in "./clanmod_server.x86_64.sh" and your server is running.
 
-### Large image
+## [](#header-2)Hosting a Server (Linux i386)
 
-![](https://guides.github.com/activities/hello-world/branching.png)
+Follow the instructions above, but replace x86_64 for i386.
 
+You might see error messages. The files may require additional dependencies.
 
-### Definition lists can be used with HTML syntax.
+## [](#header-2)Resources
 
-<dl>
-<dt>Name</dt>
-<dd>Godzilla</dd>
-<dt>Born</dt>
-<dd>1952</dd>
-<dt>Birthplace</dt>
-<dd>Japan</dd>
-<dt>Color</dt>
-<dd>Green</dd>
-</dl>
+[JKHub Wiki](https://jkhub.org/wiki/index.php?title=ClanMod)
 
-```
-Long, single-line code blocks should not wrap. They should horizontally scroll if they are too long. This line should be long enough to demonstrate this.
-```
+[JKHub Forums](https://jkhub.org/forum/123-clanmod)
 
-```
-The final element.
-```
+[ModDB Page](http://www.moddb.com/mods/clan-mod/)
+
+[SourceForge Page](https://sourceforge.net/projects/roarjk3mod/?source=directory)
+
+[NewAgeSoldier Blog](http://newagesoldier.com/clanmod)
