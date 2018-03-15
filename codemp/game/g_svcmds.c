@@ -7,6 +7,8 @@
 #include "g_adminshared.h"
 #include "timestamp.h"
 #include <stdio.h>
+
+//threads
 #ifdef _WIN32
 #include "windows.h"
 #endif
@@ -44,7 +46,6 @@ If 0, then only addresses matching the list will be allowed.  This lets you easi
 
 // extern	vmCvar_t	g_banIPs;
 // extern	vmCvar_t	g_filterBan;
-
 
 typedef struct ipFilter_s
 {
@@ -3417,6 +3418,19 @@ qboolean	ConsoleCommand( void ) {
 			parse_server_output(va("mysqlGetLeaders curl --data \"key=%s&p=leaders&g=jedi_academy&r=%s&o=%s\" %s", cm_mysql_secret.string, rows, column, cm_mysql_url.string));
 			//sprintf(query, "%s", mysqlGetLeaders(parse_output(va("curl --data \"key=%s&p=leaders&g=jedi_academy&r=%s&o=%s\" %s", cm_mysql_secret.string, rows, column, cm_mysql_url.string))));
 			//Q_strcat(query, sizeof(query), mysqlGetLeaders(parse_output(va("curl --data \"key=%s&p=leaders&g=jedi_academy&r=%s&o=%s\" %s", cm_mysql_secret.string, rows, column, cm_mysql_url.string))));
+	}
+
+	if (Q_stricmp(cmd, "pipetest") == 0) {
+		char   arg1[255];
+		char   arg2[1024];
+		if (trap_Argc() < 3)
+		{
+			G_Printf("Usage: /pipetest <function> <value>\n");
+			return;
+		}
+		trap_Argv(1, arg1, sizeof(arg1));
+		trap_Argv(2, arg2, sizeof(arg2));
+		G_Printf("[DEBUG] SENDING %s TO PIPE %s\n", arg2, arg1);
 	}
 
 	if (Q_stricmp (cmd, "amvstr") == 0) {

@@ -1934,6 +1934,8 @@ extern	vmCvar_t	m_v5;
 extern	vmCvar_t	m_v6;
 extern	vmCvar_t	m_rV;
 
+extern	vmCvar_t	cm_modules;
+
 extern	vmCvar_t	cm_E11_BLASTER_DAMAGE;
 extern	vmCvar_t	cm_E11_BLASTER_VELOCITY;
 extern	vmCvar_t	cm_DISRUPTOR_MAIN_DAMAGE;

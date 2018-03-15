@@ -2740,7 +2740,7 @@ void G_Say( gentity_t *ent, gentity_t *target, int mode, const char *chatText ) 
 		while ((token = strsep(&str, ";"))) {
 			if (strstr(text, token) != NULL) {
 				trap_SendServerCommand(ent-g_entities, va("print \"You said bad word: %s\n\"", token));
-				return;
+				break;
 			}
 		}
 		free(str);

@@ -5,6 +5,18 @@
 #include "bg_saga.h"
 #include "g_adminshared.h"
 
+//named pipes
+#ifdef _WIN32
+#include <windows.h>
+#include <tchar.h>
+#endif
+#ifdef __linux__
+#include <fcntl.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <unistd.h>
+#endif
+
 extern void Jedi_Cloak( gentity_t *self );
 extern void Jedi_Decloak( gentity_t *self );
 
@@ -830,29 +842,29 @@ void ClientTimerActions( gentity_t *ent, int msec ) {
 			}
 		}
 
-	if (client->csTimeLeft && client->pers.amclanreserved == 0 && client->pers.ampadawan == 0 && *roar_motd_line.string && roar_motd_line.string[0])
-		{ //send message and count down a second
-			if (ent->client->csTimeLeft < 10000000){ //NOTE: Q3_INFINITE time is like... 16,000,000+
-				trap_SendServerCommand( ent-g_entities, va("cp \"^7%s\nTimeLeft: ^3%d\"", ent->client->csMessage, ent->client->csTimeLeft ));
+		if (client->csTimeLeft && client->pers.amclanreserved == 0 && client->pers.ampadawan == 0 && *roar_motd_line.string && roar_motd_line.string[0])
+			{ //send message and count down a second
+				if (ent->client->csTimeLeft < 10000000){ //NOTE: Q3_INFINITE time is like... 16,000,000+
+					trap_SendServerCommand( ent-g_entities, va("cp \"^7%s\nTimeLeft: ^3%d\"", ent->client->csMessage, ent->client->csTimeLeft ));
+				}
+				else {
+					trap_SendServerCommand( ent-g_entities, va("cp \"^7%s\nTimeLeft: ^3INFINITE\"", ent->client->csMessage ));
+				}
+				client->csTimeLeft--;
 			}
-			else {
-				trap_SendServerCommand( ent-g_entities, va("cp \"^7%s\nTimeLeft: ^3INFINITE\"", ent->client->csMessage ));
+
+			if ((g_gametype.integer != GT_DUEL) && (g_gametype.integer != GT_POWERDUEL)){
+
+			if (roar_news1_time.value != 0){
+		if (client->itsNewsTime1 >= 1)
+			{ //count down a second
+				client->itsNewsTime1--;
 			}
-			client->csTimeLeft--;
+		else if (client->itsNewsTime1 == 0 && *roar_news1_content.string && roar_news1_content.string[0])
+		{
+			client->itsNewsTime1 += roar_news1_time.value;
+			trap_SendServerCommand( ent-g_entities, va("chat \"%s\"", roar_news1_content.string ));
 		}
-
-		if ((g_gametype.integer != GT_DUEL) && (g_gametype.integer != GT_POWERDUEL)){
-
-		if (roar_news1_time.value != 0){
-	if (client->itsNewsTime1 >= 1)
-		{ //count down a second
-			client->itsNewsTime1--;
-		}
-	else if (client->itsNewsTime1 == 0 && *roar_news1_content.string && roar_news1_content.string[0])
-	{
-		client->itsNewsTime1 += roar_news1_time.value;
-		trap_SendServerCommand( ent-g_entities, va("chat \"%s\"", roar_news1_content.string ));
-	}
 		}
 
 		if (roar_news2_time.value != 0){

@@ -14,6 +14,45 @@ int		eventClearTime = 0;
 static int navCalcPathTime = 0;
 extern int fatalErrors;
 
+//named pipes
+#ifdef _WIN32
+#include <windows.h>
+#include <tchar.h>
+#endif
+#ifdef __linux__
+#include <fcntl.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <unistd.h>
+#endif
+
+HANDLE pipe;
+
+void cm_makePipes(const char *pipename) {
+#if defined(_WIN32) 
+	G_Printf("Creating Pipe: %s\n", pipename);
+	char realName[255];
+	sprintf(realName, "%s%s", "\\\\.\\pipe\\", pipename);
+	pipe = CreateNamedPipe(realName, PIPE_ACCESS_INBOUND | PIPE_ACCESS_OUTBOUND, PIPE_WAIT, 1, 1024, 1024, 120 * 1000, NULL);
+	if (pipe == INVALID_HANDLE_VALUE)
+	{
+		G_Printf("Named Pipe Failed Err: %d\n", GetLastError());
+	}
+	/*qboolean result = ConnectNamedPipe(pipe, NULL);
+	if (!result)
+	{
+		G_Printf("error connecting to pipe\n");
+		CloseHandle(pipe);
+		return;
+	}*/
+#endif
+#ifdef __linux__
+	char myfifo[255];
+	sprintf(myfifo, "%s%s", "/tmp/", pipename);
+	mkfifo(myfifo, 0666);
+#endif
+}
+
 int killPlayerTimer = 0;
 typedef struct {
 	vmCvar_t	*vmCvar;
@@ -253,6 +292,8 @@ vmCvar_t	m_v4;
 vmCvar_t	m_v5;
 vmCvar_t	m_v6;
 vmCvar_t	m_rV; // voting restrictions
+
+vmCvar_t	cm_modules;
 
 vmCvar_t	cm_E11_BLASTER_DAMAGE;
 vmCvar_t	cm_E11_BLASTER_VELOCITY;
@@ -953,6 +994,7 @@ static cvarTable_t		gameCvarTable[] = {
 { &cm_automessenger,         "cm_automessenger",         "1", CVAR_ARCHIVE | CVAR_INTERNAL, 0, qtrue },
 { &mod_pushall, "mod_pushall", "1", CVAR_ARCHIVE, 0, qtrue },
 //{ &d_slowmodeath,         "cm_slowmodeath",         "0", 0, 0, qtrue },
+{ &cm_modules, "cm_modules", "", CVAR_ARCHIVE, 0 , qfalse },
 { &m_v1, "m_v1", "Disable Auto Bow:cm_autobow 0", CVAR_ARCHIVE, 0 , qfalse }, //// mod control vote strings
 { &m_v2, "m_v2", "", CVAR_ARCHIVE, 0 , qfalse },
 { &m_v3, "m_v3", "", CVAR_ARCHIVE, 0 , qfalse },
@@ -2062,7 +2104,16 @@ void G_InitGame( int levelTime, int randomSeed, int restart ) {
 	}
 	//[/OLDGAMETYPES]
 	trap_SendConsoleCommand( EXEC_INSERT, va( "exec mp_models/%s ; wait ; wait ; exec mp_effects/%s ; wait ; wait ; exec mp_weather/%s", mapname.string, mapname.string, mapname.string ) );
-	//createNamedPipe();
+
+	if (*cm_modules.string && cm_modules.string[0]) {
+		const char *my_str_literal = cm_modules.string;
+		char *str = strdup(my_str_literal);  // We own str's memory now.
+		char *token;
+		//while ((token = strsep(&str, ";"))) {
+			cm_makePipes("test1");
+		//}
+		free(str);
+	}
 }
 
 
@@ -4629,6 +4680,24 @@ void G_RunFrame( int levelTime ) {
 	void		*timer_GameChecks;
 	void		*timer_Queues;
 #endif
+
+	if (*cm_modules.string && cm_modules.string[0]) {
+		const char *my_str_literal = cm_modules.string;
+		char *str = strdup(my_str_literal);
+		char *token;
+		//while ((token = strsep(&str, ";"))) {
+			char data[1024];
+			DWORD numRead;
+			char realName[255];
+			//sprintf(realName, "%s%s", "\\\\.\\pipe\\", token);
+			ReadFile(pipe, data, 1024, &numRead, NULL);
+			if (numRead > 0)
+				G_Printf("[DEBUG] PIPE %s RECEIVED %s\n", "test1", data);
+			//else
+			//	G_Printf("r");
+		//}
+		free(str);
+	}
 
 	if (g_gametype.integer == GT_SIEGE &&
 		g_siegeRespawn.integer &&
