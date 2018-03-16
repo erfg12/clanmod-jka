@@ -26,25 +26,18 @@ extern int fatalErrors;
 #include <unistd.h>
 #endif
 
-HANDLE pipe;
+HANDLE pipes[10]; //stored pipes
 
-void cm_makePipes(const char *pipename) {
+void cm_makePipes(const char *pipename, int pipeNum) {
 #if defined(_WIN32) 
 	G_Printf("Creating Pipe: %s\n", pipename);
 	char realName[255];
 	sprintf(realName, "%s%s", "\\\\.\\pipe\\", pipename);
-	pipe = CreateNamedPipe(realName, PIPE_ACCESS_INBOUND | PIPE_ACCESS_OUTBOUND, PIPE_WAIT, 1, 1024, 1024, 120 * 1000, NULL);
-	if (pipe == INVALID_HANDLE_VALUE)
+	pipes[pipeNum] = CreateNamedPipe(realName, PIPE_ACCESS_INBOUND | PIPE_ACCESS_OUTBOUND, PIPE_WAIT, 1, 1024, 1024, 120 * 1000, NULL);
+	if (pipes[pipeNum] == INVALID_HANDLE_VALUE)
 	{
-		G_Printf("Named Pipe Failed Err: %d\n", GetLastError());
+		G_Printf("Named Pipe %s Failed Err: %d\n", pipename, GetLastError());
 	}
-	/*qboolean result = ConnectNamedPipe(pipe, NULL);
-	if (!result)
-	{
-		G_Printf("error connecting to pipe\n");
-		CloseHandle(pipe);
-		return;
-	}*/
 #endif
 #ifdef __linux__
 	char myfifo[255];
@@ -2109,10 +2102,12 @@ void G_InitGame( int levelTime, int randomSeed, int restart ) {
 		const char *my_str_literal = cm_modules.string;
 		char *str = strdup(my_str_literal);  // We own str's memory now.
 		char *token;
-		//while ((token = strsep(&str, ";"))) {
-			cm_makePipes("test1");
-		//}
-		free(str);
+		int i = 0;
+		while ((token = strsep(&str, ";"))) {
+			cm_makePipes(token, i);
+			i++;
+		}
+		//free(str);
 	}
 }
 
@@ -4681,24 +4676,6 @@ void G_RunFrame( int levelTime ) {
 	void		*timer_Queues;
 #endif
 
-	if (*cm_modules.string && cm_modules.string[0]) {
-		const char *my_str_literal = cm_modules.string;
-		char *str = strdup(my_str_literal);
-		char *token;
-		//while ((token = strsep(&str, ";"))) {
-			char data[1024];
-			DWORD numRead;
-			char realName[255];
-			//sprintf(realName, "%s%s", "\\\\.\\pipe\\", token);
-			ReadFile(pipe, data, 1024, &numRead, NULL);
-			if (numRead > 0)
-				G_Printf("[DEBUG] PIPE %s RECEIVED %s\n", "test1", data);
-			//else
-			//	G_Printf("r");
-		//}
-		free(str);
-	}
-
 	if (g_gametype.integer == GT_SIEGE &&
 		g_siegeRespawn.integer &&
 		g_siegeRespawnCheck < level.time)
@@ -4788,6 +4765,23 @@ void G_RunFrame( int levelTime ) {
 	level.previousTime = level.time;
 	level.time = levelTime;
 	msec = level.time - level.previousTime;
+
+	if (level.time % 1000 == 0) { //per second
+		if (*cm_modules.string && cm_modules.string[0]) {
+			const char *my_str_literal = cm_modules.string;
+			char *str = strdup(my_str_literal);
+			char *token;
+			int i = 0;
+			while ((token = strsep(&str, ";")) != NULL) {
+				char data[1000];
+				DWORD numRead;
+				ReadFile(pipes[i], data, 1000, &numRead, NULL);
+				if (numRead > 0)
+					G_Printf("%s: %s\n", token, data);
+				i++;
+			}
+		}
+	}
 
 	if (g_allowNPC.integer)
 	{
