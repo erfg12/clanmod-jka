@@ -26,15 +26,14 @@ extern int fatalErrors;
 #include <unistd.h>
 #endif
 
-HANDLE pipes[10]; //stored pipes
-
 void cm_makePipes(const char *pipename, int pipeNum) {
+	G_Printf("Listening for %s extension...\n", pipename);
 #if defined(_WIN32) 
-	G_Printf("Creating Pipe: %s\n", pipename);
 	char realName[255];
 	sprintf(realName, "%s%s", "\\\\.\\pipe\\", pipename);
-	pipes[pipeNum] = CreateNamedPipe(realName, PIPE_ACCESS_INBOUND | PIPE_ACCESS_OUTBOUND, PIPE_WAIT, 1, 1024, 1024, 120 * 1000, NULL);
-	if (pipes[pipeNum] == INVALID_HANDLE_VALUE)
+	pipeHandles[pipeNum] = CreateNamedPipe(realName, PIPE_ACCESS_INBOUND | PIPE_ACCESS_OUTBOUND, PIPE_WAIT, 1, 1024, 1024, 120 * 1000, NULL);
+	pipeNames[pipeNum] = pipename;
+	if (pipeHandles[pipeNum] == INVALID_HANDLE_VALUE)
 	{
 		G_Printf("Named Pipe %s Failed Err: %d\n", pipename, GetLastError());
 	}
@@ -45,6 +44,44 @@ void cm_makePipes(const char *pipename, int pipeNum) {
 	mkfifo(myfifo, 0666);
 #endif
 }
+
+void cmExtensionsListen() {
+	if (*cm_extensions.string && cm_extensions.string[0]) {
+		const char *my_str_literal = cm_extensions.string;
+		char *str = strdup(my_str_literal);
+		char *token;
+		int i = 0;
+		while ((token = strsep(&str, ";")) != NULL) {
+			char data[1000];
+			DWORD numRead;
+			ReadFile(pipeHandles[i], data, 1000, &numRead, NULL);
+			if (numRead > 0) {
+				G_Printf("%s: %s\n", token, data);
+			}
+			i++;
+		}
+	}
+	cmExtensionsListen();
+}
+
+#ifdef _WIN32
+DWORD WINAPI windowsThread(LPVOID lpParameter) {
+	printf("listening thread is running\n");
+	//while (1) {
+		cmExtensionsListen();
+	//}
+	return 0;
+}
+#endif
+#ifdef __linux__
+void *linuxThread(void *sntCmd)
+{
+	printf("listening thread is running\n");
+	//while (1) {
+		cmExtensionsListen();
+	//}
+}
+#endif
 
 int killPlayerTimer = 0;
 typedef struct {
@@ -286,7 +323,7 @@ vmCvar_t	m_v5;
 vmCvar_t	m_v6;
 vmCvar_t	m_rV; // voting restrictions
 
-vmCvar_t	cm_modules;
+vmCvar_t	cm_extensions;
 
 vmCvar_t	cm_E11_BLASTER_DAMAGE;
 vmCvar_t	cm_E11_BLASTER_VELOCITY;
@@ -987,7 +1024,7 @@ static cvarTable_t		gameCvarTable[] = {
 { &cm_automessenger,         "cm_automessenger",         "1", CVAR_ARCHIVE | CVAR_INTERNAL, 0, qtrue },
 { &mod_pushall, "mod_pushall", "1", CVAR_ARCHIVE, 0, qtrue },
 //{ &d_slowmodeath,         "cm_slowmodeath",         "0", 0, 0, qtrue },
-{ &cm_modules, "cm_modules", "", CVAR_ARCHIVE, 0 , qfalse },
+{ &cm_extensions, "cm_extensions", "", CVAR_ARCHIVE, 0 , qfalse },
 { &m_v1, "m_v1", "Disable Auto Bow:cm_autobow 0", CVAR_ARCHIVE, 0 , qfalse }, //// mod control vote strings
 { &m_v2, "m_v2", "", CVAR_ARCHIVE, 0 , qfalse },
 { &m_v3, "m_v3", "", CVAR_ARCHIVE, 0 , qfalse },
@@ -2098,8 +2135,8 @@ void G_InitGame( int levelTime, int randomSeed, int restart ) {
 	//[/OLDGAMETYPES]
 	trap_SendConsoleCommand( EXEC_INSERT, va( "exec mp_models/%s ; wait ; wait ; exec mp_effects/%s ; wait ; wait ; exec mp_weather/%s", mapname.string, mapname.string, mapname.string ) );
 
-	if (*cm_modules.string && cm_modules.string[0]) {
-		const char *my_str_literal = cm_modules.string;
+	if (*cm_extensions.string && cm_extensions.string[0]) {
+		const char *my_str_literal = cm_extensions.string;
 		char *str = strdup(my_str_literal);  // We own str's memory now.
 		char *token;
 		int i = 0;
@@ -2109,6 +2146,18 @@ void G_InitGame( int levelTime, int randomSeed, int restart ) {
 		}
 		//free(str);
 	}
+
+#ifdef _WIN32
+	HANDLE thread = CreateThread(NULL, 0, windowsThread, NULL, 0, NULL);
+	//WaitForSingleObject(thread, INFINITE);
+#endif
+#ifdef __linux__
+	pthread_t tid;
+	pthread_create(&tid, NULL, &linuxThread, &cmd);
+
+	//if ((pthread_kill(tid, 0)) == 0)
+	//	pthread_join(tid, NULL);
+#endif
 }
 
 
@@ -4765,23 +4814,6 @@ void G_RunFrame( int levelTime ) {
 	level.previousTime = level.time;
 	level.time = levelTime;
 	msec = level.time - level.previousTime;
-
-	if (level.time % 1000 == 0) { //per second
-		if (*cm_modules.string && cm_modules.string[0]) {
-			const char *my_str_literal = cm_modules.string;
-			char *str = strdup(my_str_literal);
-			char *token;
-			int i = 0;
-			while ((token = strsep(&str, ";")) != NULL) {
-				char data[1000];
-				DWORD numRead;
-				ReadFile(pipes[i], data, 1000, &numRead, NULL);
-				if (numRead > 0)
-					G_Printf("%s: %s\n", token, data);
-				i++;
-			}
-		}
-	}
 
 	if (g_allowNPC.integer)
 	{

@@ -23,6 +23,9 @@ extern int gPainMOD;
 extern int gPainHitLoc;
 extern vec3_t gPainPoint;
 
+qhandle_t pipeHandles[100]; //stored pipes for extensions
+const char *pipeNames[100];
+
 //==================================================================
 
 // the "gameversion" client command will print this plus compile date
@@ -1934,7 +1937,7 @@ extern	vmCvar_t	m_v5;
 extern	vmCvar_t	m_v6;
 extern	vmCvar_t	m_rV;
 
-extern	vmCvar_t	cm_modules;
+extern	vmCvar_t	cm_extensions;
 
 extern	vmCvar_t	cm_E11_BLASTER_DAMAGE;
 extern	vmCvar_t	cm_E11_BLASTER_VELOCITY;

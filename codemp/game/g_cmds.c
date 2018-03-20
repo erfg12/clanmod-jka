@@ -26,6 +26,22 @@ void WP_SetSaber( int entNum, saberInfo_t *sabers, int saberNum, const char *sab
 #include "../namespace_end.h"
 #include "g_cmds.h"
 
+void sendModuleCmd(char *pipename, char *command, char *text) {
+	char discordMsg[999];
+	DWORD dwWritten;
+	Com_sprintf(discordMsg, 999, "%s|%s", command, text);
+	//G_Printf("[DEBUG] Preparing to send %s to %s...\n", discordMsg, pipename);
+	for (int i = 0; i < (sizeof(pipeNames) / sizeof(pipeNames[0])); i++) //1 extension test
+	{
+		//G_Printf("[DEBUG] Checking pipe %s...\n", pipeNames[i]);
+		if (Q_stricmp(pipename, pipeNames[i]) == 0)
+		{
+			G_Printf("SENDING: %s TO PIPE: %s\n", discordMsg, pipeNames[i]);
+			WriteFile(pipeHandles[i], discordMsg, 999, &dwWritten, NULL);
+		}
+	}
+}
+
 // Required for holocron edits.
 //[HolocronFiles]
 extern vmCvar_t bot_wp_edit;
@@ -2618,6 +2634,9 @@ void G_Say( gentity_t *ent, gentity_t *target, int mode, const char *chatText ) 
 	default:
 	case SAY_ALL:
 		G_LogPrintf( "say: %s: %s\n", ent->client->pers.netname, chatText );
+		char discordMsg[950];
+		Com_sprintf(discordMsg, 950, "%s(JKA): %s", ent->client->pers.netname, chatText);
+		sendModuleCmd("discord", "say", discordMsg);
 		Com_sprintf (name, sizeof(name), "%s%c%c"EC": ", ent->client->pers.netname, Q_COLOR_ESCAPE, COLOR_WHITE );
 		if (roar_allow_chatColors.integer == 1){
 			if (Q_stristr(ent->client->pers.chatcolor, "red")){
