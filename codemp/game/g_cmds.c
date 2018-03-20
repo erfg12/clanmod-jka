@@ -252,18 +252,26 @@ char *parse_output(gentity_t *ent, char *cmd) {
 	char s[2048] = "";
 
 	#ifdef _WIN32
+	DWORD   threadID;
 		printf("ent: %i cmd: %s", ent-g_entities, cmd);
 		args argys = { ent, cmd };
-		HANDLE thread = CreateThread(NULL, 0, ThreadFunc, &argys, 0, NULL);
-		WaitForSingleObject(thread, INFINITE);
+		HANDLE thread = CreateThread(NULL, 0, ThreadFunc, &argys, 0, &threadID);
+		//WaitForSingleObject(thread, INFINITE);
+		CloseHandle(thread); //detach
+		if (thread == NULL) {
+			G_Printf("ERROR: Thread Handle is null!");
+		}
+		if (threadID == NULL) {
+			G_Printf("ERROR: Thread ID is null!");
+		}
 	#endif
 
 	#ifdef __linux__
 		pthread_t tid;
 		pthread_create(&tid, NULL, &linuxThread, &cmd);
-
-		if ((pthread_kill(tid, 0)) == 0)
-			pthread_join(tid, NULL);
+		//if ((pthread_kill(tid, 0)) == 0)
+		//	pthread_join(tid, NULL);
+		pthread_detach(&tid);
 	#endif
 
 	return s;

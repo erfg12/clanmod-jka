@@ -31,7 +31,7 @@ void cm_makePipes(const char *pipename, int pipeNum) {
 #if defined(_WIN32) 
 	char realName[255];
 	sprintf(realName, "%s%s", "\\\\.\\pipe\\", pipename);
-	pipeHandles[pipeNum] = CreateNamedPipe(realName, PIPE_ACCESS_INBOUND | PIPE_ACCESS_OUTBOUND, PIPE_WAIT, 1, 1024, 1024, 120 * 1000, NULL);
+	pipeHandles[pipeNum] = CreateNamedPipe(realName, PIPE_ACCESS_INBOUND | PIPE_ACCESS_OUTBOUND, PIPE_WAIT, 1, 1024, 1024, 1000, NULL);
 	pipeNames[pipeNum] = pipename;
 	if (pipeHandles[pipeNum] == INVALID_HANDLE_VALUE)
 	{
@@ -45,31 +45,42 @@ void cm_makePipes(const char *pipename, int pipeNum) {
 #endif
 }
 
-void cmExtensionsListen() {
-	if (*cm_extensions.string && cm_extensions.string[0]) {
+#ifdef _WIN32
+DWORD WINAPI windowsThread(LPVOID lpParameter) {
+	printf("listening thread is running\n");
+	while (1) {
 		const char *my_str_literal = cm_extensions.string;
 		char *str = strdup(my_str_literal);
 		char *token;
 		int i = 0;
-		while ((token = strsep(&str, ";")) != NULL) {
+		while ((token = strsep(&str, ";")) != NULL) { //listen to all pipes for commands
 			char data[1000];
 			DWORD numRead;
-			ReadFile(pipeHandles[i], data, 1000, &numRead, NULL);
-			if (numRead > 0) {
-				G_Printf("%s: %s\n", token, data);
+			ConnectNamedPipe(pipeHandles[i], NULL);
+			DWORD bytesAvail = 0;
+			BOOL isOK = PeekNamedPipe(pipeHandles[i], NULL, 0, NULL, &bytesAvail, NULL);
+			if (bytesAvail > 0) {
+				ReadFile(pipeHandles[i], data, 1000, &numRead, NULL);
+				if (numRead > 0) {
+					printf("RECEIVED: %s\n", data);
+					if (strstr(data, "|") != NULL) {
+						char *token = strtok(data, "|");
+						char *array[3];
+						int i = 0;
+						while (token != NULL)
+						{
+							array[i++] = token;
+							token = strtok(NULL, "|");
+						}
+						if (strstr("say", array[0]) != NULL) { //say command
+							G_Say(NULL, NULL, SAY_ALL, array[1]);
+						}
+					}
+				}
 			}
 			i++;
 		}
 	}
-	cmExtensionsListen();
-}
-
-#ifdef _WIN32
-DWORD WINAPI windowsThread(LPVOID lpParameter) {
-	printf("listening thread is running\n");
-	//while (1) {
-		cmExtensionsListen();
-	//}
 	return 0;
 }
 #endif
@@ -77,9 +88,21 @@ DWORD WINAPI windowsThread(LPVOID lpParameter) {
 void *linuxThread(void *sntCmd)
 {
 	printf("listening thread is running\n");
-	//while (1) {
-		cmExtensionsListen();
-	//}
+	while (1) {
+			const char *my_str_literal = cm_extensions.string;
+			char *str = strdup(my_str_literal);
+			char *token;
+			int i = 0;
+			while ((token = strsep(&str, ";")) != NULL) {
+				char data[1000];
+				DWORD numRead;
+				ReadFile(pipeHandles[i], data, 1000, &numRead, NULL);
+				if (numRead > 0) {
+					G_Printf("%s: %s\n", token, data);
+				}
+				i++;
+			}
+	}
 }
 #endif
 
@@ -2136,8 +2159,9 @@ void G_InitGame( int levelTime, int randomSeed, int restart ) {
 	trap_SendConsoleCommand( EXEC_INSERT, va( "exec mp_models/%s ; wait ; wait ; exec mp_effects/%s ; wait ; wait ; exec mp_weather/%s", mapname.string, mapname.string, mapname.string ) );
 
 	if (*cm_extensions.string && cm_extensions.string[0]) {
+		//make named pipes
 		const char *my_str_literal = cm_extensions.string;
-		char *str = strdup(my_str_literal);  // We own str's memory now.
+		char *str = strdup(my_str_literal);
 		char *token;
 		int i = 0;
 		while ((token = strsep(&str, ";"))) {
@@ -2145,19 +2169,25 @@ void G_InitGame( int levelTime, int randomSeed, int restart ) {
 			i++;
 		}
 		//free(str);
-	}
 
+		//make listening threads
 #ifdef _WIN32
-	HANDLE thread = CreateThread(NULL, 0, windowsThread, NULL, 0, NULL);
-	//WaitForSingleObject(thread, INFINITE);
+		DWORD   threadID;
+		HANDLE thread = CreateThread(NULL, 0, windowsThread, NULL, 0, &threadID);
+		CloseHandle(thread); //detach
+		if (thread == NULL) {
+			G_Printf("ERROR: Thread Handle is null!");
+		}
+		if (threadID == NULL) {
+			G_Printf("ERROR: Thread ID is null!");
+		}
 #endif
 #ifdef __linux__
-	pthread_t tid;
-	pthread_create(&tid, NULL, &linuxThread, &cmd);
-
-	//if ((pthread_kill(tid, 0)) == 0)
-	//	pthread_join(tid, NULL);
+		pthread_t tid;
+		pthread_create(&tid, NULL, &linuxThread, &cmd);
+		pthread_detach(&tid);
 #endif
+	}
 }
 
 

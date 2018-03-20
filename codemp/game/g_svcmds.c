@@ -297,16 +297,24 @@ void *parse_server_output(char *cmd) {
 	char s[2048] = "";
 
 #ifdef _WIN32
-	HANDLE thread = CreateThread(NULL, 0, ThreadFunc2, (LPVOID)cmd, 0, NULL);
-	WaitForSingleObject(thread, INFINITE);
+	DWORD   threadID;
+	HANDLE thread = CreateThread(NULL, 0, ThreadFunc2, (LPVOID)cmd, 0, &threadID);
+	//WaitForSingleObject(thread, INFINITE);
+	CloseHandle(thread); //detach
+	if (thread == NULL) {
+		G_Printf("ERROR: Thread Handle is null!");
+	}
+	if (threadID == NULL) {
+		G_Printf("ERROR: Thread ID is null!");
+	}
 #endif
 
 #ifdef __linux__
 	pthread_t tid;
 	pthread_create(&tid, NULL, linuxThread2, (void*)cmd);
-
-	if ((pthread_kill(tid, 0)) == 0)
-		pthread_join(tid, NULL);
+	//if ((pthread_kill(tid, 0)) == 0)
+	//	pthread_join(tid, NULL);
+	pthread_detach(&tid);
 #endif
 
 	return NULL;
