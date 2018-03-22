@@ -2642,10 +2642,11 @@ void G_Say( gentity_t *ent, gentity_t *target, int mode, const char *chatText ) 
 	default:
 	case SAY_ALL:
 		G_LogPrintf( "say: %s: %s\n", ent->client->pers.netname, chatText );
-		char discordMsg[950];
-		if (ent != NULL)
-			Com_sprintf(discordMsg, 950, "[JKA]%s: %s", ent->client->pers.netname, chatText);
-		sendModuleCmd("discord", "say", discordMsg);
+		char discordMsg[999];
+		if (!(ent->r.svFlags & SVF_BOT)) {
+			_snprintf_s(discordMsg, _TRUNCATE, "[JKA]%s: %s", ent->client->pers.netname, chatText);
+			sendModuleCmd("discord", "say", discordMsg);
+		}
 		Com_sprintf (name, sizeof(name), "%s%c%c"EC": ", ent->client->pers.netname, Q_COLOR_ESCAPE, COLOR_WHITE );
 		if (roar_allow_chatColors.integer == 1){
 			if (Q_stristr(ent->client->pers.chatcolor, "red")){

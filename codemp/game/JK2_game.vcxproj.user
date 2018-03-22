@@ -1,10 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <LocalDebuggerCommand>D:\SteamLibrary\steamapps\common\Jedi Academy\GameData\openjkded.x86.exe</LocalDebuggerCommand>
+    <LocalDebuggerCommand>C:\Users\Jake\Desktop\openjk\openjkded.x86.exe</LocalDebuggerCommand>
     <LocalDebuggerCommandArguments>+set dedicated 2 +exec server.cfg +set net_port 29070 +set fs_game clanmod</LocalDebuggerCommandArguments>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
-    <LocalDebuggerWorkingDirectory>D:\SteamLibrary\steamapps\common\Jedi Academy\GameData</LocalDebuggerWorkingDirectory>
+    <LocalDebuggerWorkingDirectory>C:\Users\Jake\Desktop\openjk</LocalDebuggerWorkingDirectory>
     <LocalDebuggerAttach>false</LocalDebuggerAttach>
   </PropertyGroup>
 </Project>
