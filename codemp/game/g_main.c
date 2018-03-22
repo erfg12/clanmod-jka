@@ -31,7 +31,7 @@ void cm_makePipes(const char *pipename, int pipeNum) {
 #if defined(_WIN32) 
 	char realName[255];
 	sprintf(realName, "%s%s", "\\\\.\\pipe\\", pipename);
-	pipeHandles[pipeNum] = CreateNamedPipe(realName, PIPE_ACCESS_INBOUND | PIPE_ACCESS_OUTBOUND, PIPE_WAIT, 1, 1024, 1024, 1000, NULL);
+	pipeHandles[pipeNum] = CreateNamedPipe(realName, PIPE_ACCESS_INBOUND | PIPE_ACCESS_OUTBOUND, PIPE_NOWAIT, 1, 1024, 1024, NMPWAIT_USE_DEFAULT_WAIT, NULL);
 	pipeNames[pipeNum] = pipename;
 	if (pipeHandles[pipeNum] == INVALID_HANDLE_VALUE)
 	{
@@ -65,15 +65,18 @@ DWORD WINAPI windowsThread(LPVOID lpParameter) {
 					printf("RECEIVED: %s\n", data);
 					if (strstr(data, "|") != NULL) {
 						char *token = strtok(data, "|");
-						char *array[3];
+						char *array[2];
 						int i = 0;
 						while (token != NULL)
 						{
+							if (i == 2) break;
 							array[i++] = token;
 							token = strtok(NULL, "|");
 						}
+						//printf("Recognized command: %s\n", array[0]);
 						if (strstr("say", array[0]) != NULL) { //say command
-							G_Say(NULL, NULL, SAY_ALL, array[1]);
+							//printf("Sending text: %s\n", array[1]);
+							trap_SendServerCommand(-1, va("%s \"%s\"", "chat", array[1]));
 						}
 					}
 				}
