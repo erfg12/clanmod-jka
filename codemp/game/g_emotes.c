@@ -1,5 +1,5 @@
 //g_emotes.c
-//Serachs for a a valid emote and performs it
+//Searches for a valid emote and performs it
 //Author: Dom
 
 #include "g_local.h"

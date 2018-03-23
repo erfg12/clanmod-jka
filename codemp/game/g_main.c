@@ -92,19 +92,35 @@ void *linuxThread(void *sntCmd)
 {
 	printf("listening thread is running\n");
 	while (1) {
-			const char *my_str_literal = cm_extensions.string;
-			char *str = strdup(my_str_literal);
-			char *token;
-			int i = 0;
-			while ((token = strsep(&str, ";")) != NULL) {
-				char data[1000];
-				DWORD numRead;
-				ReadFile(pipeHandles[i], data, 1000, &numRead, NULL);
-				if (numRead > 0) {
-					G_Printf("%s: %s\n", token, data);
+		const char *my_str_literal = cm_extensions.string;
+		char *str = strdup(my_str_literal);
+		char *token;
+		int i = 0;
+		while ((token = strsep(&str, ";")) != NULL) {
+			char data[1000];
+			unsigned long numRead;
+			fd = open(pipeHandles[i], O_RDONLY);
+			read(fd, data, sizeof(data));
+			printf("RECEIVED: %s\n", data);
+			if (strstr(data, "|") != NULL) {
+				char *token = strtok(data, "|");
+				char *array[2];
+				int i = 0;
+				while (token != NULL)
+				{
+					if (i == 2) break;
+					array[i++] = token;
+					token = strtok(NULL, "|");
 				}
-				i++;
+				//printf("Recognized command: %s\n", array[0]);
+				if (strstr("say", array[0]) != NULL) { //say command
+				//printf("Sending text: %s\n", array[1]);
+					trap_SendServerCommand(-1, va("%s \"%s\"", "chat", array[1]));
+				}
 			}
+			close(fd);
+			i++;
+		}
 	}
 }
 #endif

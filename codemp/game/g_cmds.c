@@ -28,16 +28,24 @@ void WP_SetSaber( int entNum, saberInfo_t *sabers, int saberNum, const char *sab
 
 void sendModuleCmd(char *pipename, char *command, char *text) {
 	char discordMsg[999];
-	DWORD dwWritten;
-	Com_sprintf(discordMsg, 999, "%s|%s", command, text);
+	unsigned long dwWritten;
+	_snprintf_s(discordMsg, _TRUNCATE, "%s|%s", command, text);
 	//G_Printf("[DEBUG] Preparing to send %s to %s...\n", discordMsg, pipename);
-	for (int i = 0; i < (sizeof(pipeNames) / sizeof(pipeNames[0])); i++) //1 extension test
+	for (int i = 0; i < (sizeof(pipeNames) / sizeof(pipeNames[0])); i++)
 	{
 		//G_Printf("[DEBUG] Checking pipe %s...\n", pipeNames[i]);
 		if (Q_stricmp(pipename, pipeNames[i]) == 0)
 		{
 			G_Printf("SENDING: %s TO PIPE: %s\n", discordMsg, pipeNames[i]);
+#ifdef _WIN32
 			WriteFile(pipeHandles[i], discordMsg, 999, &dwWritten, NULL);
+#endif
+#ifdef __linux__
+			fd = open(myfifo, O_WRONLY);
+			fgets(discordMsg, 999, stdin);
+			write(fd, discordMsg, strlen(discordMsg) + 1);
+			close(fd);
+#endif
 		}
 	}
 }
