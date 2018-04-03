@@ -29,7 +29,7 @@ void WP_SetSaber( int entNum, saberInfo_t *sabers, int saberNum, const char *sab
 void sendModuleCmd(char *pipename, char *command, char *text) {
 	char discordMsg[999];
 	unsigned long dwWritten;
-	_snprintf_s(discordMsg, _TRUNCATE, "%s|%s", command, text);
+	_snprintf_s(discordMsg, sizeof(discordMsg), _TRUNCATE, "%s|%s", command, text);
 	//G_Printf("[DEBUG] Preparing to send %s to %s...\n", discordMsg, pipename);
 	for (int i = 0; i < (sizeof(pipeNames) / sizeof(pipeNames[0])); i++)
 	{
@@ -2652,7 +2652,7 @@ void G_Say( gentity_t *ent, gentity_t *target, int mode, const char *chatText ) 
 		G_LogPrintf( "say: %s: %s\n", ent->client->pers.netname, chatText );
 		char discordMsg[999];
 		if (!(ent->r.svFlags & SVF_BOT)) {
-			_snprintf_s(discordMsg, _TRUNCATE, "[JKA]%s: %s", ent->client->pers.netname, chatText);
+			_snprintf_s(discordMsg, sizeof(discordMsg), _TRUNCATE, "[JKA]%s: %s", ent->client->pers.netname, chatText);
 			sendModuleCmd("discord", "say", discordMsg);
 		}
 		Com_sprintf (name, sizeof(name), "%s%c%c"EC": ", ent->client->pers.netname, Q_COLOR_ESCAPE, COLOR_WHITE );
