@@ -26,23 +26,26 @@ extern int fatalErrors;
 #include <unistd.h>
 #endif
 
+int pConnections = 0;
+
 void cm_makePipes(const char *pipename, int pipeNum) {
 	G_Printf("Listening for %s extension...\n", pipename);
-#if defined(_WIN32) 
 	char realName[255];
-	sprintf(realName, "%s%s", "\\\\.\\pipe\\", pipename);
+	_snprintf_s(realName, sizeof(realName), _TRUNCATE, "%s%s-%s", "\\\\.\\pipe\\", pipename, cm_uniquePipeName.string);
+#ifdef _WIN32
 	pipeHandles[pipeNum] = CreateNamedPipe(realName, PIPE_ACCESS_INBOUND | PIPE_ACCESS_OUTBOUND, PIPE_NOWAIT, 1, 1024, 1024, NMPWAIT_USE_DEFAULT_WAIT, NULL);
-	pipeNames[pipeNum] = pipename;
+	strcpy(pipeNames[pipeNum], realName);
 	if (pipeHandles[pipeNum] == INVALID_HANDLE_VALUE)
 	{
-		G_Printf("Named Pipe %s Failed Err: %d\n", pipename, GetLastError());
+		G_Printf("Named Pipe %s Failed Err: %d\n", realName, GetLastError());
+		return;
 	}
 #endif
 #ifdef __linux__
-	char myfifo[255];
-	sprintf(myfifo, "%s%s", "/tmp/", pipename);
-	mkfifo(myfifo, 0666);
+	sprintf(fifoNames[pipeNum], "%s%s-%s", "/tmp/", pipename, cm_uniquePipeName.string);
+	mkfifo(fifoNames[pipeNum], 0666);
 #endif
+	pConnections++;
 }
 
 #ifdef _WIN32
@@ -75,7 +78,7 @@ DWORD WINAPI windowsThread(LPVOID lpParameter) {
 						}
 						//printf("Recognized command: %s\n", array[0]);
 						if (strstr("say", array[0]) != NULL) { //say command
-							//printf("Sending text: %s\n", array[1]);
+															   //printf("Sending text: %s\n", array[1]);
 							trap_SendServerCommand(-1, va("%s \"%s\"", "chat", array[1]));
 						}
 					}
@@ -114,7 +117,7 @@ void *linuxThread(void *sntCmd)
 				}
 				//printf("Recognized command: %s\n", array[0]);
 				if (strstr("say", array[0]) != NULL) { //say command
-				//printf("Sending text: %s\n", array[1]);
+													   //printf("Sending text: %s\n", array[1]);
 					trap_SendServerCommand(-1, va("%s \"%s\"", "chat", array[1]));
 				}
 			}
@@ -366,6 +369,7 @@ vmCvar_t	m_v6;
 vmCvar_t	m_rV; // voting restrictions
 
 vmCvar_t	cm_extensions;
+vmCvar_t	cm_uniquePipeName;
 
 vmCvar_t	cm_E11_BLASTER_DAMAGE;
 vmCvar_t	cm_E11_BLASTER_VELOCITY;
@@ -1067,6 +1071,7 @@ static cvarTable_t		gameCvarTable[] = {
 { &mod_pushall, "mod_pushall", "1", CVAR_ARCHIVE, 0, qtrue },
 //{ &d_slowmodeath,         "cm_slowmodeath",         "0", 0, 0, qtrue },
 { &cm_extensions, "cm_extensions", "", CVAR_ARCHIVE, 0 , qfalse },
+{ &cm_uniquePipeName, "cm_uniquePipeName", "jka", CVAR_ARCHIVE, 0, qfalse },
 { &m_v1, "m_v1", "Disable Auto Bow:cm_autobow 0", CVAR_ARCHIVE, 0 , qfalse }, //// mod control vote strings
 { &m_v2, "m_v2", "", CVAR_ARCHIVE, 0 , qfalse },
 { &m_v3, "m_v3", "", CVAR_ARCHIVE, 0 , qfalse },

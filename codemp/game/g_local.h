@@ -24,7 +24,9 @@ extern int gPainHitLoc;
 extern vec3_t gPainPoint;
 
 qhandle_t pipeHandles[100]; //stored pipes for extensions
-const char *pipeNames[100];
+char pipeNames[100][100];
+char fifoNames[100][100]; //for linux
+extern int pConnections;
 
 //==================================================================
 
@@ -1938,6 +1940,7 @@ extern	vmCvar_t	m_v6;
 extern	vmCvar_t	m_rV;
 
 extern	vmCvar_t	cm_extensions;
+extern	vmCvar_t	cm_uniquePipeName;
 
 extern	vmCvar_t	cm_E11_BLASTER_DAMAGE;
 extern	vmCvar_t	cm_E11_BLASTER_VELOCITY;
