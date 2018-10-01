@@ -26,35 +26,6 @@ void WP_SetSaber( int entNum, saberInfo_t *sabers, int saberNum, const char *sab
 #include "../namespace_end.h"
 #include "g_cmds.h"
 
-void sendExtensionCmd(char *command, char *text, char *pipename) {
-	char discordMsg[999];
-	unsigned long dwWritten;
-	_snprintf_s(discordMsg, sizeof(discordMsg), _TRUNCATE, "%s|%s", command, text);
-	//G_Printf("[DEBUG] sending:%s connections:%i\n", discordMsg, pConnections);
-	for (int i = 0; i < pConnections; i++)
-	{
-		if (pipename != 0 && Q_stricmp(pipename, pipeNames[i]) != 0) return;
-		//G_Printf("[DEBUG] SENDING: %s TO PIPE: %s\n", discordMsg, pipeNames[i]);
-#ifdef WIN32
-		if (pipeHandles[i] == INVALID_HANDLE_VALUE) {
-			G_Printf("%s (#%i) handle is invalid", pipeNames[i], i);
-		}
-		else {
-			ConnectNamedPipe(pipeHandles[i], NULL);
-			WriteFile(pipeHandles[i], discordMsg, 999, &dwWritten, NULL);
-			//G_Printf("%s (#%i) handle is valid", pipeNames[i], i);
-		}
-
-#endif
-#ifdef __linux__
-		fd = open(fifoNames[i], O_WRONLY);
-		fgets(discordMsg, 999, stdin);
-		write(fifoNames[i], discordMsg, strlen(discordMsg) + 1);
-		close(fifoNames[i]);
-#endif
-		}
-	}
-
 // Required for holocron edits.
 //[HolocronFiles]
 extern vmCvar_t bot_wp_edit;
@@ -2658,7 +2629,6 @@ void G_Say( gentity_t *ent, gentity_t *target, int mode, const char *chatText ) 
 		char discordMsg[999];
 		if (!(ent->r.svFlags & SVF_BOT)) {
 			_snprintf_s(discordMsg, sizeof(discordMsg), _TRUNCATE, "[JKA]%s: %s", ent->client->pers.netname, chatText);
-			sendExtensionCmd("say", discordMsg, 0); //say to all extensions
 		}
 		Com_sprintf (name, sizeof(name), "%s%c%c"EC": ", ent->client->pers.netname, Q_COLOR_ESCAPE, COLOR_WHITE );
 		if (roar_allow_chatColors.integer == 1){

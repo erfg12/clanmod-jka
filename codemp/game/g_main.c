@@ -14,120 +14,6 @@ int		eventClearTime = 0;
 static int navCalcPathTime = 0;
 extern int fatalErrors;
 
-//named pipes
-#ifdef _WIN32
-#include <windows.h>
-#include <tchar.h>
-#endif
-#ifdef __linux__
-#include <fcntl.h>
-#include <sys/stat.h>
-#include <sys/types.h>
-#include <unistd.h>
-#endif
-
-int pConnections = 0;
-
-void cm_makePipes(const char *pipename, int pipeNum) {
-	G_Printf("Listening for %s extension...\n", pipename);
-	char realName[255];
-	_snprintf_s(realName, sizeof(realName), _TRUNCATE, "%s%s-%s", "\\\\.\\pipe\\", pipename, cm_uniquePipeName.string);
-#ifdef _WIN32
-	pipeHandles[pipeNum] = CreateNamedPipe(realName, PIPE_ACCESS_INBOUND | PIPE_ACCESS_OUTBOUND, PIPE_NOWAIT, 1, 1024, 1024, NMPWAIT_USE_DEFAULT_WAIT, NULL);
-	strcpy(pipeNames[pipeNum], realName);
-	if (pipeHandles[pipeNum] == INVALID_HANDLE_VALUE)
-	{
-		G_Printf("Named Pipe %s Failed Err: %d\n", realName, GetLastError());
-		return;
-	}
-#endif
-#ifdef __linux__
-	sprintf(fifoNames[pipeNum], "%s%s-%s", "/tmp/", pipename, cm_uniquePipeName.string);
-	mkfifo(fifoNames[pipeNum], 0666);
-#endif
-	pConnections++;
-}
-
-#ifdef _WIN32
-DWORD WINAPI windowsThread(LPVOID lpParameter) {
-	printf("listening thread is running\n");
-	while (1) {
-		const char *my_str_literal = cm_extensions.string;
-		char *str = strdup(my_str_literal);
-		char *token;
-		int i = 0;
-		while ((token = strsep(&str, ";")) != NULL) { //listen to all pipes for commands
-			char data[1000];
-			DWORD numRead;
-			ConnectNamedPipe(pipeHandles[i], NULL);
-			DWORD bytesAvail = 0;
-			BOOL isOK = PeekNamedPipe(pipeHandles[i], NULL, 0, NULL, &bytesAvail, NULL);
-			if (bytesAvail > 0) {
-				ReadFile(pipeHandles[i], data, 1000, &numRead, NULL);
-				if (numRead > 0) {
-					printf("RECEIVED: %s\n", data);
-					if (strstr(data, "|") != NULL) {
-						char *token = strtok(data, "|");
-						char *array[2];
-						int i = 0;
-						while (token != NULL)
-						{
-							if (i == 2) break;
-							array[i++] = token;
-							token = strtok(NULL, "|");
-						}
-						//printf("Recognized command: %s\n", array[0]);
-						if (strstr("say", array[0]) != NULL) { //say command
-															   //printf("Sending text: %s\n", array[1]);
-							trap_SendServerCommand(-1, va("%s \"%s\"", "chat", array[1]));
-						}
-					}
-				}
-			}
-			i++;
-		}
-	}
-	return 0;
-}
-#endif
-#ifdef __linux__
-void *linuxThread(void *sntCmd)
-{
-	printf("listening thread is running\n");
-	while (1) {
-		const char *my_str_literal = cm_extensions.string;
-		char *str = strdup(my_str_literal);
-		char *token;
-		int i = 0;
-		while ((token = strsep(&str, ";")) != NULL) {
-			char data[1000];
-			unsigned long numRead;
-			fd = open(pipeHandles[i], O_RDONLY);
-			read(fd, data, sizeof(data));
-			printf("RECEIVED: %s\n", data);
-			if (strstr(data, "|") != NULL) {
-				char *token = strtok(data, "|");
-				char *array[2];
-				int i = 0;
-				while (token != NULL)
-				{
-					if (i == 2) break;
-					array[i++] = token;
-					token = strtok(NULL, "|");
-				}
-				//printf("Recognized command: %s\n", array[0]);
-				if (strstr("say", array[0]) != NULL) { //say command
-													   //printf("Sending text: %s\n", array[1]);
-					trap_SendServerCommand(-1, va("%s \"%s\"", "chat", array[1]));
-				}
-			}
-			close(fd);
-			i++;
-		}
-	}
-}
-#endif
-
 int killPlayerTimer = 0;
 typedef struct {
 	vmCvar_t	*vmCvar;
@@ -367,9 +253,6 @@ vmCvar_t	m_v4;
 vmCvar_t	m_v5;
 vmCvar_t	m_v6;
 vmCvar_t	m_rV; // voting restrictions
-
-vmCvar_t	cm_extensions;
-vmCvar_t	cm_uniquePipeName;
 
 vmCvar_t	cm_E11_BLASTER_DAMAGE;
 vmCvar_t	cm_E11_BLASTER_VELOCITY;
@@ -1070,8 +953,6 @@ static cvarTable_t		gameCvarTable[] = {
 { &cm_automessenger,         "cm_automessenger",         "1", CVAR_ARCHIVE | CVAR_INTERNAL, 0, qtrue },
 { &mod_pushall, "mod_pushall", "1", CVAR_ARCHIVE, 0, qtrue },
 //{ &d_slowmodeath,         "cm_slowmodeath",         "0", 0, 0, qtrue },
-{ &cm_extensions, "cm_extensions", "", CVAR_ARCHIVE, 0 , qfalse },
-{ &cm_uniquePipeName, "cm_uniquePipeName", "jka", CVAR_ARCHIVE, 0, qfalse },
 { &m_v1, "m_v1", "Disable Auto Bow:cm_autobow 0", CVAR_ARCHIVE, 0 , qfalse }, //// mod control vote strings
 { &m_v2, "m_v2", "", CVAR_ARCHIVE, 0 , qfalse },
 { &m_v3, "m_v3", "", CVAR_ARCHIVE, 0 , qfalse },
@@ -2181,37 +2062,6 @@ void G_InitGame( int levelTime, int randomSeed, int restart ) {
 	}
 	//[/OLDGAMETYPES]
 	trap_SendConsoleCommand( EXEC_INSERT, va( "exec mp_models/%s ; wait ; wait ; exec mp_effects/%s ; wait ; wait ; exec mp_weather/%s", mapname.string, mapname.string, mapname.string ) );
-
-	if (*cm_extensions.string && cm_extensions.string[0]) {
-		//make named pipes
-		const char *my_str_literal = cm_extensions.string;
-		char *str = strdup(my_str_literal);
-		char *token;
-		int i = 0;
-		while ((token = strsep(&str, ";"))) {
-			cm_makePipes(token, i);
-			i++;
-		}
-		//free(str);
-
-		//make listening threads
-#ifdef _WIN32
-		DWORD   threadID;
-		HANDLE thread = CreateThread(NULL, 0, windowsThread, NULL, 0, &threadID);
-		CloseHandle(thread); //detach
-		if (thread == NULL) {
-			G_Printf("ERROR: Thread Handle is null!");
-		}
-		if (threadID == NULL) {
-			G_Printf("ERROR: Thread ID is null!");
-		}
-#endif
-#ifdef __linux__
-		pthread_t tid;
-		pthread_create(&tid, NULL, &linuxThread, &cmd);
-		pthread_detach(&tid);
-#endif
-	}
 }
 
 
