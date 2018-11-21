@@ -16,7 +16,7 @@
 ..:::::..:::.......:::........:::   AUTHOR: NeWaGe
 ===================================================================
 
-WEBSITE = http://newagesoldier.com/clanmod
+WEBSITE = https://github.com/erfg12/clanmod-jka
 
 ===================================================================
 
@@ -27,8 +27,7 @@ HOW TO INSTALL
 //////////////
 // Windows
 //////////////
-1) Download it from the official website (http://newagesoldier.com/clanmod ). 
-2) Install it by extracting the .zip contents into your GameData folder.
+Install it by extracting the .zip contents into your GameData folder.
 CD/DVD: C:\Program Files (x86)\LucasArts\Star Wars Jedi Knight Jedi Academy\GameData
 STEAM: C:\Program Files (x86)\Steam\SteamApps\common\Jedi Academy\GameData
 
@@ -58,7 +57,7 @@ Also place the .pk3 file that was in the base folder, into your base folder insi
 
 
 To view the most up to date tutorials on installation and upgrades
-please visit the project site http://newagesoldier.com/clanmod
+please visit the project site https://github.com/erfg12/clanmod-jka
 
 
 
