@@ -2774,7 +2774,7 @@ void G_Say( gentity_t *ent, gentity_t *target, int mode, const char *chatText ) 
 	else if (strstr(text, "!stats")) {
 		cmStats(ent, "");
 	}
-	else if (Q_stricmp(text, "!hidemotd")) {
+	else if (strstr(text, "!hidemotd")) {
 		hideMOTD(ent);
 	}
 
