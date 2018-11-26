@@ -662,7 +662,7 @@ typedef enum {
 #define	EF2_HYPERSPACE			(1<<5)		// Used to both start the hyperspace effect on the predicted client and to let the vehicle know it can now jump into hyperspace (after turning to face the proper angle)
 #define	EF2_BRACKET_ENTITY		(1<<6)		// Draw as bracketed
 #define	EF2_SHIP_DEATH			(1<<7)		// "died in ship" mode
-#define	EF2_MD3_MODEL			(1<<8)		// Por éviter de faire des conneries du coté CG
+#define	EF2_MD3_MODEL			(1<<8)		// Por \E9viter de faire des conneries du cot\E9 CG
 
 
 typedef enum {
@@ -1656,11 +1656,8 @@ qboolean BG_LegalizedForcePowers(char *powerOut, int maxRank, qboolean freeSaber
 
 #include "../namespace_end.h"
 
-#ifdef __LCC__ //can't inline it then, it is declared over in bg_misc in this case
-void BG_GiveMeVectorFromMatrix(mdxaBone_t *boltMatrix, int flags, vec3_t vec);
-#else
 // given a boltmatrix, return in vec a normalised vector for the axis requested in flags
-static ID_INLINE void BG_GiveMeVectorFromMatrix(mdxaBone_t *boltMatrix, int flags, vec3_t vec)
+static void BG_GiveMeVectorFromMatrix(mdxaBone_t *boltMatrix, int flags, vec3_t vec)
 {
 	switch (flags)
 	{
@@ -1701,7 +1698,6 @@ static ID_INLINE void BG_GiveMeVectorFromMatrix(mdxaBone_t *boltMatrix, int flag
 		break;
 	}
 }
-#endif
 
 #include "../namespace_begin.h"
 

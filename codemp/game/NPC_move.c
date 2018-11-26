@@ -123,7 +123,7 @@ NPC_GetMoveInformation
 -------------------------
 */
 
-ID_INLINE qboolean NPC_GetMoveInformation( vec3_t dir, float *distance )
+qboolean NPC_GetMoveInformation( vec3_t dir, float *distance )
 {
 	//NOTENOTE: Use path stacks!
 
@@ -630,7 +630,7 @@ void NPC_GetFlyToGoal( vec3_t moveDir )
 		}
 		else
 		{
-			//on décélère
+			//on d\E9c\E9l\E8re
 			speed = VectorLength( NPC->client->ps.velocity );
 			if ( speed > maxSpeed )
 				speed = maxSpeed;

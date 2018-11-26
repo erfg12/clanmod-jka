@@ -15,7 +15,7 @@ extern void WP_ActivateSaber( gentity_t *self );
 
 void ChangeWeapon( gentity_t *ent, int newWeapon );
 
-ID_INLINE qboolean IsMeleeWeapon( int weapon )
+qboolean IsMeleeWeapon( int weapon )
 {
 	if ( weapon == WP_SABER
 		|| weapon == WP_MELEE

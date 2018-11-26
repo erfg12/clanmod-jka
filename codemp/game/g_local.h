@@ -7,12 +7,6 @@
 #include "bg_vehicles.h"
 #include "g_public.h"
 
-#ifndef __LCC__
-#define GAME_INLINE ID_INLINE
-#else
-#define GAME_INLINE //none
-#endif
-
 typedef struct gentity_s gentity_t;
 typedef struct gclient_s gclient_t;
 
@@ -945,7 +939,7 @@ void NPCF_ProtectLeader( gentity_t *self, gentity_t *attacker );
 void NPCF_Order( gentity_t *self, gentity_t *ent, NPCORDER_FUNC *order, qboolean init );	//c lourd le init
 void NPCF_OrderToAll( gentity_t *self, NPCORDER_FUNC *order );
 
-//différents ordres
+//diff\E9rents ordres
 void NPCF_O_Attack( gentity_t *ent, qboolean init );
 void NPCF_O_StayHere( gentity_t *ent, qboolean init );
 void NPCF_O_Follow( gentity_t *ent, qboolean init );

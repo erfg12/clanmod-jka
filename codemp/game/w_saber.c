@@ -122,7 +122,7 @@ qboolean G_CanBeEnemy(gentity_t *self, gentity_t *enemy)
 //This function gets the attack power which is used to decide broken parries,
 //knockaways, and numerous other things. It is not directly related to the
 //actual amount of damage done, however. -rww
-static GAME_INLINE int G_SaberAttackPower(gentity_t *ent, qboolean attacking)
+static int G_SaberAttackPower(gentity_t *ent, qboolean attacking)
 {
 	int baseLevel;
 	assert(ent && ent->client);
@@ -381,7 +381,7 @@ void SaberGotHit( gentity_t *self, gentity_t *other, trace_t *trace )
 qboolean BG_SuperBreakLoseAnim( int anim );
 #include "../namespace_end.h"
 
-static GAME_INLINE void SetSaberBoxSize(gentity_t *saberent)
+static void SetSaberBoxSize(gentity_t *saberent)
 {
 	gentity_t *owner = NULL;
 	vec3_t saberOrg, saberTip;
@@ -647,7 +647,7 @@ void WP_SaberInitBladeData( gentity_t *ent )
 #define LOOK_DEFAULT_SPEED	0.15f
 #define LOOK_TALKING_SPEED	0.15f	
 
-static GAME_INLINE qboolean G_CheckLookTarget( gentity_t *ent, vec3_t	lookAngles, float *lookingSpeed )
+static qboolean G_CheckLookTarget( gentity_t *ent, vec3_t	lookAngles, float *lookingSpeed )
 {
 	//FIXME: also clamp the lookAngles based on the clamp + the existing difference between
 	//		headAngles and torsoAngles?  But often the tag_torso is straight but the torso itself
@@ -737,7 +737,7 @@ static GAME_INLINE qboolean G_CheckLookTarget( gentity_t *ent, vec3_t	lookAngles
 //This is primarily droid stuff I guess, I'm going to try to handle all humanoid
 //NPC stuff in with the actual player stuff if possible.
 void NPC_SetBoneAngles(gentity_t *ent, char *bone, vec3_t angles);
-static GAME_INLINE void G_G2NPCAngles(gentity_t *ent, vec3_t legs[3], vec3_t angles)
+static void G_G2NPCAngles(gentity_t *ent, vec3_t legs[3], vec3_t angles)
 {
 	char *craniumBone = "cranium";
 	char *thoracicBone = "thoracic"; //only used by atst so doesn't need a case
@@ -886,7 +886,7 @@ static GAME_INLINE void G_G2NPCAngles(gentity_t *ent, vec3_t legs[3], vec3_t ang
 	}
 }
 
-static GAME_INLINE void G_G2PlayerAngles( gentity_t *ent, vec3_t legs[3], vec3_t legsAngles)
+static void G_G2PlayerAngles( gentity_t *ent, vec3_t legs[3], vec3_t legsAngles)
 {
 	qboolean tPitching = qfalse,
 			 tYawing = qfalse,
@@ -1041,7 +1041,7 @@ static GAME_INLINE void G_G2PlayerAngles( gentity_t *ent, vec3_t legs[3], vec3_t
 	}
 }
 
-static GAME_INLINE qboolean SaberAttacking(gentity_t *self)
+static qboolean SaberAttacking(gentity_t *self)
 {
 	if (PM_SaberInParry(self->client->ps.saberMove))
 	{
@@ -1223,7 +1223,7 @@ extern qboolean BG_CheckIncrementLockAnim( int anim, int winOrLose ); //bg_saber
 #include "../namespace_end.h"
 #define LOCK_IDEAL_DIST_JKA 46.0f//all of the new saberlocks are 46.08 from each other because Richard Lico is da MAN
 
-static GAME_INLINE qboolean WP_SabersCheckLock2( gentity_t *attacker, gentity_t *defender, sabersLockMode_t lockMode )
+static qboolean WP_SabersCheckLock2( gentity_t *attacker, gentity_t *defender, sabersLockMode_t lockMode )
 {
 	int		attAnim, defAnim = 0;
 	float	attStart = 0.5f, defStart = 0.5f;
@@ -1896,7 +1896,7 @@ qboolean WP_SabersCheckLock( gentity_t *ent1, gentity_t *ent2 )
 	return qfalse;
 }
 
-static GAME_INLINE int G_GetParryForBlock(int block)
+static int G_GetParryForBlock(int block)
 {
 	switch (block)
 	{
@@ -1943,7 +1943,7 @@ int PM_SaberDeflectionForQuad( int quad );
 #include "../namespace_end.h"
 
 extern stringID_table_t animTable[MAX_ANIMATIONS+1];
-static GAME_INLINE qboolean WP_GetSaberDeflectionAngle( gentity_t *attacker, gentity_t *defender, float saberHitFraction )
+static qboolean WP_GetSaberDeflectionAngle( gentity_t *attacker, gentity_t *defender, float saberHitFraction )
 {
 	qboolean animBasedDeflection = qtrue;
 	int attSaberLevel, defSaberLevel;
@@ -2243,7 +2243,7 @@ int G_KnockawayForParry( int move )
 #define SABER_NONATTACK_DAMAGE 1
 
 //For strong attacks, we ramp damage based on the point in the attack animation
-static GAME_INLINE int G_GetAttackDamage(gentity_t *self, int minDmg, int maxDmg, float multPoint)
+static int G_GetAttackDamage(gentity_t *self, int minDmg, int maxDmg, float multPoint)
 {
 	int peakDif = 0;
 	int speedDif = 0;
@@ -2295,7 +2295,7 @@ static GAME_INLINE int G_GetAttackDamage(gentity_t *self, int minDmg, int maxDmg
 }
 
 //Get the point in the animation and return a percentage of the current point in the anim between 0 and the total anim length (0.0f - 1.0f)
-static GAME_INLINE float G_GetAnimPoint(gentity_t *self)
+static float G_GetAnimPoint(gentity_t *self)
 {
 	int speedDif = 0;
 	float attackAnimLength = bgAllAnims[self->localAnimIndex].anims[self->client->ps.torsoAnim].numFrames * fabs((float)(bgAllAnims[self->localAnimIndex].anims[self->client->ps.torsoAnim].frameLerp));
@@ -2317,7 +2317,7 @@ static GAME_INLINE float G_GetAnimPoint(gentity_t *self)
 	return animPercentage;
 }
 
-static GAME_INLINE qboolean G_ClientIdleInWorld(gentity_t *ent)
+static qboolean G_ClientIdleInWorld(gentity_t *ent)
 {
 	if (ent->s.eType == ET_NPC)
 	{
@@ -2341,7 +2341,7 @@ static GAME_INLINE qboolean G_ClientIdleInWorld(gentity_t *ent)
 	return qfalse;
 }
 
-static GAME_INLINE qboolean G_G2TraceCollide(trace_t *tr, vec3_t lastValidStart, vec3_t lastValidEnd, vec3_t traceMins, vec3_t traceMaxs)
+static qboolean G_G2TraceCollide(trace_t *tr, vec3_t lastValidStart, vec3_t lastValidEnd, vec3_t traceMins, vec3_t traceMaxs)
 { //Hit the ent with the normal trace, try the collision trace.
 	G2Trace_t		G2Trace;
 	gentity_t		*g2Hit;
@@ -2433,7 +2433,7 @@ static GAME_INLINE qboolean G_G2TraceCollide(trace_t *tr, vec3_t lastValidStart,
 	return qfalse;
 }
 
-static GAME_INLINE qboolean G_SaberInBackAttack(int move)
+static qboolean G_SaberInBackAttack(int move)
 {
 	switch (move)
 	{
@@ -2459,7 +2459,7 @@ typedef struct saberFace_s
 } saberFace_t;
 
 //build faces around blade for collision checking -rww
-static GAME_INLINE void G_BuildSaberFaces(vec3_t base, vec3_t tip, float radius, vec3_t fwd,
+static void G_BuildSaberFaces(vec3_t base, vec3_t tip, float radius, vec3_t fwd,
 										  vec3_t right, int *fNum, saberFace_t **fList)
 {
 	static saberFace_t faces[12];
@@ -2578,7 +2578,7 @@ static GAME_INLINE void G_BuildSaberFaces(vec3_t base, vec3_t tip, float radius,
 }
 
 //collision utility function -rww
-static GAME_INLINE void G_SabCol_CalcPlaneEq(vec3_t x, vec3_t y, vec3_t z, float *planeEq)
+static void G_SabCol_CalcPlaneEq(vec3_t x, vec3_t y, vec3_t z, float *planeEq)
 {
 	planeEq[0] = x[1]*(y[2]-z[2]) + y[1]*(z[2]-x[2]) + z[1]*(x[2]-y[2]);
 	planeEq[1] = x[2]*(y[0]-z[0]) + y[2]*(z[0]-x[0]) + z[2]*(x[0]-y[0]);
@@ -2587,7 +2587,7 @@ static GAME_INLINE void G_SabCol_CalcPlaneEq(vec3_t x, vec3_t y, vec3_t z, float
 }
 
 //collision utility function -rww
-static GAME_INLINE int G_SabCol_PointRelativeToPlane(vec3_t pos, float *side, float *planeEq)
+static int G_SabCol_PointRelativeToPlane(vec3_t pos, float *side, float *planeEq)
 {
 	*side = planeEq[0]*pos[0] + planeEq[1]*pos[1] + planeEq[2]*pos[2] + planeEq[3];
 
@@ -2604,7 +2604,7 @@ static GAME_INLINE int G_SabCol_PointRelativeToPlane(vec3_t pos, float *side, fl
 }
 
 //do actual collision check using generated saber "faces"
-static GAME_INLINE qboolean G_SaberFaceCollisionCheck(int fNum, saberFace_t *fList, vec3_t atkStart,
+static qboolean G_SaberFaceCollisionCheck(int fNum, saberFace_t *fList, vec3_t atkStart,
 											 vec3_t atkEnd, vec3_t atkMins, vec3_t atkMaxs, vec3_t impactPoint)
 {
 	static float planeEq[4];
@@ -2704,7 +2704,7 @@ static GAME_INLINE qboolean G_SaberFaceCollisionCheck(int fNum, saberFace_t *fLi
 	return qfalse;
 }
 
-static GAME_INLINE qboolean G_SaberCollide(gentity_t *atk, gentity_t *def, vec3_t atkStart,
+static qboolean G_SaberCollide(gentity_t *atk, gentity_t *def, vec3_t atkStart,
 	vec3_t atkEnd, vec3_t atkMins, vec3_t atkMaxs, vec3_t impactPoint)
 {
 	static int i, j;
@@ -2991,7 +2991,7 @@ qboolean WP_SabersIntersect( gentity_t *ent1, int ent1SaberNum, int ent1BladeNum
 	return qfalse;
 }
 
-static GAME_INLINE int G_PowerLevelForSaberAnim( gentity_t *ent, int saberNum, qboolean mySaberHit )
+static int G_PowerLevelForSaberAnim( gentity_t *ent, int saberNum, qboolean mySaberHit )
 {
 	if ( !ent || !ent->client || saberNum >= MAX_SABERS )
 	{
@@ -3872,7 +3872,7 @@ static float saberHitFraction = 1.0f;
 qboolean BG_SuperBreakWinAnim( int anim );
 #include "../namespace_end.h"
 
-static GAME_INLINE qboolean CheckSaberDamage(gentity_t *self, int rSaberNum, int rBladeNum, vec3_t saberStart, vec3_t saberEnd, qboolean doInterpolate, int trMask, qboolean extrapolate )
+static qboolean CheckSaberDamage(gentity_t *self, int rSaberNum, int rBladeNum, vec3_t saberStart, vec3_t saberEnd, qboolean doInterpolate, int trMask, qboolean extrapolate )
 {
 	static trace_t tr;
 	static vec3_t dir;
@@ -5357,7 +5357,7 @@ blockStuff:
 	return didHit;
 }
 
-GAME_INLINE int VectorCompare2( const vec3_t v1, const vec3_t v2 ) {
+int VectorCompare2( const vec3_t v1, const vec3_t v2 ) {
 	if ( v1[0] > v2[0]+0.0001f || v1[0] < v2[0]-0.0001f
 		|| v1[1] > v2[1]+0.0001f || v1[1] < v2[1]-0.0001f
 		|| v1[2] > v2[2]+0.0001f || v1[2] < v2[2]-0.0001f ) {
@@ -5976,7 +5976,7 @@ void WP_SaberStartMissileBlockCheck( gentity_t *self, usercmd_t *ucmd  )
 
 void thrownSaberTouch (gentity_t *saberent, gentity_t *other, trace_t *trace);
 
-static GAME_INLINE qboolean CheckThrownSaberDamaged(gentity_t *saberent, gentity_t *saberOwner, gentity_t *ent, int dist, int returning, qboolean noDCheck)
+static qboolean CheckThrownSaberDamaged(gentity_t *saberent, gentity_t *saberOwner, gentity_t *ent, int dist, int returning, qboolean noDCheck)
 {
 	vec3_t vecsub;
 	float veclen;
@@ -6209,7 +6209,7 @@ static GAME_INLINE qboolean CheckThrownSaberDamaged(gentity_t *saberent, gentity
 	return qtrue;
 }
 
-static GAME_INLINE void saberCheckRadiusDamage(gentity_t *saberent, int returning)
+static void saberCheckRadiusDamage(gentity_t *saberent, int returning)
 { //we're going to cheat and damage players within the saber's radius, just for the sake of doing things more "efficiently" (and because the saber entity has no server g2 instance)
 	int i = 0;
 	int dist = 0;
@@ -6247,7 +6247,7 @@ static GAME_INLINE void saberCheckRadiusDamage(gentity_t *saberent, int returnin
 
 #define THROWN_SABER_COMP
 
-static GAME_INLINE void saberMoveBack( gentity_t *ent, qboolean goingBack ) 
+static void saberMoveBack( gentity_t *ent, qboolean goingBack ) 
 {
 	vec3_t		origin, oldOrg;
 
@@ -8084,7 +8084,7 @@ static void G_KickSomeMofos(gentity_t *ent)
 	}
 }
 
-static GAME_INLINE qboolean G_PrettyCloseIGuess(float a, float b, float tolerance)
+static qboolean G_PrettyCloseIGuess(float a, float b, float tolerance)
 {
     if ((a-b) < tolerance &&
 		(a-b) > -tolerance)

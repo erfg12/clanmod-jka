@@ -46,7 +46,7 @@ extern vmCvar_t		d_saberCombat;
 
 extern void NPC_Think ( gentity_t *self);
 
-extern ID_INLINE qboolean IsMeleeWeapon( int weapon );
+extern qboolean IsMeleeWeapon( int weapon );
 
 //NPC_reactions.cpp
 extern void NPC_Pain(gentity_t *self, gentity_t *attacker, int damage);

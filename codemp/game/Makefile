@@ -13,7 +13,7 @@ CC = gcc
 # -w ( disable warnings )
 # -I<include path>  used to include headers
 # -fPIC ( this flag is necessary to build shared libraries )
-CFLAGS = -I../qcommon -I../server -I../icarus -I../ghoul2 -fPIC -DFINAL_BUILD -DMISSION_PACK -DQAGAME -D_JK2 -D__linux__ -D__GCC__ -w -DCMAKE_CXX_FLAGS=-m32 -DCMAKE_C_FLAGS=-m32 -DCMAKE_SHARED_LINKER_FLAGS=-m32 -DCMAKE_SIZEOF_VOID_P=4 -DSQLITE_THREADSAFE=0
+CFLAGS = -I../qcommon -I../server -I../icarus -I../ghoul2 -fPIC -DFINAL_BUILD -DMISSION_PACK -DQAGAME -D_JK2 -D__linux__ -D__GCC__ -w -DCMAKE_CXX_FLAGS=-m32 -DCMAKE_C_FLAGS=-m32 -DCMAKE_SHARED_LINKER_FLAGS=-m32 -DSQLITE_THREADSAFE=0 -g
 
 # Target file
 TARGET = jampgamex86_64.so

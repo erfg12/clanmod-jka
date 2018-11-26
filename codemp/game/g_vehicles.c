@@ -3287,16 +3287,16 @@ void G_VehUpdateShields( gentity_t *targ )
 #endif
 
 // Set the parent entity of this Vehicle NPC.
-GAME_INLINE void SetParent2( Vehicle_t *pVeh, bgEntity_t *pParentEntity ) { pVeh->m_pParentEntity = pParentEntity; }
+void SetParent2( Vehicle_t *pVeh, bgEntity_t *pParentEntity ) { pVeh->m_pParentEntity = pParentEntity; }
 
 // Add a pilot to the vehicle.
-GAME_INLINE void SetPilot( Vehicle_t *pVeh, bgEntity_t *pPilot ) { pVeh->m_pPilot = pPilot; }
+void SetPilot( Vehicle_t *pVeh, bgEntity_t *pPilot ) { pVeh->m_pPilot = pPilot; }
 
 // Add a passenger to the vehicle (false if we're full).
-GAME_INLINE bool AddPassenger( Vehicle_t *pVeh ) { return false; }
+bool AddPassenger( Vehicle_t *pVeh ) { return false; }
 
 // Whether this vehicle is currently inhabited (by anyone) or not.
-GAME_INLINE bool Inhabited( Vehicle_t *pVeh ) { return ( pVeh->m_pPilot || pVeh->m_iNumPassengers ) ? true : false; }
+bool Inhabited( Vehicle_t *pVeh ) { return ( pVeh->m_pPilot || pVeh->m_iNumPassengers ) ? true : false; }
 
 
 // Setup the shared functions (one's that all vehicles would generally use).

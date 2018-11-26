@@ -239,15 +239,8 @@ qboolean BG_KnockDownable(playerState_t *ps)
 	return qtrue;
 }
 
-//I should probably just do a global inline sometime.
-#ifndef __LCC__
-#define PM_INLINE ID_INLINE
-#else
-#define PM_INLINE //none
-#endif
-
 //hacky assumption check, assume any client non-humanoid is a rocket trooper
-qboolean PM_INLINE PM_IsRocketTrooper(void)
+qboolean PM_IsRocketTrooper(void)
 {
 	/*
 	if (pm->ps->clientNum < MAX_CLIENTS &&
@@ -9935,11 +9928,7 @@ static qboolean PM_AdjustAnglesForDualJumpAttack( playerState_t *ps, usercmd_t *
 	return qtrue;
 }
 
-#ifdef __LCC__
 static void PM_CmdForSaberMoves(usercmd_t *ucmd)
-#else
-static ID_INLINE void PM_CmdForSaberMoves(usercmd_t *ucmd)
-#endif
 {
 	//DUAL FORWARD+JUMP+ATTACK
 	if ( ( pm->ps->legsAnim == BOTH_JUMPATTACK6
