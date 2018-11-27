@@ -3240,7 +3240,7 @@ else if (( Q_stricmp( cmd, "forceteam" ) == 0 ) || (Q_stricmp( cmd, "amforceteam
 
 			 trap_SendServerCommand(client_id, va("cp \"%s\"", real_msg) );
 	  }
-	  		else if ((Q_stricmp(cmd, "demigod") == 0) || (Q_stricmp(cmd, "amdemigod") == 0))
+	  		else if ((Q_stricmp(cmd, "amclip") == 0) || (Q_stricmp(cmd, "demigod") == 0) || (Q_stricmp(cmd, "amdemigod") == 0))
       {
          int client_id = -1; 
          char   arg1[MAX_STRING_CHARS]; 

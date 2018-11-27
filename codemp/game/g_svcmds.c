@@ -3501,7 +3501,7 @@ qboolean	ConsoleCommand( void ) {
 		return qtrue;
 	}
 
-	if ((Q_stricmp (cmd, "demigod") == 0) || (Q_stricmp (cmd, "amdemigod") == 0)) {
+	if ((Q_stricmp(cmd,"amclip") == 0) || (Q_stricmp (cmd, "demigod") == 0) || (Q_stricmp (cmd, "amdemigod") == 0)) {
 		Svcmd_DemiGod();
 		return qtrue;
 	}
