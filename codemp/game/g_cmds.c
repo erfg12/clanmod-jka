@@ -2664,7 +2664,7 @@ void G_Say( gentity_t *ent, gentity_t *target, int mode, const char *chatText ) 
 	case SAY_ADMIN:
 		if (ent->client->pers.iamanadmin != 0){
 		G_LogPrintf( "sayteam: <admin>[%s]: %s\n", ent->client->pers.netname, chatText );
-		Com_sprintf (name, sizeof(name), EC"^3<admin>^7[%s^7]: ", 
+		Com_sprintf (name, sizeof(name), EC"^3<Admin>^7%s: ", 
 				ent->client->pers.netname );
 		}
 		else {
@@ -2676,7 +2676,7 @@ void G_Say( gentity_t *ent, gentity_t *target, int mode, const char *chatText ) 
 	case SAY_REPORT:
 		if (cm_allow_report_command.integer == 1){
 		G_LogPrintf( "sayteam: <report>[%s]: %s\n", ent->client->pers.netname, chatText );
-		Com_sprintf (name, sizeof(name), EC"^5<report>^7[%s^7]: ", 
+		Com_sprintf (name, sizeof(name), EC"^5<Report>^7%s: ", 
 				ent->client->pers.netname );
 		}
 		else {
@@ -2688,7 +2688,7 @@ void G_Say( gentity_t *ent, gentity_t *target, int mode, const char *chatText ) 
 	case SAY_CLAN:
 		if (ent->client->pers.iamclan == 1){
 		G_LogPrintf( "sayteam: <clan>[%s]: %s\n", ent->client->pers.netname, chatText );
-		Com_sprintf (name, sizeof(name), EC"^1<clan>^7[%s^7]: ", 
+		Com_sprintf (name, sizeof(name), EC"^1<clan>^7%s: ", 
 				ent->client->pers.netname );
 		}
 		else {
