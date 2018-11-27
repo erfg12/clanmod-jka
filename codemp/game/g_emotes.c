@@ -39,7 +39,12 @@ typedef enum
 	E_ATEASE,
 	E_COMEON,
 	E_KISS,
-	E_HUG
+	E_HUG,
+    E_HARLEM, // Do the harlem shake
+    E_WAIT,
+    E_HELLO,
+    E_HEAL,
+    E_HIPS,
 } emote_type_t;
 
 //This void is a mix of requirements to meet for the emote to work, and the custom emote animation itself.
@@ -168,6 +173,21 @@ void G_PerformEmote(char *emote, gentity_t *ent)
 	else if ((Q_stricmp(emote, "sit") == 0) || (Q_stricmp(emote, "amsit") == 0)){
 		cm_TheEmote (E_SIT4, BOTH_SIT6, ent, qtrue);
 	}
+    else if((Q_stricmp(emote, "harlem") == 0) || (Q_stricmp(emote, "amharlem") == 0)) {
+        cm_TheEmote(E_HARLEM, BOTH_FORCE_DRAIN_GRABBED, ent, qtrue); 
+    }
+    else if(Q_stricmp(emote, "amwait") == 0) { // unable to have wait, already exists.
+        cm_TheEmote(E_WAIT, BOTH_STAND10, ent, qtrue);
+    }
+    else if(Q_stricmp(emote, "amhello") == 0) {
+        cm_TheEmote(E_HELLO, BOTH_SILENCEGESTURE1, ent, qfalse);
+    }
+    else if(Q_stricmp(emote, "amheal") == 0) {
+        cm_TheEmote(E_HEAL, BOTH_FORCEHEAL_START, ent, qtrue);
+    }
+    else if(Q_stricmp(emote, "amhips") == 0) {
+        cm_TheEmote(E_HIPS, BOTH_STAND5TOSTAND8, ent, qtrue);
+    }
 	//Someday we're going to have to make this look nicer...
 	else if (Q_stricmp(emote, "kiss") == 0){
 			trace_t tr;
