@@ -3353,38 +3353,6 @@ void G_PerformAdminCMD(char *cmd, gentity_t *ent)
             G_Sound(&g_entities[client_id], CHAN_AUTO, G_SoundIndex("sound/effects/electric_beam_lp.wav"));
         }
     }
-    else if (Q_stricmp(cmd, "amstatus") == 0) {
-        int i;
-        gentity_t* targetplayer;
-
-        if(ent->r.svFlags & SVF_ADMIN)
-        {
-            if(!(ent->client->pers.bitvalue & (1 << A_STATUS))) {
-                trap_SendServerCommand(ent-g_entities, va("print \"Status is not allowed at this administration rank.\n\""));
-                return;
-            }
-
-        }
-        if(!(ent->r.svFlags & SVF_ADMIN)) {
-            trap_SendServerCommand(ent-g_entities, "print \"Must login with /adminlogin (password)\n\"");
-            return;
-        }
-        trap_SendServerCommand(ent-g_entities, va("print \"Listing users...\n\""));
-        trap_SendServerCommand(ent-g_entities, va("print \"^3----------------------------------------------------------\n\""));
-        trap_SendServerCommand(ent-g_entities, va("print \"^5clientNum   Name                                IP Address\n\""));
-        for(i = 0, targetplayer = g_entities; i<level.maxclients; i++, targetplayer++)
-        {
-            if(targetplayer->inuse && targetplayer->client->pers.connected != CON_DISCONNECTED) {
-                char strNum[12] = {}, strName[MAX_NETNAME] = {}, strIP[48] = {};
-                Com_sprintf(strNum, sizeof(strNum), "(%i)", i);
-                Q_strncpyz(strName, targetplayer->client->pers.netname, sizeof(strName));
-                Q_strncpyz(strIP, targetplayer->client->sess.myip, sizeof(strIP));
-                trap_SendServerCommand(ent-g_entities, va("print \"%-12s%-36s^7%-24s\n\"", strNum, strName, strIP));
-            }
-
-        }
-        trap_SendServerCommand(ent-g_entities, va("print \"^3----------------------------------------------------------\n\""));
-    }
     else if ((Q_stricmp(cmd, "protect") == 0) || (Q_stricmp(cmd, "amprotect") == 0))
     {
         gentity_t * targetplayer;
@@ -3880,10 +3848,12 @@ void G_PerformAdminCMD(char *cmd, gentity_t *ent)
             return;
         }
     }
-    else if ((Q_stricmp(cmd, "whoip") == 0) || (Q_stricmp(cmd, "amwhoip") == 0)) 
+    else if ((Q_stricmp(cmd, "whoip") == 0) || (Q_stricmp(cmd, "amwhoip") == 0) || (Q_stricmp(cmd, "amstatus") == 0)) 
     {
         int client_id = -1; 
         char   arg1[MAX_STRING_CHARS];
+        gentity_t* targetplayer;
+        int i;
         if (ent->r.svFlags & SVF_ADMIN)
         {
             if (!(ent->client->pers.bitvalue & (1 << A_WHOIP)))
@@ -3896,11 +3866,31 @@ void G_PerformAdminCMD(char *cmd, gentity_t *ent)
             trap_SendServerCommand( ent-g_entities, "print \"Must login with /adminlogin (password)\n\"" );
             return;
         }
-        if ( trap_Argc() != 2 ) 
-        { 
-            trap_SendServerCommand( ent-g_entities, "print \"Type in /help whoip if you need help with this command.\n\"" ); 
-            return; 
-        } 
+ //       if ( trap_Argc() != 2 ) 
+ //       { 
+ //          trap_SendServerCommand( ent-g_entities, "print \"Type in /help whoip if you need help with this command.\n\"" ); 
+ //         return; 
+ //         } 
+        if (Q_stricmp(arg1, "+all") || trap_Argc() != 2) {
+            trap_SendServerCommand(ent-g_entities, va("print \"Listing users...\n\""));
+            trap_SendServerCommand(ent-g_entities, va("print \"^3----------------------------------------------------------\n\""));
+            trap_SendServerCommand(ent-g_entities, va("print \"^5clientNum   Name                                IP Address\n\""));
+            for(i = 0, targetplayer = g_entities; i<level.maxclients; i++, targetplayer++)
+            {
+                if(targetplayer->inuse && targetplayer->client->pers.connected != CON_DISCONNECTED) {
+                    char strNum[12] = {}, strName[MAX_NETNAME] = {}, strIP[48] = {};
+                    Com_sprintf(strNum, sizeof(strNum), "(%i)", i);
+                    Q_strncpyz(strName, targetplayer->client->pers.netname, sizeof(strName));
+                    Q_strncpyz(strIP, targetplayer->client->sess.myip, sizeof(strIP));
+                    trap_SendServerCommand(ent-g_entities, va("print \"%-12s%-36s^7%-24s\n\"", strNum, strName, strIP));
+                }
+
+            }
+            trap_SendServerCommand(ent-g_entities, va("print \"^3----------------------------------------------------------\n\""));
+            return;
+
+        }
+  
         trap_Argv( 1,  arg1, sizeof(  arg1 ) ); 
         client_id = G_ClientNumberFromArg(  arg1 ); 
         if (client_id == -1)
@@ -3918,7 +3908,7 @@ void G_PerformAdminCMD(char *cmd, gentity_t *ent)
             trap_SendServerCommand( ent-g_entities, va("print \"Bad client ID for %s\n\"", arg1 ) ); 
             return;
         }
-        // either we have the client id or the string did not match 
+       // either we have the client id or the string did not match 
         if (!g_entities[client_id].inuse) 
         { // check to make sure client slot is in use 
             trap_SendServerCommand( ent-g_entities, va("print \"Client %s is not active\n\"", arg1 ) ); 
