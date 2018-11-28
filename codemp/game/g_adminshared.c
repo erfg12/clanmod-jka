@@ -91,7 +91,8 @@ typedef enum
 	A_LOCKTEAM,
 	A_MODEL,
 	A_WHOIP,
-	A_AMVSTR
+	A_AMVSTR,
+    A_STATUS
 } admin_type_t;
 //RoAR mod END
 
@@ -972,6 +973,9 @@ else if (Q_stricmp(cmd, "amkick") == 0)
 		//AMVSTR CHECK
 		if ((ent->r.svFlags & SVF_ADMIN) && (ent->client->pers.bitvalue & (1 << A_AMVSTR))) {
 			trap_SendServerCommand( ent-g_entities, va("print \"AmVSTR\n\"") ); }
+		//AMSTATUS CHECK
+        if ((ent->r.svFlags & SVF_ADMIN) && (ent->client->pers.bitvalue & (1 << A_STATUS))) {
+    		trap_SendServerCommand( ent-g_entities, va("print \"AmStatus\n\"") ); }
 		}
 	//END
 		else if ((Q_stricmp(cmd, "weather") == 0) || (Q_stricmp(cmd, "amweather") == 0) || (Q_stricmp(cmd, "setweather") == 0)){
@@ -3349,6 +3353,38 @@ else if (( Q_stricmp( cmd, "forceteam" ) == 0 ) || (Q_stricmp( cmd, "amforceteam
          G_Sound(&g_entities[client_id], CHAN_AUTO, G_SoundIndex("sound/effects/electric_beam_lp.wav"));
 				}
 	  }
+      else if (Q_stricmp(cmd, "amstatus") == 0) {
+        int i;
+        gentity_t* targetplayer;
+
+        if(ent->r.svFlags & SVF_ADMIN)
+        {
+            if(!(ent->client->pers.bitvalue & (1 << A_STATUS))) {
+                trap_SendServerCommand(ent-g_entities, va("print \"Status is not allowed at this administration rank.\n\""));
+                return;
+            }
+         
+        }
+        if(!(ent->r.svFlags & SVF_ADMIN)) {
+                trap_SendServerCommand(ent-g_entities, "print \"Must login with /adminlogin (password)\n\"");
+                return;
+        }
+        trap_SendServerCommand(ent-g_entities, va("print \"Listing users...\n\""));
+        trap_SendServerCommand(ent-g_entities, va("print \"^3----------------------------------------------------------\n\""));
+        trap_SendServerCommand(ent-g_entities, va("print \"^5clientNum   Name                                IP Address\n\""));
+        for(i = 0, targetplayer = g_entities; i<level.maxclients; i++, targetplayer++)
+        {
+            if(targetplayer->inuse && targetplayer->client->pers.connected != CON_DISCONNECTED) {
+                char strNum[12] = {}, strName[MAX_NETNAME] = {}, strIP[48] = {};
+                Com_sprintf(strNum, sizeof(strNum), "(%i)", i);
+                Q_strncpyz(strName, targetplayer->client->pers.netname, sizeof(strName));
+                Q_strncpyz(strIP, targetplayer->client->sess.myip, sizeof(strIP));
+                trap_SendServerCommand(ent-g_entities, va("print \"%-12s%-36s^7%-24s\n\"", strNum, strName, strIP));
+            }
+
+        }
+        trap_SendServerCommand(ent-g_entities, va("print \"^3----------------------------------------------------------\n\""));
+      }
 	  else if ((Q_stricmp(cmd, "protect") == 0) || (Q_stricmp(cmd, "amprotect") == 0))
 		{
 			gentity_t * targetplayer;
