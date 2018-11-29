@@ -2493,7 +2493,7 @@ void cmLogin(gentity_t *ent, char *pass) {
     }
 
     if (cm_database.integer == 1) { //only sqlite needs to check if stats table exists
-        int stat_id = sqliteSelectUserID("SELECT user_id FROM stats WHERE user_id = '%s'", userID);
+        int stat_id = sqliteSelectUserID("SELECT user_id FROM stats WHERE user_id = '%d'", userID);
         if (stat_id <= 0)
             sqliteRegisterUser("INSERT INTO stats (user_id) VALUES ('%s')", userID);
     }
@@ -5405,8 +5405,7 @@ void Cmd_EngageDuel_f(gentity_t *ent, int dueltype)
                 trap_SendServerCommand(client_id, va("print \"^3User %s ^3is now registered.\n\"", g_entities[client_id].client->pers.netname));
             }
             else if (cm_database.integer == 2)
-                parse_output(ent, va("mysqlRegisterUser curl --data \"key=%s&p=register&user=%s&pass=%s&ipaddress=%s\"
-                %s", cm_mysql_secret.string, clean_name, SHA1ThisPass(pass), g_entities[client_id].client->sess.myip, cm_mysql_url.string));
+                parse_output(ent, va("mysqlRegisterUser curl --data \"key=%s&p=register&user=%s&pass=%s&ipaddress=%s\" %s", cm_mysql_secret.string, clean_name, SHA1ThisPass(pass), g_entities[client_id].client->sess.myip, cm_mysql_url.string));
         }
         else if (Q_stricmp(cmd, "cmleaderboard") == 0 || Q_stricmp(cmd, "cmleaders") == 0) {
             cmLeaders(ent);
