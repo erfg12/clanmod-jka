@@ -538,21 +538,7 @@ char** str_split(char* a_str, const char a_delim)
     return result;
 }
 
-char *cleanName(char name[1024]) {
-    char newName[1024];
-    strcpy(newName, name);
-    strcpy(newName, replace_str(newName, "^0", ""));
-    strcpy(newName, replace_str(newName, "^1", ""));
-    strcpy(newName, replace_str(newName, "^2", ""));
-    strcpy(newName, replace_str(newName, "^3", ""));
-    strcpy(newName, replace_str(newName, "^4", ""));
-    strcpy(newName, replace_str(newName, "^5", ""));
-    strcpy(newName, replace_str(newName, "^6", ""));
-    strcpy(newName, replace_str(newName, "^7", ""));
-    strcpy(newName, replace_str(newName, "^8", ""));
-    strcpy(newName, replace_str(newName, "^9", ""));
-    return newName;
-}
+
 
 char *sqliteGetStats(char *SQLStmnt, ...) {
     sqlite3_stmt *stmt;
@@ -2391,6 +2377,7 @@ void hideMOTD(gentity_t *ent) {
 
 void cmStats(gentity_t *ent, const char *user) { //MYSQL NEEDS TESTING
     int client_id = ent->client->ps.clientNum;
+    char clean_name[MAX_NETNAME];
 
     if (cm_database.integer <= 0) {
         trap_SendServerCommand(client_id, va("print \"^1Database commands have been disabled on this server.\n\""));
@@ -2423,7 +2410,9 @@ void cmStats(gentity_t *ent, const char *user) { //MYSQL NEEDS TESTING
         int userID = sqliteSelectUserID("SELECT * FROM users WHERE user = '%s'", user);
 
         if (cm_database.integer == 1) {
-            userID = sqliteSelectUserID("SELECT * FROM users WHERE user = '%s'", cleanName(g_entities[client_id].client->pers.netname));
+            Q_strncpyz(clean_name, g_entities[client_id].client->pers.netname, sizeof(clean_name));
+            Q_CleanStr(clean_name);
+            userID = sqliteSelectUserID("SELECT * FROM users WHERE user = '%s'", clean_name);
             if (userID <= 0)
                 trap_SendServerCommand(client_id, va("print \"^1Player name %s not found in DB.\n\"", user));
             trap_SendServerCommand(client_id, va("print \"^3===^1PLAYER %s ^1STATUS^3===\n%s\n\"", user, sqliteGetStats("SELECT * FROM stats WHERE user_id = '%i'", userID)));
@@ -2472,6 +2461,7 @@ void cmJetpack(gentity_t *ent) {
 
 void cmLogin(gentity_t *ent, char *pass) {
     int client_id = -1;
+    char clean_name[MAX_NETNAME];
 
     client_id = ent->client->ps.clientNum;
 
@@ -2484,7 +2474,9 @@ void cmLogin(gentity_t *ent, char *pass) {
 
     //G_Printf("[DEBUG] USER:[%s] PASS:[%s] SHA:[%s]", cleanName(g_entities[client_id].client->pers.netname), pass, SHA1ThisPass(pass));
     char myname[1024];
-    Q_strncpyz(myname, cleanName(g_entities[client_id].client->pers.netname), sizeof(myname));
+    Q_strncpyz(clean_name, g_entities[client_id].client->pers.netname, sizeof(clean_name));
+    Q_CleanStr(clean_name);
+    Q_strncpyz(myname, clean_name, sizeof(myname));
 
     if (cm_database.integer == 1) {
         userID = sqliteSelectUserID("SELECT * FROM users WHERE user = '%s' AND pass = '%s'", myname, SHA1ThisPass(pass));
@@ -5384,6 +5376,7 @@ void Cmd_EngageDuel_f(gentity_t *ent, int dueltype)
         else if (Q_stricmp(cmd, "cmregister") == 0){
             int client_id = -1;
             char pass[MAX_STRING_CHARS];
+            char clean_name[MAX_NETNAME];
 
             trap_Argv(1, pass, sizeof(pass));
             client_id = ent->client->ps.clientNum;
@@ -5393,9 +5386,12 @@ void Cmd_EngageDuel_f(gentity_t *ent, int dueltype)
                 return;
             }
 
-            if (strcmp(cleanName(g_entities[client_id].client->pers.netname), "Padawan") == 0) {
-                trap_SendServerCommand(client_id, va("print \"Users are registered to their player names. Padawan is not allowed.\n\""));
-                return;
+            Q_strncpyz(clean_name, g_entities[client_id].client->pers.netname, sizeof(clean_name));
+            Q_CleanStr(clean_name);
+
+            if (strcmp(clean_name, "Padawan") == 0) {
+               trap_SendServerCommand(client_id, va("print \"Users are registered to their player names. Padawan is not allowed.\n\""));
+               return;
             }
 
             if ((trap_Argc() < 2) || (trap_Argc() > 2))
@@ -5405,11 +5401,12 @@ void Cmd_EngageDuel_f(gentity_t *ent, int dueltype)
             }
 
             if (cm_database.integer == 1) {
-                sqliteRegisterUser("INSERT INTO users (user, pass, ipaddress) VALUES ('%s', '%s', '%s')", cleanName(g_entities[client_id].client->pers.netname), SHA1ThisPass(pass), g_entities[client_id].client->sess.myip);
+                sqliteRegisterUser("INSERT INTO users (user, pass, ipaddress) VALUES ('%s', '%s', '%s')", clean_name, SHA1ThisPass(pass), g_entities[client_id].client->sess.myip);
                 trap_SendServerCommand(client_id, va("print \"^3User %s ^3is now registered.\n\"", g_entities[client_id].client->pers.netname));
             }
             else if (cm_database.integer == 2)
-                parse_output(ent, va("mysqlRegisterUser curl --data \"key=%s&p=register&user=%s&pass=%s&ipaddress=%s\" %s", cm_mysql_secret.string, cleanName(g_entities[client_id].client->pers.netname), SHA1ThisPass(pass), g_entities[client_id].client->sess.myip, cm_mysql_url.string));
+                parse_output(ent, va("mysqlRegisterUser curl --data \"key=%s&p=register&user=%s&pass=%s&ipaddress=%s\"
+                %s", cm_mysql_secret.string, clean_name, SHA1ThisPass(pass), g_entities[client_id].client->sess.myip, cm_mysql_url.string));
         }
         else if (Q_stricmp(cmd, "cmleaderboard") == 0 || Q_stricmp(cmd, "cmleaders") == 0) {
             cmLeaders(ent);
