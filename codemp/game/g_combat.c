@@ -2533,10 +2533,14 @@ extern void RunEmplacedWeapon( gentity_t *ent, usercmd_t **ucmd );
 
 	//increase kills/deaths (self = death+, attacker = kill+)
 	if (level.numPlayingClients >= 2) {
-		if (self && self->client && self->s.eType != ET_NPC && self->client->pers.userID > 0)
-			ent->client->pers.sql_deaths += 1;
-		if (attacker && attacker->client && attacker->s.eType != ET_NPC && attacker->client->pers.userID > 0)
-			ent->client->pers.sql_kills += 1;
+		    if (self && self->client && self->s.eType != ET_NPC && self->client->pers.userID > 0)
+            {
+                self->client->pers.sql_deaths += 1;
+            }
+		    if (attacker && attacker->client && attacker->s.eType != ET_NPC && attacker->client->pers.userID > 0)
+            {
+			    attacker->client->pers.sql_kills += 1;
+            }
 	}
 
 	if ( g_austrian.integer 
