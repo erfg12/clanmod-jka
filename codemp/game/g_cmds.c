@@ -454,6 +454,7 @@ char *SHA1ThisPass(char *myPass) {
 void updateStats(gentity_t *ent) {
     if (cm_database.integer <= 0)
         return;
+    
     if (cm_database.integer == 1)
         sqliteUpdateStats("UPDATE stats SET kills=kills+%i, deaths=deaths+%i, duel_wins=duel_wins+%i, duel_loses=duel_loses+%i, flag_captures=flag_captures+%i, ffa_wins=ffa_wins+%i, ffa_loses=ffa_loses+%i, tdm_wins=tdm_wins+%i, tdm_loses=tdm_loses+%i, siege_wins=siege_wins+%i, siege_loses=siege_loses+%i, ctf_wins=ctf_wins+%i, ctf_loses=ctf_loses+%i WHERE user_id = '%i'", ent->client->pers.sql_kills, ent->client->pers.sql_deaths, ent->client->pers.sql_duelwins, ent->client->pers.sql_duelloses, ent->client->pers.sql_flagcaps, ent->client->pers.sql_ffawins, ent->client->pers.sql_ffaloses, ent->client->pers.sql_tdmwins, ent->client->pers.sql_tdmloses, ent->client->pers.sql_siegewins, ent->client->pers.sql_siegeloses, ent->client->pers.sql_ctfwins, ent->client->pers.sql_ctfloses, atoi(ent->client->pers.userID));
     else if (cm_database.integer == 2)
@@ -2495,7 +2496,7 @@ void cmLogin(gentity_t *ent, char *pass) {
     if (cm_database.integer == 1) { //only sqlite needs to check if stats table exists
         int stat_id = sqliteSelectUserID("SELECT user_id FROM stats WHERE user_id = '%d'", userID);
         if (stat_id <= 0)
-            sqliteRegisterUser("INSERT INTO stats (user_id) VALUES ('%s')", userID);
+            sqliteRegisterUser("INSERT INTO stats (user_id) VALUES ('%d')", userID);
     }
 }
 
