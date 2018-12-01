@@ -5453,7 +5453,7 @@ void Cmd_EngageDuel_f(gentity_t *ent, int dueltype)
           }
           else if (Q_stricmp (cmd, "emotes") == 0)
           {
-              trap_SendServerCommand( ent-g_entities, "print \"^5===^7EMOTES^5===\n\n/dance, /dance2, /dance3, /taunt, /cower, /smack, /swirl\n/kneel, /kneel2, /point, /breakdance, /laydown, /myhead, /cheer\n/sit, /sit2, /slash, /intimidate, /punch, /surrender, /enraged\n/victory, /victory2, /victory3, /headnod, /headshake, /comeon, /kiss\n/hug, /meditate\n\n\"" );
+              trap_SendServerCommand( ent-g_entities, "print \"^5===^7EMOTES^5===\n\n/dance, /dance2, /dance3, /taunt, /cower, /smack, /swirl\n/kneel, /kneel2, /point, /breakdance, /laydown, /myhead, /cheer\n/sit, /sit2, /slash, /intimidate, /punch, /surrender, /enraged\n/victory, /victory2, /victory3, /headnod, /headshake, /comeon, /kiss\n/hug, /meditate, /amharlem, /amwait, /amhello, /amheal, /amhips\n\n\"" );
           }
           else if (Q_stricmp (cmd, "admincommands") == 0)
           {
