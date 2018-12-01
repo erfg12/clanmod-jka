@@ -3874,7 +3874,7 @@ void G_PerformAdminCMD(char *cmd, gentity_t *ent)
         if (Q_stricmp(arg1, "+all") || trap_Argc() != 2) {
             trap_SendServerCommand(ent-g_entities, va("print \"Listing users...\n\""));
             trap_SendServerCommand(ent-g_entities, va("print \"^3----------------------------------------------------------\n\""));
-            trap_SendServerCommand(ent-g_entities, va("print \"^5clientNum   Name                                IP Address\n\""));
+            trap_SendServerCommand(ent-g_entities, va("print \"^5clientNum   IP                                Name\n\""));
             for(i = 0, targetplayer = g_entities; i<level.maxclients; i++, targetplayer++)
             {
                 if(targetplayer->inuse && targetplayer->client->pers.connected != CON_DISCONNECTED) {
@@ -3882,7 +3882,7 @@ void G_PerformAdminCMD(char *cmd, gentity_t *ent)
                     Com_sprintf(strNum, sizeof(strNum), "(%i)", i);
                     Q_strncpyz(strName, targetplayer->client->pers.netname, sizeof(strName));
                     Q_strncpyz(strIP, targetplayer->client->sess.myip, sizeof(strIP));
-                    trap_SendServerCommand(ent-g_entities, va("print \"%-12s%-36s^7%-24s\n\"", strNum, strName, strIP));
+                    trap_SendServerCommand(ent-g_entities, va("print \"%-12s%-34s^7%-24s\n\"", strNum, strIP, strName));
                 }
 
             }
