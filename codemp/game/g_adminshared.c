@@ -306,7 +306,7 @@ void G_PerformAdminCMD(char *cmd, gentity_t *ent)
         }
         if ( trap_Argc() > 2 ) 
         { 
-            trap_SendServerCommand( ent-g_entities, "print \"Type in /help empower if you need help with this command.\n\"" ); 
+            trap_SendServerCommand( ent-g_entities, "print \"Type in /amhelp empower if you need help with this command.\n\"" ); 
             return; 
         }
         trap_Argv( 1,  arg1, sizeof( arg1 ) );
@@ -398,7 +398,7 @@ void G_PerformAdminCMD(char *cmd, gentity_t *ent)
         }
         if ( trap_Argc() != 3) 
         { 
-            trap_SendServerCommand( ent-g_entities, "print \"Type in /help rename if you need help with this command.\n\"" ); 
+            trap_SendServerCommand( ent-g_entities, "print \"Type in /amhelp rename if you need help with this command.\n\"" ); 
             return;
         }
         trap_Argv( 1, arg1, sizeof( arg1 ) );
@@ -449,7 +449,7 @@ void G_PerformAdminCMD(char *cmd, gentity_t *ent)
         }
         if ( trap_Argc() < 2 ) 
         { 
-            trap_SendServerCommand( ent-g_entities, "print \"Type in /help amkick if you need help with this command.\n\"" ); 
+            trap_SendServerCommand( ent-g_entities, "print \"Type in /amhelp amkick if you need help with this command.\n\"" ); 
             return; 
         }
         trap_Argv( 1,  arg1, sizeof( arg1 ) ); 
@@ -504,7 +504,7 @@ void G_PerformAdminCMD(char *cmd, gentity_t *ent)
         }
         if ( trap_Argc() < 2 ) 
         { 
-            trap_SendServerCommand( ent-g_entities, "print \"Type in /help amban if you need help with this command.\n\"" ); 
+            trap_SendServerCommand( ent-g_entities, "print \"Type in /amhelp amban if you need help with this command.\n\"" ); 
             return; 
         } 
         trap_Argv( 1,  arg1, sizeof(  arg1 ) );
@@ -562,7 +562,7 @@ void G_PerformAdminCMD(char *cmd, gentity_t *ent)
         }
         if ( trap_Argc() < 2 ) 
         { 
-            trap_SendServerCommand( ent-g_entities, "print \"Type in /help AdminKick if you need help with this command.\n\"" ); 
+            trap_SendServerCommand( ent-g_entities, "print \"Type in /amhelp AdminKick if you need help with this command.\n\"" ); 
             return; 
         } 
         trap_Argv( 1,  arg1, sizeof(  arg1 ) );
@@ -622,7 +622,7 @@ void G_PerformAdminCMD(char *cmd, gentity_t *ent)
         }
         if ( trap_Argc() < 2 ) 
         { 
-            trap_SendServerCommand( ent-g_entities, "print \"Type in /help AdminBan if you need help with this command.\n\"" ); 
+            trap_SendServerCommand( ent-g_entities, "print \"Type in /amhelp AdminBan if you need help with this command.\n\"" ); 
             return; 
         } 
         trap_Argv( 1,  arg1, sizeof(  arg1 ) );
@@ -683,7 +683,7 @@ void G_PerformAdminCMD(char *cmd, gentity_t *ent)
         }
         if ( trap_Argc() < 2 ) 
         { 
-            trap_SendServerCommand( ent-g_entities, "print \"Type in /help AdminBan if you need help with this command.\n\"" ); 
+            trap_SendServerCommand( ent-g_entities, "print \"Type in /amhelp AdminBan if you need help with this command.\n\"" ); 
             return; 
         } 
         trap_Argv( 1,  arg1, sizeof(  arg1 ) );
@@ -707,7 +707,7 @@ void G_PerformAdminCMD(char *cmd, gentity_t *ent)
         }
         if ( trap_Argc() < 2 ) 
         { 
-            trap_SendServerCommand( ent-g_entities, "print \"Type in /help amBan if you need help with this command.\n\"" ); 
+            trap_SendServerCommand( ent-g_entities, "print \"Type in /amhelp amBan if you need help with this command.\n\"" ); 
             return; 
         } 
         trap_Argv( 1,  arg1, sizeof(  arg1 ) );
@@ -731,7 +731,7 @@ void G_PerformAdminCMD(char *cmd, gentity_t *ent)
         }
         if ( trap_Argc() < 2 ) 
         { 
-            trap_SendServerCommand( ent-g_entities, "print \"Type in /help AdminBan if you need help with this command.\n\"" ); 
+            trap_SendServerCommand( ent-g_entities, "print \"Type in /amhelp AdminBan if you need help with this command.\n\"" ); 
             return; 
         } 
         trap_Argv( 1,  arg1, sizeof(  arg1 ) );
@@ -755,7 +755,7 @@ void G_PerformAdminCMD(char *cmd, gentity_t *ent)
         }
         if ( trap_Argc() < 2 ) 
         { 
-            trap_SendServerCommand( ent-g_entities, "print \"Type in /help amBan if you need help with this command.\n\"" ); 
+            trap_SendServerCommand( ent-g_entities, "print \"Type in /amhelp amBan if you need help with this command.\n\"" ); 
             return; 
         } 
         trap_Argv( 1,  arg1, sizeof(  arg1 ) );
@@ -837,7 +837,7 @@ void G_PerformAdminCMD(char *cmd, gentity_t *ent)
             TheScale = atoi(arg1);
         }
         if (trap_Argc() > 3 || trap_Argc() == 1){
-            trap_SendServerCommand( ent-g_entities, "print \"^3Type in ^5/help scale ^3if you need help with this command.\n\""); 
+            trap_SendServerCommand( ent-g_entities, "print \"^3Type in ^5/amhelp scale ^3if you need help with this command.\n\""); 
             return;
         }
         if (TargetNum == -1) 
@@ -1000,7 +1000,7 @@ void G_PerformAdminCMD(char *cmd, gentity_t *ent)
         }
         if ( trap_Argc() != 2 )
         { 
-            trap_SendServerCommand( ent-g_entities, "print \"^3Type in /help weather for more information about this command.\n\"" ); 
+            trap_SendServerCommand( ent-g_entities, "print \"^3Type in /amhelp weather for more information about this command.\n\"" ); 
             return; 
         }
 
@@ -1090,7 +1090,7 @@ void G_PerformAdminCMD(char *cmd, gentity_t *ent)
         }
         if ( trap_Argc() != 2 )
         { 
-            trap_SendServerCommand( ent-g_entities, "print \"Type in /help addeffect\n\"" ); 
+            trap_SendServerCommand( ent-g_entities, "print \"Type in /amhelp addeffect\n\"" ); 
             return; 
         }
         if ((ent->r.svFlags & SVF_ADMIN)){
@@ -1233,7 +1233,7 @@ void G_PerformAdminCMD(char *cmd, gentity_t *ent)
         }
         if ( trap_Argc() != 2 )
         { 
-            trap_SendServerCommand( ent-g_entities, "print \"Type in /help addeffect\n\"" ); 
+            trap_SendServerCommand( ent-g_entities, "print \"Type in /amhelp addeffect\n\"" ); 
             return; 
         }
         if ((ent->r.svFlags & SVF_ADMIN)){
@@ -1274,7 +1274,7 @@ void G_PerformAdminCMD(char *cmd, gentity_t *ent)
         }
         if ( trap_Argc() != 2 )
         { 
-            trap_SendServerCommand( ent-g_entities, "print \"Type in /help addmodel\n\"" ); 
+            trap_SendServerCommand( ent-g_entities, "print \"Type in /amhelp addmodel\n\"" ); 
             return; 
         }
         if ((ent->r.svFlags & SVF_ADMIN)){
@@ -1341,7 +1341,7 @@ void G_PerformAdminCMD(char *cmd, gentity_t *ent)
         }
         if ( trap_Argc() != 2 )
         { 
-            trap_SendServerCommand( ent-g_entities, "print \"Type in /help addeffect\n\"" ); 
+            trap_SendServerCommand( ent-g_entities, "print \"Type in /amhelp addeffect\n\"" ); 
             return; 
         }
         if ((ent->r.svFlags & SVF_ADMIN)){
@@ -1391,7 +1391,7 @@ void G_PerformAdminCMD(char *cmd, gentity_t *ent)
         }
         if ( trap_Argc() != 2 ) 
         { 
-            trap_SendServerCommand( ent-g_entities, "print \"Type in /help slay if you need help with this command.\n\"" ); 
+            trap_SendServerCommand( ent-g_entities, "print \"Type in /amhelp slay if you need help with this command.\n\"" ); 
             return; 
         }
         if (g_gametype.integer == GT_DUEL || g_gametype.integer == GT_POWERDUEL ||
@@ -1475,7 +1475,7 @@ void G_PerformAdminCMD(char *cmd, gentity_t *ent)
         }
         if ( trap_Argc() > 2 ) 
         { 
-            trap_SendServerCommand( ent-g_entities, "print \"Type in /help monk if you need help with this command.\n\"" ); 
+            trap_SendServerCommand( ent-g_entities, "print \"Type in /amhelp monk if you need help with this command.\n\"" ); 
             return; 
         }
         trap_Argv( 1, arg1, sizeof( arg1 ) );
@@ -1800,7 +1800,7 @@ void G_PerformAdminCMD(char *cmd, gentity_t *ent)
         }
         if ( trap_Argc() != 2 ) 
         { 
-            trap_SendServerCommand( ent-g_entities, "print \"Type in /help amvstr if you need help with this command.\n\"" ); 
+            trap_SendServerCommand( ent-g_entities, "print \"Type in /amhelp amvstr if you need help with this command.\n\"" ); 
             return; 
         }
         trap_Argv( 1,  arg1, sizeof( arg1 ) );
@@ -1828,7 +1828,7 @@ void G_PerformAdminCMD(char *cmd, gentity_t *ent)
         }
         if ( trap_Argc() != 2 ) 
         { 
-            trap_SendServerCommand( ent-g_entities, "print \"Type in /help freeze if you need help with this command.\n\"" ); 
+            trap_SendServerCommand( ent-g_entities, "print \"Type in /amhelp freeze if you need help with this command.\n\"" ); 
             return; 
         }
         trap_Argv( 1,  arg1, sizeof(  arg1 ) );
@@ -1958,7 +1958,7 @@ void G_PerformAdminCMD(char *cmd, gentity_t *ent)
             }
         }
         if (!(ent->r.svFlags & SVF_ADMIN)){
-            trap_SendServerCommand( ent-g_entities, "print \"Type in /help lockname if you need help with this command.\n\"" );
+            trap_SendServerCommand( ent-g_entities, "print \"Type in /amhelp lockname if you need help with this command.\n\"" );
             return;
         }
         if ( trap_Argc() != 2)
@@ -2038,7 +2038,7 @@ void G_PerformAdminCMD(char *cmd, gentity_t *ent)
         }
         if ( trap_Argc() != 3 ) 
         { 
-            trap_SendServerCommand( ent-g_entities, "print \"Type in /help forceteam if you need help with this command.\n\"" ); 
+            trap_SendServerCommand( ent-g_entities, "print \"Type in /amhelp forceteam if you need help with this command.\n\"" ); 
             return; 
         }
         else if ( g_gametype.integer >= GT_TEAM || g_gametype.integer == GT_FFA ) {	
@@ -2110,7 +2110,7 @@ void G_PerformAdminCMD(char *cmd, gentity_t *ent)
                 }
             }
             else {
-                trap_SendServerCommand( ent-g_entities, "print \"Type in /help forceteam if you need help with this command.\n\"" ); 
+                trap_SendServerCommand( ent-g_entities, "print \"Type in /amhelp forceteam if you need help with this command.\n\"" ); 
             }
 
             if (clientid == -1) 
@@ -2483,7 +2483,7 @@ void G_PerformAdminCMD(char *cmd, gentity_t *ent)
         }
         if ( trap_Argc() < 2 )
         {
-            trap_SendServerCommand( ent-g_entities, "print \"Type in /help silence if you need help with this command.\n\"" );
+            trap_SendServerCommand( ent-g_entities, "print \"Type in /amhelp silence if you need help with this command.\n\"" );
             return;
         }
         trap_Argv( 1, arg1, sizeof( arg1 ) );
@@ -2600,7 +2600,7 @@ void G_PerformAdminCMD(char *cmd, gentity_t *ent)
         }
         if ( trap_Argc() < 2 )
         {
-            trap_SendServerCommand( ent-g_entities, "print \"Type in /help insultsilence if you need help with this command.\n\"" );
+            trap_SendServerCommand( ent-g_entities, "print \"Type in /amhelp insultsilence if you need help with this command.\n\"" );
             return;
         }
         trap_Argv( 1, arg1, sizeof( arg1 ) );
@@ -2677,7 +2677,7 @@ void G_PerformAdminCMD(char *cmd, gentity_t *ent)
             return;
         }
         /*if ( trap_Argc() < 2 ) {
-          trap_SendServerCommand( ent-g_entities, va("print \"^3Type in ^5/help teleport ^3if you need help with this command.\n\"") );
+          trap_SendServerCommand( ent-g_entities, va("print \"^3Type in ^5/amhelp teleport ^3if you need help with this command.\n\"") );
           return;
           }*/
         if ( trap_Argc() == 1 ) {
@@ -2921,7 +2921,7 @@ void G_PerformAdminCMD(char *cmd, gentity_t *ent)
         }
         if ( trap_Argc() > 2 )
         { 
-            trap_SendServerCommand( ent-g_entities, "print \"Type in /help terminator if you need help with this command.\n\"" ); 
+            trap_SendServerCommand( ent-g_entities, "print \"Type in /amhelp terminator if you need help with this command.\n\"" ); 
             return; 
         }
         trap_Argv( 1,  arg1, sizeof(  arg1 ) ); 
@@ -3210,7 +3210,7 @@ void G_PerformAdminCMD(char *cmd, gentity_t *ent)
         }
         if ( trap_Argc() < 2 ) 
         { 
-            trap_SendServerCommand( ent-g_entities, "print \"Type in /help csprint if you need help with this command.\n\"" ); 
+            trap_SendServerCommand( ent-g_entities, "print \"Type in /amhelp csprint if you need help with this command.\n\"" ); 
             return; 
         }
         if(Q_stricmp(arg, "all") == 0)
@@ -3373,7 +3373,7 @@ void G_PerformAdminCMD(char *cmd, gentity_t *ent)
         }
         if ( trap_Argc() > 2 )
         {
-            trap_SendServerCommand( ent-g_entities, "print \"Type in /help protect if you need help with this command.\n\"" );
+            trap_SendServerCommand( ent-g_entities, "print \"Type in /amhelp protect if you need help with this command.\n\"" );
             return;
         }
         trap_Argv( 1, arg1, sizeof( arg1 ) );
@@ -3520,7 +3520,7 @@ void G_PerformAdminCMD(char *cmd, gentity_t *ent)
             return;
         }
         if ( trap_Argc() != 2 ){
-            trap_SendServerCommand( ent-g_entities, va("print \"Type in /help changemode if you need help with this command.\n\""));
+            trap_SendServerCommand( ent-g_entities, va("print \"Type in /amhelp changemode if you need help with this command.\n\""));
             return;
         }
         trap_Argv( 1, arg1, sizeof( arg1 ) );
@@ -3752,7 +3752,7 @@ void G_PerformAdminCMD(char *cmd, gentity_t *ent)
         }
         if ( trap_Argc() != 3 )
         {
-            trap_SendServerCommand( ent-g_entities, "print \"Type in /help changemap if you need help with this command.\n\"" );
+            trap_SendServerCommand( ent-g_entities, "print \"Type in /amhelp changemap if you need help with this command.\n\"" );
             return;
         }
         trap_Argv( 1, arg1, sizeof( arg1 ) );
@@ -3782,7 +3782,7 @@ void G_PerformAdminCMD(char *cmd, gentity_t *ent)
         }
         if ( trap_Argc() != 2 ) 
         { 
-            trap_SendServerCommand( ent-g_entities, "print \"Type in /help splat if you need help with this command.\n\"" ); 
+            trap_SendServerCommand( ent-g_entities, "print \"Type in /amhelp splat if you need help with this command.\n\"" ); 
             return; 
         } 
         trap_Argv( 1,  arg1, sizeof(  arg1 ) ); 
@@ -3868,7 +3868,7 @@ void G_PerformAdminCMD(char *cmd, gentity_t *ent)
         }
  //       if ( trap_Argc() != 2 ) 
  //       { 
- //          trap_SendServerCommand( ent-g_entities, "print \"Type in /help whoip if you need help with this command.\n\"" ); 
+ //          trap_SendServerCommand( ent-g_entities, "print \"Type in /amhelp whoip if you need help with this command.\n\"" ); 
  //         return; 
  //         } 
         if (Q_stricmp(arg1, "+all") || trap_Argc() != 2) {

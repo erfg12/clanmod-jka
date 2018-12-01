@@ -5349,7 +5349,7 @@ void Cmd_EngageDuel_f(gentity_t *ent, int dueltype)
                 trap_SendServerCommand( ent-g_entities, "print \"^5===^7AMVSTR COMMAND^5===\n\n^3DESCRIPTION: ^7This command executes the vstr.cfg file via server, and executes a variable within it.\n\n^5/amvstr ffa <--- executes the variable ffa, etc.\nYou can edit the vstr.cfg and add your own custom variables in the gamedata/clanmod folder (server only).\n\n\"" );
             }
             else {
-                trap_SendServerCommand( ent-g_entities, "print \"^5===^7HELP^5===\n\n^5/AdminCommands^7: see a list of admin commands\n^5/Commands^7: See a list of commands\n^5/Emotes^7: See a list of emotes\n^5/Sayings^7: list of sayings\n^5/AdminGuns^7: List of administration guns\n^5/saberdamages^7: Show server saber damages\n^5/weapondamages^7: Show server weapon damages\n^5/weaponvelocities^7: Show server weapon velocities\n^5/myadmincommands^7: Shows your admin commands available on your administration level\n^5/Manual^7: view in-game manual\n\n^3For more options type in /HELP (COMMAND)\n\n\"" );
+                trap_SendServerCommand( ent-g_entities, "print \"^5===^7HELP^5===\n\n^5/AdminCommands^7: see a list of admin commands\n^5/Commands^7: See a list of commands\n^5/Emotes^7: See a list of emotes\n^5/Sayings^7: list of sayings\n^5/AdminGuns^7: List of administration guns\n^5/saberdamages^7: Show server saber damages\n^5/weapondamages^7: Show server weapon damages\n^5/weaponvelocities^7: Show server weapon velocities\n^5/myadmincommands^7: Shows your admin commands available on your administration level\n^5/Manual^7: view in-game manual\n\n^3For more options type in /AMHELP (COMMAND)\n\n\"" );
             }
         }
         else if (Q_stricmp (cmd, "manual") == 0)
