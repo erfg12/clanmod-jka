@@ -3184,7 +3184,7 @@ void ClientThink_real( gentity_t *ent ) {
 			//RoAR mod BEGIN (SHOW HEALTH AT END OF DUEL)
 			if (roar_display_ending_duel_status.integer >= 1)
 			{
-				trap_SendServerCommand( -1, va("print \"%s ^7survived with ^5%d ^7health and ^5%d ^7shield\n\"",
+				trap_SendServerCommand( -1, va("print \"%s ^7won the duel! (^1%d^7/ ^2%d^7)\n\"",
 				ent->client->pers.netname, ent->client->ps.stats[STAT_HEALTH], ent->client->ps.stats[STAT_ARMOR] ) );
 			}
 
