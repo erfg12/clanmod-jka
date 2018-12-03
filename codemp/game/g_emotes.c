@@ -92,7 +92,7 @@ void cm_TheEmote(int requirement, int animation, gentity_t *ent, qboolean freeze
                 G_Sound(ent, CHAN_AUTO, ent->client->saber[1].soundOff);
         }
         ent->client->ps.forceHandExtend = HANDEXTEND_TAUNT;
-        ent->client->ps.forceHandExtendTime = level.time + INT32_MAX;
+        ent->client->ps.forceHandExtendTime = level.time + Q3_INFINITE;
         ent->client->ps.forceDodgeAnim = animation;
       // ent->client->ps.persistant[PERS_REGEN] = 1;
         ent->client->emote_freeze=1;
