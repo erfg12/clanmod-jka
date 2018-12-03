@@ -79,21 +79,24 @@ void cm_TheEmote(int requirement, int animation, gentity_t *ent, qboolean freeze
     }
     else
     {
-        ent->client->ps.saberCanThrow = qfalse;
-        ent->client->ps.forceRestricted = qtrue;
-        ent->client->ps.saberMove = LS_NONE;
-        ent->client->ps.saberBlocked = 0;
-        ent->client->ps.saberBlocking = 0;
-        ent->client->ps.saberHolstered = 2;
-        if (ent->client->saber[0].soundOff)
-            G_Sound(ent, CHAN_AUTO, ent->client->saber[0].soundOff);
-        if (ent->client->saber[1].model[0] && ent->client->saber[1].soundOff)
-            G_Sound(ent, CHAN_AUTO, ent->client->saber[1].soundOff);
+        if(ent->client->ps.weapon == WP_SABER && ent->client->ps.saberHolstered < 2) {
+            ent->client->ps.saberCanThrow = qfalse;
+            ent->client->ps.forceRestricted = qtrue;
+            ent->client->ps.saberMove = LS_NONE;
+            ent->client->ps.saberBlocked = 0;
+            ent->client->ps.saberBlocking = 0;
+            ent->client->ps.saberHolstered = 2;
+            if (ent->client->saber[0].soundOff)
+                G_Sound(ent, CHAN_AUTO, ent->client->saber[0].soundOff);
+            if (ent->client->saber[1].model[0] && ent->client->saber[1].soundOff)
+                G_Sound(ent, CHAN_AUTO, ent->client->saber[1].soundOff);
+        }
         ent->client->ps.forceHandExtend = HANDEXTEND_TAUNT;
         ent->client->ps.forceHandExtendTime = level.time + INT32_MAX;
         ent->client->ps.forceDodgeAnim = animation;
       // ent->client->ps.persistant[PERS_REGEN] = 1;
         ent->client->emote_freeze=1;
+        
     }
   } else {
     StandardSetBodyAnim(ent, animation, SETANIM_FLAG_OVERRIDE|SETANIM_FLAG_HOLD|SETANIM_FLAG_HOLDLESS);
