@@ -208,9 +208,9 @@ void G_PerformEmote(char *emote, gentity_t *ent)
 
     AngleVectors(ent->client->ps.viewangles, fPos, 0, 0);
 
-    fPos[0] = ent->client->ps.origin[0] + fPos[0]*40;
-    fPos[1] = ent->client->ps.origin[1] + fPos[1]*40;
-    fPos[2] = ent->client->ps.origin[2] + fPos[2]*40;
+    fPos[0] = ent->client->ps.origin[0] + fPos[0]*40.0f;
+    fPos[1] = ent->client->ps.origin[1] + fPos[1]*40.0f;
+    fPos[2] = ent->client->ps.origin[2] + fPos[2]*40.0f;
 
     trap_Trace(&tr, ent->client->ps.origin, 0, 0, fPos, ent->s.number, ent->clipmask);
 
@@ -252,22 +252,22 @@ void G_PerformEmote(char *emote, gentity_t *ent)
         if ( other->client->ps.saberHolstered < 2 ){
           other->client->ps.saberHolstered = 2;
         }
-
-        StandardSetBodyAnim(ent, BOTH_KISSER, SETANIM_FLAG_OVERRIDE|SETANIM_FLAG_HOLD|SETANIM_FLAG_HOLDLESS);
-        StandardSetBodyAnim(other, BOTH_KISSEE, SETANIM_FLAG_OVERRIDE|SETANIM_FLAG_HOLD|SETANIM_FLAG_HOLDLESS);
-        VectorSubtract( ent->client->ps.origin, other->client->ps.origin, entDir );
-        VectorCopy( other->client->ps.viewangles, otherAngles );
-        otherAngles[YAW] = vectoyaw( entDir );
-        SetClientViewAngle( other, otherAngles );
-
-        other->client->ps.saberMove = LS_NONE;
-        other->client->ps.saberBlocked = 0;
-        other->client->ps.saberBlocking = 0;
-
+        
         VectorSubtract( other->client->ps.origin, ent->client->ps.origin, otherDir );
         VectorCopy( ent->client->ps.viewangles, entAngles );
         entAngles[YAW] = vectoyaw( otherDir );
         SetClientViewAngle( ent, entAngles );
+        StandardSetBodyAnim(ent, BOTH_KISSER, SETANIM_FLAG_OVERRIDE|SETANIM_FLAG_HOLD|SETANIM_FLAG_HOLDLESS);
+          VectorSubtract( ent->client->ps.origin, other->client->ps.origin, entDir );
+          VectorCopy( other->client->ps.viewangles, otherAngles );
+          otherAngles[YAW] = vectoyaw( entDir );
+          SetClientViewAngle( other, otherAngles );
+          
+          other->client->ps.saberMove = LS_NONE;
+          other->client->ps.saberBlocked = 0;
+          other->client->ps.saberBlocking = 0;
+          StandardSetBodyAnim(other, BOTH_KISSEE, SETANIM_FLAG_OVERRIDE|SETANIM_FLAG_HOLD|SETANIM_FLAG_HOLDLESS);
+
       }
     }
   }
