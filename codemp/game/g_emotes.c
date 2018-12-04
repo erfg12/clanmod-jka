@@ -41,15 +41,21 @@ typedef enum
   E_KISS,
   E_HUG,
   E_HARLEM, // Do the harlem shake
-  E_WAIT,
-  E_HELLO,
-  E_HEAL,
-  E_HIPS,
+  E_WAIT
 } emote_type_t;
+
+typedef enum
+{
+    E_HELLO,
+    E_HEAL,
+    E_HIPS,
+    E_FLIP,
+    E_WON
+} emote2_type_t; // I don't like this, refactor eventually
 
 //This void is a mix of requirements to meet for the emote to work, and the custom emote animation itself.
 void cm_TheEmote(int requirement, int animation, gentity_t *ent, qboolean freeze){
-  if (!(roar_emoteControl.integer & (1 << requirement))){
+  if (!(roar_emoteControl.integer & (1 << requirement)) || !(roar_emoteControl2.integer & (1 << requirement))){
     trap_SendServerCommand( ent-g_entities, va("print \"This emote is not allowed on this server.\n\"") );
     return;
   }
@@ -201,6 +207,10 @@ void G_PerformEmote(char *emote, gentity_t *ent)
   else if(Q_stricmp(emote, "amhips") == 0) {
     cm_TheEmote(E_HIPS, BOTH_STAND5TOSTAND8, ent, qtrue);
   }
+  else if(Q_stricmp(emote, "amwon"))
+  {
+      cm_TheEmote(E_WON, TORSO_HANDSIGNAL1, ent, qfalse);
+  }
   //Someday we're going to have to make this look nicer...
   else if (Q_stricmp(emote, "kiss") == 0){
     trace_t tr;
@@ -337,6 +347,43 @@ void G_PerformEmote(char *emote, gentity_t *ent)
       }
     }
   }
+    else if (Q_stricmp(emote, "amflip"))
+    {
+        if(!ent->client || ent->client->ps.weapon != WP_SABER) //block non sabers
+            return;
+        
+        if(ent->client->ps.fd.saberAnimLevel == SS_STRONG || ent->client->ps.fd.saberAnimLevel == SS_MEDIUM || ent->client->ps.fd.saberAnimLevel == SS_FAST)
+        {
+            if(ent->client->ps.saberHolstered)
+            {
+                cm_TheEmote(E_FLIP, BOTH_STAND1TO2, ent, qfalse);
+            }
+            else
+            {
+                cm_TheEmote(E_FLIP, BOTH_STAND2TO1, ent, qfalse);
+            }
+        }
+        // check if duals
+        if(ent->client->ps.fd.saberAnimLevel == SS_DUAL)
+        {
+            if (ent->client->ps.saberHolstered)
+            {
+                cm_TheEmote(E_FLIP, BOTH_S1_S7, ent, qfalse);
+            }
+            else
+            {
+                cm_TheEmote(E_FLIP, BOTH_SHOWOFF_FAST, ent, qfalse);
+            }
+        }
+        // check if staff
+        if(ent->client->ps.fd.saberAnimLevel == SS_STAFF)
+        {
+            cm_TheEmote(E_FLIP, BOTH_SHOWOFF_FAST, ent, qfalse);
+        }
+        
+        Cmd_ToggleSaber_f(ent);
+        return;
+    }
   else
   {
     G_PerformAdminCMD(emote, ent);
