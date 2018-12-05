@@ -357,11 +357,11 @@ void G_PerformEmote(char *emote, gentity_t *ent)
             if(ent->client->ps.saberHolstered)
             {
                 cm_TheEmote(E_FLIP, BOTH_STAND1TO2, ent, qfalse);
-                ent->client->ps.saberHolstered = 2;
             }
             else
             {
                 cm_TheEmote(E_FLIP, BOTH_STAND2TO1, ent, qfalse);
+                Cmd_ToggleSaber_f(ent);
             }
         }
         // check if duals
@@ -373,11 +373,12 @@ void G_PerformEmote(char *emote, gentity_t *ent)
             }
             else
             {
-                ent->client->ps.saberHolstered = 2;
                 cm_TheEmote(E_FLIP, BOTH_SHOWOFF_FAST, ent, qfalse);
+                Cmd_ToggleSaber_f(ent);
             }
         }
         // check if staff
+        // TODO: turnoff
         if(ent->client->ps.fd.saberAnimLevel == SS_STAFF)
         {
             cm_TheEmote(E_FLIP, BOTH_SHOWOFF_FAST, ent, qfalse);
