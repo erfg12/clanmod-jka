@@ -2742,7 +2742,7 @@ void G_PerformAdminCMD(char *cmd, gentity_t *ent)
             // set location out in front of your view
             forward[2] = 0; //no elevation change
             VectorNormalize(forward);
-            VectorMA(g_entities[client_id].client->ps.origin, 100, forward, location);
+            VectorMA(g_entities[client_id].client->ps.origin, 50, forward, location);
             location[2] += 5; //add just a bit of height???
             //Teleport you to them
             TeleportPlayer(ent, location, g_entities[client_id].client->ps.viewangles);
@@ -2827,7 +2827,7 @@ void G_PerformAdminCMD(char *cmd, gentity_t *ent)
             // set location out in front of your view
             forward[2] = 0; //no elevation change
             VectorNormalize(forward);
-            VectorMA(g_entities[client_id2].client->ps.origin, 100, forward, location);
+            VectorMA(g_entities[client_id2].client->ps.origin, 50, forward, location);
             location[2] += 5; //add just a bit of height???
             //Teleport you to them
             TeleportPlayer(&g_entities[client_id], location, g_entities[client_id2].client->ps.viewangles);
