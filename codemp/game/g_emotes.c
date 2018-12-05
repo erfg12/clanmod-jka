@@ -207,7 +207,7 @@ void G_PerformEmote(char *emote, gentity_t *ent)
   else if(Q_stricmp(emote, "amhips") == 0) {
     cm_TheEmote(E_HIPS, BOTH_STAND5TOSTAND8, ent, qtrue);
   }
-  else if(Q_stricmp(emote, "amwon"))
+  else if(Q_stricmp(emote, "amwon") == 0)
   {
       cm_TheEmote(E_WON, TORSO_HANDSIGNAL1, ent, qfalse);
   }
@@ -347,7 +347,7 @@ void G_PerformEmote(char *emote, gentity_t *ent)
       }
     }
   }
-    else if (Q_stricmp(emote, "amflip"))
+    else if (Q_stricmp(emote, "amflip") == 0)
     {
         if(!ent->client || ent->client->ps.weapon != WP_SABER) //block non sabers
             return;
@@ -357,6 +357,7 @@ void G_PerformEmote(char *emote, gentity_t *ent)
             if(ent->client->ps.saberHolstered)
             {
                 cm_TheEmote(E_FLIP, BOTH_STAND1TO2, ent, qfalse);
+                ent->client->ps.saberHolstered = 2;
             }
             else
             {
@@ -372,6 +373,7 @@ void G_PerformEmote(char *emote, gentity_t *ent)
             }
             else
             {
+                ent->client->ps.saberHolstered = 2;
                 cm_TheEmote(E_FLIP, BOTH_SHOWOFF_FAST, ent, qfalse);
             }
         }
