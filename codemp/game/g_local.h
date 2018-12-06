@@ -1917,6 +1917,7 @@ extern	vmCvar_t	g_powerDuelEndHealth;
 extern vmCvar_t		g_showDuelHealths;
 
 extern  vmCvar_t	roar_emoteControl;
+extern  vmCvar_t    roar_emoteControl2;
 
 //RoAR mod BEGIN
 extern	vmCvar_t	mod_pushall;

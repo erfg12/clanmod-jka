@@ -236,6 +236,7 @@ vmCvar_t	g_powerDuelEndHealth;
 vmCvar_t		g_showDuelHealths;
 
 vmCvar_t		roar_emoteControl;
+vmCvar_t        roar_emoteControl2;
 
 vmCvar_t		d_slowmodeath;
 vmCvar_t		cm_automessenger;
@@ -961,6 +962,7 @@ static cvarTable_t		gameCvarTable[] = {
 { &m_v6, "m_v6", "", CVAR_ARCHIVE, 0 , qfalse },
 { &m_rV, "cm_restrictvote", "0", CVAR_INTERNAL, 0, qfalse }, ////lmo restrict votes
 { &roar_emoteControl, "cm_emoteControl", "0", CVAR_INTERNAL, 0 , qtrue },
+{ &roar_emoteControl2, "cm_emoteControl2", "0", CVAR_INTERNAL, 0, qtrue },
 { &g_clanPassword,         "cm_clanPassword",         "clanpass", CVAR_INTERNAL, 0, qfalse },
 { &g_NPCmaxFollowers, "mod_NPCmaxFollowers", "8", CVAR_ARCHIVE, 0, qtrue },
 
