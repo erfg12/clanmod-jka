@@ -50,7 +50,11 @@ typedef enum
     E_HEAL,
     E_HIPS,
     E_FLIP,
-    E_WON
+    E_WON,
+    E_BEG,
+    E_AMDIE,
+    E_AMDIE2
+    
 } emote2_type_t; // I don't like this, refactor eventually
 
 //This void is a mix of requirements to meet for the emote to work, and the custom emote animation itself.
@@ -77,6 +81,9 @@ void cm_TheEmote(int requirement, int animation, gentity_t *ent, qboolean freeze
   }
   if (freeze == qtrue){
       VectorClear(ent->client->ps.velocity);
+      //if (ent->client->ps.legsAnim == animation)
+       //   ent->client->emote_freeze=qfalse;
+      
     if (ent->client->ps.forceDodgeAnim == animation){
       ent->client->emote_freeze=0;
       ent->client->ps.saberCanThrow = qtrue;
@@ -210,6 +217,15 @@ void G_PerformEmote(char *emote, gentity_t *ent)
   else if(Q_stricmp(emote, "amwon") == 0)
   {
       cm_TheEmote(E_WON, TORSO_HANDSIGNAL1, ent, qfalse);
+  }
+  else if(Q_stricmp(emote, "ambeg") == 0) {
+      cm_TheEmote(E_BEG, BOTH_KNEES2, ent, qtrue);
+  }
+  else if (Q_stricmp(emote, "amdie") == 0) {
+      cm_TheEmote(E_AMDIE, BOTH_HIT1, ent, qtrue);
+  }
+  else if(Q_stricmp(emote, "amdie2") == 0) {
+      cm_TheEmote(E_AMDIE2, BOTH_DEATH15, ent, qtrue);
   }
   //Someday we're going to have to make this look nicer...
   else if (Q_stricmp(emote, "kiss") == 0){
