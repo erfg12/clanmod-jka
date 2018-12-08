@@ -567,6 +567,7 @@ typedef struct {
 	qboolean	iamclan;
 	qboolean	ampunish;
 	qboolean	amsleep;
+	qboolean	amghost;
 	//TEAM CHAT
 	qboolean	teamchat;
 	qboolean	clanchat;

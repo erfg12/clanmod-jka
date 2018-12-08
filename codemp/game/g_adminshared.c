@@ -92,7 +92,7 @@ typedef enum
     A_MODEL,
     A_WHOIP,
     A_AMVSTR,
-    A_STATUS
+    A_GHOST,
 } admin_type_t;
 //RoAR mod END
 
@@ -806,6 +806,76 @@ void G_PerformAdminCMD(char *cmd, gentity_t *ent)
     g_entities[client_id].client->pers.possessee = qtrue;
     }
     }*/
+	else if (Q_stricmp(cmd, "amghost") == 0) {
+	if (g_gametype.integer == GT_TEAM || g_gametype.integer == GT_SIEGE)
+	{
+		trap_SendServerCommand(ent - g_entities, "print \"Ghost is not allowed in this gametype.\n\"");
+		return;
+	}
+	if (ent->r.svFlags & SVF_ADMIN)
+	{
+		if (!(ent->client->pers.bitvalue & (1 << A_GHOST)))
+		{
+			trap_SendServerCommand(ent - g_entities, va("print \"Ghost is not allowed at this administration rank.\n\""));
+			return;
+		}
+	}
+
+	if (!(ent->r.svFlags & SVF_ADMIN)) {
+		trap_SendServerCommand(ent - g_entities, "print \"Must login with /adminlogin (password)\n\"");
+		return;
+	}
+
+	if (trap_Argc() != 2)
+	{
+		trap_SendServerCommand(ent - g_entities, "print \"Type in /amhelp AdminBan if you need help with this command.\n\"");
+		return;
+	}
+
+	int i;
+	int client_id = -1;
+	char arg1[MAX_STRING_CHARS];
+
+	trap_Argv(1, arg1, sizeof(arg1));
+
+	client_id = G_ClientNumberFromArg(arg1);
+
+	if (client_id == -1)
+	{
+		trap_SendServerCommand(ent - g_entities, va("print \"Can't find client ID for %s\n\"", arg1));
+		return;
+	}
+	if (client_id == -2)
+	{
+		trap_SendServerCommand(ent - g_entities, va("print \"Ambiguous client ID for %s\n\"", arg1));
+		return;
+	}
+	if (client_id >= MAX_CLIENTS || client_id < 0)
+	{
+		if (!g_entities[client_id].inuse)
+		{
+			trap_SendServerCommand(ent - g_entities, va("print \"Client %s is not active\n\"", arg1));
+			return;
+		}
+	}
+	// No centerprint needed here, at least for now. 
+	if (g_entities[client_id].client->pers.amghost)
+	{
+		G_LogPrintf("Amghost admin command executed by %s on %s. (removing)\n", ent->client->pers.netname, g_entities[client_id].client->pers.netname);
+		ent->client->pers.amghost = qfalse;
+		ent->r.contents = CONTENTS_SOLID;
+		ent->clipmask = CONTENTS_SOLID | CONTENTS_BODY;
+		ent->client->ps.fd.forcePowersKnown &= ~(1 << NUM_FORCE_POWERS);
+	}
+	else
+	{
+		G_LogPrintf("Sleep admin command executed by %s on %s. (applying)\n", ent->client->pers.netname, g_entities[client_id].client->pers.netname);
+		ent->client->pers.amghost = qtrue;
+		ent->r.contents = CONTENTS_BODY;
+		ent->clipmask = CONTENTS_SOLID;
+		ent->client->ps.fd.forcePowersKnown |= ~(1 << NUM_FORCE_POWERS);
+	}
+	}
     else if ((Q_stricmp(cmd, "scale") == 0) || (Q_stricmp(cmd, "amscale") == 0)) {
         int TargetNum = -1;
         int TheScale = 0;
@@ -969,13 +1039,13 @@ void G_PerformAdminCMD(char *cmd, gentity_t *ent)
             trap_SendServerCommand( ent-g_entities, va("print \"AddModel, ClearModels, AddModelTemp\n\"") ); }
         //WHOIP CHECK
         if ((ent->r.svFlags & SVF_ADMIN) && (ent->client->pers.bitvalue & (1 << A_WHOIP))) {
-            trap_SendServerCommand( ent-g_entities, va("print \"WhoIP\n\"") ); }
+            trap_SendServerCommand( ent-g_entities, va("print \"AmStatus\n\"") ); }
         //AMVSTR CHECK
         if ((ent->r.svFlags & SVF_ADMIN) && (ent->client->pers.bitvalue & (1 << A_AMVSTR))) {
             trap_SendServerCommand( ent-g_entities, va("print \"AmVSTR\n\"") ); }
         //AMSTATUS CHECK
-        if ((ent->r.svFlags & SVF_ADMIN) && (ent->client->pers.bitvalue & (1 << A_STATUS))) {
-            trap_SendServerCommand( ent-g_entities, va("print \"AmStatus\n\"") ); }
+        if ((ent->r.svFlags & SVF_ADMIN) && (ent->client->pers.bitvalue & (1 << A_GHOST))) {
+            trap_SendServerCommand( ent-g_entities, va("print \"AmGhost\n\"") ); }
     }
     //END
     else if ((Q_stricmp(cmd, "weather") == 0) || (Q_stricmp(cmd, "amweather") == 0) || (Q_stricmp(cmd, "setweather") == 0)){
