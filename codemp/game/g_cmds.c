@@ -2684,7 +2684,7 @@ void G_Say( gentity_t *ent, gentity_t *target, int mode, const char *chatText ) 
         case SAY_CLAN:
             if (ent->client->pers.iamclan == 1){
                 G_LogPrintf( "sayteam: <clan>[%s]: %s\n", ent->client->pers.netname, chatText );
-                Com_sprintf (name, sizeof(name), EC"^1<clan>^7%s: ", 
+                Com_sprintf (name, sizeof(name), EC"^1<Clan>^7%s: ", 
                         ent->client->pers.netname );
             }
             else {
