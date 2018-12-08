@@ -905,7 +905,7 @@ static cvarTable_t		gameCvarTable[] = {
 
 { &g_saberRealisticCombat, "g_saberRealisticCombat", "0", CVAR_CHEAT, 0, qtrue },
 { &g_saberRestrictForce, "g_saberRestrictForce", "0", CVAR_CHEAT },
-{ &d_saberSPStyleDamage, "d_saberSPStyleDamage", "0", CVAR_CHEAT },
+{ &d_saberSPStyleDamage, "d_saberSPStyleDamage", "1", CVAR_ARCHIVE, 0, qtrue },
 
 { &debugNoRoam, "d_noroam", "0", CVAR_CHEAT },
 { &debugNPCAimingBeam, "d_npcaiming", "0", CVAR_CHEAT },

@@ -3992,7 +3992,7 @@ void G_PerformAdminCMD(char *cmd, gentity_t *ent)
                     //NOTE: End of the road for the bot. Mark it off with \n
                 }
                 if (g_entities[i].client->pers.plugindetect && !(g_entities[i].r.svFlags & SVF_BOT)){
-                    trap_SendServerCommand(ent-g_entities, va("print \" ^2(^3plugin^2)\""));
+                    trap_SendServerCommand(ent-g_entities, va("print \" ^3(^5plugin^3)\""));
                     trap_SendServerCommand(ent-g_entities, va("print \"\n\""));
                 }
             }
