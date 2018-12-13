@@ -2508,6 +2508,7 @@ void ClientThink_real( gentity_t *ent ) {
 					client->ps.forceRestricted = qtrue;
 					if (ent->client->ps.saberHolstered < 2){
 						ent->client->ps.saberHolstered = 2;
+                        ent->client->ps.weaponTime = 400;
 					}
 				}
 			}

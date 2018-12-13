@@ -5735,7 +5735,7 @@ void ClientDisconnect( int clientNum ) {
    ent->client->pers.amempower = qfalse;
    ent->client->pers.tzone = qfalse;
    ent->client->pers.amdemigod = qfalse;
-   ent->client->pers.amfreeze = qfalse; 
+   ent->client->pers.amfreeze = qfalse;
    ent->client->pers.amtelemarkset = qfalse;
    ent->client->pers.plugindetect = qfalse;
    ent->client->pers.refuseduels = 0;
