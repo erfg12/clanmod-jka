@@ -237,16 +237,20 @@ char *parse_output(gentity_t *ent, char *cmd) {
 
 #ifdef _WIN32
     DWORD   threadID;
-    printf("ent: %i cmd: %s", ent-g_entities, cmd);
+    G_Printf("ent: %i cmd: %s\n", ent-g_entities, cmd);
     args argys = { ent, cmd };
-    HANDLE thread = CreateThread(NULL, 0, ThreadFunc, &argys, 0, &threadID);
+    HANDLE thread = 0;
+    thread = CreateThread(NULL, 0, ThreadFunc, &argys, 0, &threadID);
     //WaitForSingleObject(thread, INFINITE);
-    CloseHandle(thread); //detach
     if (thread == NULL) {
         G_Printf("ERROR: Thread Handle is null!");
     }
     if (threadID == NULL) {
         G_Printf("ERROR: Thread ID is null!");
+    }
+    if (thread) {
+        WaitForSingleObject(thread, INFINITE);
+        CloseHandle(thread); //detach
     }
 #endif
 
@@ -2622,6 +2626,9 @@ void G_Say( gentity_t *ent, gentity_t *target, int mode, const char *chatText ) 
         default:
         case SAY_ALL:
             G_LogPrintf( "say: %s: %s\n", ent->client->pers.netname, chatText );
+
+            if (!(ent->r.svFlags & SVF_BOT))
+                WebHook(ent, va("%s: %s", ent->client->pers.netname, chatText));
 
             Com_sprintf (name, sizeof(name), "%s%c%c"EC": ", ent->client->pers.netname, Q_COLOR_ESCAPE, COLOR_WHITE );
             if (roar_allow_chatColors.integer == 1){

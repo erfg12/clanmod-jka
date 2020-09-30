@@ -2105,6 +2105,8 @@ extern vmCvar_t		cm_adminPassword4;
 extern vmCvar_t		cm_adminPassword5;
 extern vmCvar_t		cm_clanPassword;
 
+extern vmCvar_t		cm_webhook;
+
 extern	vmCvar_t	sv_maxConnections;
 
 extern vmCvar_t		cm_adminlogin1_saying;

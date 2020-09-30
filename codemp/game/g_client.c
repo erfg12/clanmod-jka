@@ -2891,6 +2891,18 @@ void Update_Server_Votes (int clientnum)
 		trap_SendServerCommand( clientnum, va("rv %s", buf));
 }
 
+/// <summary>
+/// Posts a message in JSON format to the webhook server.
+/// </summary>
+/// <param name="ent">Used for parse_output function</param>
+/// <param name="msg">Message to send through webhook</param>
+void WebHook(gentity_t* ent, const char *msg) {
+	if (strcmp(cm_webhook.string, "") == 0)
+		return;
+	// Discord
+	parse_output(ent, va("curl -X POST -H \"Content-Type: application/json\" -d \"{\\\"username\\\": \\\"ClanMod\\\", \\\"avatar\\\": \\\"https://i.imgur.com/HKFyOg0.png\\\", \\\"content\\\":\\\"%s\\\"}\" \"%s\"", msg, cm_webhook.string));
+}
+
 /*
 ===========
 ClientConnect
@@ -2982,14 +2994,14 @@ char *ClientConnect( int clientNum, qboolean firstTime, qboolean isBot ) {
 
 	//RoAR mod NOTE: TEST
 	if ( firstTime || level.newSession ){
-	if ( Q_stricmp(tmpIP, "" ) || tmpIP[0] != 0 ) {
-		i=0;
-		while(++i<strlen(tmpIP))if(tmpIP[i]==':')tmpIP[i]=0;
-		Q_strncpyz(client->sess.myip, tmpIP, sizeof(client->sess.myip));
-	}
-	if ( G_FilterAdminPacket( tmpIP ) ) {
-		client->sess.adminbanned = 1;
-	}
+		if ( Q_stricmp(tmpIP, "" ) || tmpIP[0] != 0 ) {
+			i=0;
+			while(++i<strlen(tmpIP))if(tmpIP[i]==':')tmpIP[i]=0;
+			Q_strncpyz(client->sess.myip, tmpIP, sizeof(client->sess.myip));
+		}
+		if ( G_FilterAdminPacket( tmpIP ) ) {
+			client->sess.adminbanned = 1;
+		}
 	}
 
 	client->pers.offensive_numbers = 0;
@@ -3042,6 +3054,7 @@ char *ClientConnect( int clientNum, qboolean firstTime, qboolean isBot ) {
 		value2 = Info_ValueForKey (userinfo, "name");
 		if( !isBot ){
 			G_LogPrintf( "ClientConnect: %i '%s' -> '%s'\n", clientNum, value2, client->sess.myip );
+			WebHook(ent, va("Player %s joined the server!", client->pers.netname));
 		}
 	}
 

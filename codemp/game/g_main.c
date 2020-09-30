@@ -422,6 +422,8 @@ vmCvar_t		cm_adminPassword4;
 vmCvar_t		cm_adminPassword5;
 vmCvar_t		cm_clanPassword;
 
+vmCvar_t		cm_webhook;
+
 vmCvar_t		sv_maxConnections;
 
 vmCvar_t		cm_adminlogin1_saying;
@@ -641,6 +643,7 @@ static cvarTable_t		gameCvarTable[] = {
 	{ &cm_adminPassword4,	"cm_adminPassword4",		"",	CVAR_INTERNAL,					0, qfalse },
 	{ &cm_adminPassword5,	"cm_adminPassword5",		"",	CVAR_INTERNAL,					0, qfalse },
 	{ &cm_clanPassword,		"cm_clanPassword",			"",	CVAR_INTERNAL,					0, qfalse },
+	{ &cm_webhook,			"cm_webhook",				"",	CVAR_INTERNAL,					0, qfalse },
 	{ &cm_adminlogin1_saying,	"cm_adminlogin1_saying",		"has logged in as admin level 1!",	CVAR_ARCHIVE,					0, qfalse },
 	{ &cm_adminlogin2_saying,	"cm_adminlogin2_saying",		"has logged in as admin level 2!",	CVAR_ARCHIVE,					0, qfalse },
 	{ &cm_adminlogin3_saying,	"cm_adminlogin3_saying",		"has logged in as admin level 3!",	CVAR_ARCHIVE,					0, qfalse },
