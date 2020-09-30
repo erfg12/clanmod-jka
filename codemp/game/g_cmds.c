@@ -4590,6 +4590,7 @@ void Cmd_EngageDuel_f(gentity_t *ent, int dueltype)
                     challenged->client->ps.stats[STAT_HEALTH] = challenged->health = challenged->client->ps.stats[STAT_MAX_HEALTH];
                     challenged->client->ps.stats[STAT_ARMOR] = cm_duelshield.integer;
                     trap_SendServerCommand( -1, va("print \"%s ^7has become engaged in a ^1saber^7 duel with %s!\n\"", challenged->client->pers.netname, ent->client->pers.netname) );
+                    WebHook(ent, va("%s has become engaged in a saber duel with %s!", challenged->client->pers.netname, ent->client->pers.netname));
                     //if (g_gametype.integer != GT_RPG){ //RoAR mod NOTE: I don't think so.
                     ent->client->ps.weapon = WP_SABER;
                     challenged->client->ps.weapon = WP_SABER;
@@ -4613,6 +4614,7 @@ void Cmd_EngageDuel_f(gentity_t *ent, int dueltype)
                     ent->client->ps.stats[STAT_WEAPONS] |= (1 << WP_SABER);
                     challenged->client->ps.stats[STAT_WEAPONS] |= (1 << WP_SABER);
                     trap_SendServerCommand( -1, va("print \"%s ^7has become engaged in a ^5fullforce^7 duel with %s!\n\"", challenged->client->pers.netname, ent->client->pers.netname) );
+                    WebHook(ent, va("%s has become engaged in a fullforce duel with %s!", challenged->client->pers.netname, ent->client->pers.netname));
                     ent->client->ps.stats[STAT_WEAPONS] &= ~(1 << WP_MELEE);
                     challenged->client->ps.stats[STAT_WEAPONS] &= ~(1 << WP_MELEE);
                     break;
@@ -4651,6 +4653,7 @@ void Cmd_EngageDuel_f(gentity_t *ent, int dueltype)
                     ent->client->ps.stats[STAT_WEAPONS] |= (1 << WP_MELEE);
                     challenged->client->ps.stats[STAT_WEAPONS] |= (1 << WP_MELEE);
                     trap_SendServerCommand( -1, va("print \"%s ^7has become engaged in a ^3melee^7 duel with %s!\n\"", challenged->client->pers.netname, ent->client->pers.netname) );
+                    WebHook(ent, va("%s has become engaged in a melee duel with %s!", challenged->client->pers.netname, ent->client->pers.netname));
                     ent->client->ps.stats[STAT_WEAPONS] &= ~(1 << WP_SABER);
                     challenged->client->ps.stats[STAT_WEAPONS] &= ~(1 << WP_SABER);
                     break;

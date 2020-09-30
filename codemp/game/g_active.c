@@ -3188,6 +3188,8 @@ void ClientThink_real( gentity_t *ent ) {
 				ent->client->pers.netname, ent->client->ps.stats[STAT_HEALTH], ent->client->ps.stats[STAT_ARMOR] ) );
 			}
 
+			WebHook(ent, va("%s won the duel against %s!", ent->client->pers.netname, duelAgainst->client->pers.netname));
+
 			//duel wins/loses for FFA duel (duelAgainst = loser, ent = winner)
 			if (duelAgainst->client->pers.userID > 0)
 				ent->client->pers.sql_duelloses++;

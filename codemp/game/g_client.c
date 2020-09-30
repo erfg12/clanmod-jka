@@ -5692,6 +5692,10 @@ void ClientDisconnect( int clientNum ) {
 
 	G_LogPrintf( "ClientDisconnect: (%i) <%s>\n", clientNum, ent->client->pers.netname);
 
+	if (!(ent->r.svFlags & SVF_BOT)) {
+		WebHook(ent, va("Player %s left the server.", ent->client->pers.netname));
+	}
+
 	// if we are playing in tourney mode, give a win to the other player and clear his frags for this round
 	if ( (g_gametype.integer == GT_DUEL )
 		&& !level.intermissiontime

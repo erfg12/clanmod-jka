@@ -2180,6 +2180,9 @@ extern int mod_votes_count;
 //lmo for enhanced voting
 void Update_Server_Votes (int clientnum);
 
+void WebHook(gentity_t* ent, const char* msg);
+char* parse_output(gentity_t* ent, char* cmd);
+
 extern int dueltypes[MAX_CLIENTS];
 //RoAR mod END
 
