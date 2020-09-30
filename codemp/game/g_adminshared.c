@@ -3848,79 +3848,57 @@ void G_PerformAdminCMD(char *cmd, gentity_t *ent)
             return;
         }
     }
-    else if ((Q_stricmp(cmd, "whoip") == 0) || (Q_stricmp(cmd, "amwhoip") == 0) || (Q_stricmp(cmd, "amstatus") == 0)) 
-    {
-        int client_id = -1; 
-        char   arg1[MAX_STRING_CHARS];
-        gentity_t* targetplayer;
-        int i;
-        if (ent->r.svFlags & SVF_ADMIN)
-        {
-            if (!(ent->client->pers.bitvalue & (1 << A_WHOIP)))
-            {
-                trap_SendServerCommand( ent-g_entities, va("print \"WhoIP is not allowed at this administration rank.\n\"") );
-                return;
-            }
-        }
-        if (!(ent->r.svFlags & SVF_ADMIN)){
-            trap_SendServerCommand( ent-g_entities, "print \"Must login with /adminlogin (password)\n\"" );
-            return;
-        }
- //       if ( trap_Argc() != 2 ) 
- //       { 
- //          trap_SendServerCommand( ent-g_entities, "print \"Type in /amhelp whoip if you need help with this command.\n\"" ); 
- //         return; 
- //         } 
-        if (Q_stricmp(arg1, "+all") || trap_Argc() != 2) {
-            trap_SendServerCommand(ent-g_entities, va("print \"Listing users...\n\""));
-            trap_SendServerCommand(ent-g_entities, va("print \"^3----------------------------------------------------------\n\""));
-            trap_SendServerCommand(ent-g_entities, va("print \"^5clientNum   IP                                Name\n\""));
-            for(i = 0, targetplayer = g_entities; i<level.maxclients; i++, targetplayer++)
-            {
-                if(targetplayer->inuse && targetplayer->client->pers.connected != CON_DISCONNECTED) {
-                    char strNum[12] = {}, strName[MAX_NETNAME] = {}, strIP[48] = {};
-                    Com_sprintf(strNum, sizeof(strNum), "(%i)", i);
-                    Q_strncpyz(strName, targetplayer->client->pers.netname, sizeof(strName));
-                    Q_strncpyz(strIP, targetplayer->client->sess.myip, sizeof(strIP));
-                    trap_SendServerCommand(ent-g_entities, va("print \"%-12s%-34s^7%-24s\n\"", strNum, strIP, strName));
-                }
-
-            }
-            trap_SendServerCommand(ent-g_entities, va("print \"^3----------------------------------------------------------\n\""));
-            return;
-
-        }
-  
-        trap_Argv( 1,  arg1, sizeof(  arg1 ) ); 
-        client_id = G_ClientNumberFromArg(  arg1 ); 
-        if (client_id == -1)
-        { 
-            trap_SendServerCommand( ent-g_entities, va("print \"Can't find client ID for %s\n\"", arg1 ) ); 
-            return; 
-        } 
-        if (client_id == -2) 
-        { 
-            trap_SendServerCommand( ent-g_entities, va("print \"Ambiguous client ID for %s\n\"", arg1 ) ); 
-            return; 
-        } 
-        if (client_id >= MAX_CLIENTS || client_id < 0) 
-        { 
-            trap_SendServerCommand( ent-g_entities, va("print \"Bad client ID for %s\n\"", arg1 ) ); 
-            return;
-        }
-       // either we have the client id or the string did not match 
-        if (!g_entities[client_id].inuse) 
-        { // check to make sure client slot is in use 
-            trap_SendServerCommand( ent-g_entities, va("print \"Client %s is not active\n\"", arg1 ) ); 
-            return; 
-        }
-        //Admins can see the IP address of each client
-        if (g_entities[client_id].r.svFlags & SVF_BOT){
-            trap_SendServerCommand(ent-g_entities, va("print \"%s ^7does not have an IP address.\"", g_entities[client_id].client->pers.netname));
-            return;
-        }
-        trap_SendServerCommand(ent-g_entities, va("print \"%s's^7 IP is %s\n\"", g_entities[client_id].client->pers.netname, g_entities[client_id].client->sess.myip));
-    }
+    else if ((Q_stricmp(cmd, "whoip") == 0) || (Q_stricmp(cmd, "amwhoip") == 0))
+      {
+      int client_id = -1;
+      char   arg1[MAX_STRING_CHARS];
+      if (ent->r.svFlags & SVF_ADMIN)
+      {
+          if (!(ent->client->pers.bitvalue & (1 << A_WHOIP)))
+          {
+              trap_SendServerCommand(ent - g_entities, va("print \"WhoIP is not allowed at this administration rank.\n\""));
+              return;
+          }
+      }
+      if (!(ent->r.svFlags & SVF_ADMIN)) {
+          trap_SendServerCommand(ent - g_entities, "print \"Must login with /adminlogin (password)\n\"");
+          return;
+      }
+      if (trap_Argc() != 2)
+      {
+          trap_SendServerCommand(ent - g_entities, "print \"Type in /help whoip if you need help with this command.\n\"");
+          return;
+      }
+      trap_Argv(1, arg1, sizeof(arg1));
+      client_id = G_ClientNumberFromArg(arg1);
+      if (client_id == -1)
+      {
+          trap_SendServerCommand(ent - g_entities, va("print \"Can't find client ID for %s\n\"", arg1));
+          return;
+      }
+      if (client_id == -2)
+      {
+          trap_SendServerCommand(ent - g_entities, va("print \"Ambiguous client ID for %s\n\"", arg1));
+          return;
+      }
+      if (client_id >= MAX_CLIENTS || client_id < 0)
+      {
+          trap_SendServerCommand(ent - g_entities, va("print \"Bad client ID for %s\n\"", arg1));
+          return;
+      }
+      // either we have the client id or the string did not match 
+      if (!g_entities[client_id].inuse)
+      { // check to make sure client slot is in use 
+          trap_SendServerCommand(ent - g_entities, va("print \"Client %s is not active\n\"", arg1));
+          return;
+      }
+      //Admins can see the IP address of each client
+      if (g_entities[client_id].r.svFlags & SVF_BOT) {
+          trap_SendServerCommand(ent - g_entities, va("print \"%s ^7does not have an IP address.\"", g_entities[client_id].client->pers.netname));
+          return;
+      }
+      trap_SendServerCommand(ent - g_entities, va("print \"%s's^7 IP is %s\n\"", g_entities[client_id].client->pers.netname, g_entities[client_id].client->sess.myip));
+      }
     else if (Q_stricmp(cmd, "who") == 0) 
     {
         int i;
