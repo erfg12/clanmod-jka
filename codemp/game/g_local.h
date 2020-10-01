@@ -1140,12 +1140,11 @@ typedef struct {
 
 typedef enum
 {
-	W_JOINDISCO = 1,
+	W_JOINDISCO = 0,
 	W_CHAT,
 	W_DUELS,
 	W_KILLS
-};
-typedef int webhook_type_t;
+} webhook_type_t;
 
 
 //

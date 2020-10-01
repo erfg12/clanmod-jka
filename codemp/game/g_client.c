@@ -2934,7 +2934,7 @@ void WebHook(gentity_t* ent, webhook_type_t wht, const char *msg) {
 	static char buf[4096];
 	int	len;
 
-	if (strcmp(cm_webhookURL.string, "") == 0)
+	if (cm_webhookControl.integer == 0)
 		return;
 
 	// loop through all webhooks here
@@ -5693,6 +5693,10 @@ void ClientDisconnect( int clientNum ) {
 	gentity_t	*tent;
 	int			i;
 
+	if (!(ent->r.svFlags & SVF_BOT)) {
+		WebHook(ent, W_JOINDISCO, va("Player %s left the server.", Q_CleanStr(ent->client->pers.netname)));
+	}
+
 	// cleanup if we are kicking a bot that
 	// hasn't spawned yet
 	G_RemoveQueuedBotBegin( clientNum );
@@ -5770,10 +5774,6 @@ void ClientDisconnect( int clientNum ) {
 	}
 
 	G_LogPrintf( "ClientDisconnect: (%i) <%s>\n", clientNum, ent->client->pers.netname);
-
-	if (!(ent->r.svFlags & SVF_BOT)) {
-		WebHook(ent, W_JOINDISCO, va("Player %s left the server.", Q_CleanStr(ent->client->pers.netname)));
-	}
 
 	// if we are playing in tourney mode, give a win to the other player and clear his frags for this round
 	if ( (g_gametype.integer == GT_DUEL )
