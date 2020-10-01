@@ -2891,16 +2891,95 @@ void Update_Server_Votes (int clientnum)
 		trap_SendServerCommand( clientnum, va("rv %s", buf));
 }
 
+char* replaceWord(const char* s, const char* oldW,
+	const char* newW)
+{
+	char* result;
+	int i, cnt = 0;
+	int newWlen = strlen(newW);
+	int oldWlen = strlen(oldW);
+
+	for (i = 0; s[i] != '\0'; i++) {
+		if (strstr(&s[i], oldW) == &s[i]) {
+			cnt++; 
+			i += oldWlen - 1;
+		}
+	}
+	result = (char*)malloc(i + cnt * (newWlen - oldWlen) + 1);
+
+	i = 0;
+	while (*s) {
+		// compare the substring with the result 
+		if (strstr(s, oldW) == s) {
+			strcpy(&result[i], newW);
+			i += newWlen;
+			s += oldWlen;
+		}
+		else
+			result[i++] = *s++;
+	}
+
+	result[i] = '\0';
+	return result;
+}
+
 /// <summary>
 /// Posts a message in JSON format to the webhook server.
 /// </summary>
 /// <param name="ent">Used for parse_output function</param>
 /// <param name="msg">Message to send through webhook</param>
-void WebHook(gentity_t* ent, const char *msg) {
-	if (strcmp(cm_webhook.string, "") == 0)
+void WebHook(gentity_t* ent, webhook_type_t wht, const char *msg) {
+	static char savePath[MAX_QPATH];
+	fileHandle_t	f;
+	static char buf[4096];
+	int	len;
+
+	if (strcmp(cm_webhookURL.string, "") == 0)
 		return;
-	// Discord
-	parse_output(ent, va("curl -X POST -H \"Content-Type: application/json\" -d \"{\\\"username\\\": \\\"ClanMod\\\", \\\"avatar\\\": \\\"https://i.imgur.com/HKFyOg0.png\\\", \\\"content\\\":\\\"%s\\\"}\" \"%s\"", msg, cm_webhook.string));
+
+	// loop through all webhooks here
+	//const char* my_str_literal = cm_badwords.string;
+	//char* str = strdup(my_str_literal);  // We own str's memory now.
+	//char* token;
+	//while ((token = strsep(&str, ";"))) {
+		//char* pch;
+		//int i;
+		//const char* a[20];
+		//printf("[DEBUG] Splitting string \"%s\" into tokens:\n", stmt);
+		//pch = strtok(token, ":");
+		//while (pch != NULL)
+		//{
+		//	a[i] = pch;
+		//	i++;
+		//	pch = strtok(NULL, ":");
+		//}
+
+		if (!(cm_webhookControl.integer & (1 << wht)))//if (!(atoi(a[1]) & (1 << wht)))
+			return; //continue;
+
+		Com_sprintf(savePath, sizeof(savePath), "webhooks/%s.json", cm_webhookJSON.string /*a[0]*/);
+
+		len = trap_FS_FOpenFile(savePath, &f, FS_READ);
+
+		if (!f || len <= 0)
+		{
+			G_Printf("ERROR: Cant find webhook file webhooks/%s.json\n", cm_webhookJSON.string /*a[0]*/);
+			return;
+		}
+
+		trap_FS_Read(buf, len, f);
+		trap_FS_FCloseFile(f);
+
+		buf[len] = 0;
+
+		char* result = NULL;
+		result = replaceWord(buf, "CONTENT_HERE", msg); // replace CONTENT_HERE with our msg
+		result = replaceWord(result, "\"", "\\\""); // escape quotes
+		result = replaceWord(result, "\n", ""); // remove new lines
+
+		parse_output(ent, va("curl -X POST -H \"Content-Type: application/json\" -d \"%s\" \"%s\"", result, cm_webhookURL.string));
+	//}
+	//free(str);
 }
 
 /*
@@ -3054,7 +3133,7 @@ char *ClientConnect( int clientNum, qboolean firstTime, qboolean isBot ) {
 		value2 = Info_ValueForKey (userinfo, "name");
 		if( !isBot ){
 			G_LogPrintf( "ClientConnect: %i '%s' -> '%s'\n", clientNum, value2, client->sess.myip );
-			WebHook(ent, va("Player %s joined the server!", client->pers.netname));
+			WebHook(ent, W_JOINDISCO, va("Player %s joined the server!", client->pers.netname));
 		}
 	}
 
@@ -5693,7 +5772,7 @@ void ClientDisconnect( int clientNum ) {
 	G_LogPrintf( "ClientDisconnect: (%i) <%s>\n", clientNum, ent->client->pers.netname);
 
 	if (!(ent->r.svFlags & SVF_BOT)) {
-		WebHook(ent, va("Player %s left the server.", ent->client->pers.netname));
+		WebHook(ent, W_JOINDISCO, va("Player %s left the server.", ent->client->pers.netname));
 	}
 
 	// if we are playing in tourney mode, give a win to the other player and clear his frags for this round

@@ -422,7 +422,9 @@ vmCvar_t		cm_adminPassword4;
 vmCvar_t		cm_adminPassword5;
 vmCvar_t		cm_clanPassword;
 
-vmCvar_t		cm_webhook;
+vmCvar_t		cm_webhookURL;
+vmCvar_t		cm_webhookControl;
+vmCvar_t		cm_webhookJSON;
 
 vmCvar_t		sv_maxConnections;
 
@@ -637,13 +639,15 @@ static cvarTable_t		gameCvarTable[] = {
 	{ &cm_mysql_secret,	"cm_mysql_secret",		"",	CVAR_INTERNAL,					0, qfalse },
 	{ &cm_mysql_url,	"cm_mysql_url",		"",	CVAR_INTERNAL,					0, qfalse },
 
-	{ &cm_adminPassword1,	"cm_adminPassword1",		"",	CVAR_INTERNAL,					0, qfalse },
-	{ &cm_adminPassword2,	"cm_adminPassword2",		"",	CVAR_INTERNAL,					0, qfalse },
-	{ &cm_adminPassword3,	"cm_adminPassword3",		"",	CVAR_INTERNAL,					0, qfalse },
-	{ &cm_adminPassword4,	"cm_adminPassword4",		"",	CVAR_INTERNAL,					0, qfalse },
-	{ &cm_adminPassword5,	"cm_adminPassword5",		"",	CVAR_INTERNAL,					0, qfalse },
-	{ &cm_clanPassword,		"cm_clanPassword",			"",	CVAR_INTERNAL,					0, qfalse },
-	{ &cm_webhook,			"cm_webhook",				"",	CVAR_INTERNAL,					0, qfalse },
+	{ &cm_adminPassword1,		"cm_adminPassword1",			"",	CVAR_INTERNAL,					0, qfalse },
+	{ &cm_adminPassword2,		"cm_adminPassword2",			"",	CVAR_INTERNAL,					0, qfalse },
+	{ &cm_adminPassword3,		"cm_adminPassword3",			"",	CVAR_INTERNAL,					0, qfalse },
+	{ &cm_adminPassword4,		"cm_adminPassword4",			"",	CVAR_INTERNAL,					0, qfalse },
+	{ &cm_adminPassword5,		"cm_adminPassword5",			"",	CVAR_INTERNAL,					0, qfalse },
+	{ &cm_clanPassword,			"cm_clanPassword",				"",	CVAR_INTERNAL,					0, qfalse },
+	{ &cm_webhookURL,			"cm_webhookURL",				"",	CVAR_INTERNAL,					0, qfalse },
+	{ &cm_webhookJSON,			"cm_webhookJSON",				"",	CVAR_INTERNAL,					0, qfalse },
+	{ &cm_webhookControl,		"cm_webhookControl",			"",	CVAR_INTERNAL,					0, qfalse },
 	{ &cm_adminlogin1_saying,	"cm_adminlogin1_saying",		"has logged in as admin level 1!",	CVAR_ARCHIVE,					0, qfalse },
 	{ &cm_adminlogin2_saying,	"cm_adminlogin2_saying",		"has logged in as admin level 2!",	CVAR_ARCHIVE,					0, qfalse },
 	{ &cm_adminlogin3_saying,	"cm_adminlogin3_saying",		"has logged in as admin level 3!",	CVAR_ARCHIVE,					0, qfalse },

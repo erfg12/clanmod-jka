@@ -1138,6 +1138,15 @@ typedef struct {
 
 } level_locals_t;
 
+typedef enum
+{
+	W_JOINDISCO = 0,
+	W_CHAT,
+	W_DUELS,
+	W_KILLS
+};
+typedef int webhook_type_t;
+
 
 //
 // g_spawn.c
@@ -1921,7 +1930,7 @@ extern  vmCvar_t    roar_emoteControl2;
 
 //RoAR mod BEGIN
 extern	vmCvar_t	mod_pushall;
-extern vmCvar_t		cm_automessenger;
+extern  vmCvar_t	cm_automessenger;
 
 extern	vmCvar_t	m_v1;
 extern	vmCvar_t	m_v2;
@@ -2105,7 +2114,9 @@ extern vmCvar_t		cm_adminPassword4;
 extern vmCvar_t		cm_adminPassword5;
 extern vmCvar_t		cm_clanPassword;
 
-extern vmCvar_t		cm_webhook;
+extern vmCvar_t		cm_webhookURL;
+extern vmCvar_t		cm_webhookControl;
+extern vmCvar_t		cm_webhookJSON;
 
 extern	vmCvar_t	sv_maxConnections;
 
@@ -2180,7 +2191,7 @@ extern int mod_votes_count;
 //lmo for enhanced voting
 void Update_Server_Votes (int clientnum);
 
-void WebHook(gentity_t* ent, const char* msg);
+void WebHook(gentity_t* ent, webhook_type_t wht, const char* msg);
 char* parse_output(gentity_t* ent, char* cmd);
 
 extern int dueltypes[MAX_CLIENTS];
