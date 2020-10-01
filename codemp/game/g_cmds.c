@@ -76,10 +76,19 @@ char *mysqlGetStats(gentity_t *ent, char *stmt) {
     return data;
 }
 
+#ifdef _WIN32
 typedef struct ARGS {
     gentity_t *ent;
     char *cmd;
 } args;
+#endif
+
+#ifdef __linux__
+struct thread_info {
+    gentity_t *ent;
+    char *sntCmd;
+} tinfo;
+#endif
 
 #ifdef _WIN32
 DWORD WINAPI ThreadFunc(LPVOID sntCmd) {
@@ -162,7 +171,7 @@ DWORD WINAPI ThreadFunc(LPVOID sntCmd) {
 #endif
 #ifdef __linux__
 
-void *linuxThread(void *sntCmd)
+void *linuxThread(void *args)
 {
     FILE *fp;
     char buf[2048];
@@ -170,11 +179,11 @@ void *linuxThread(void *sntCmd)
     char cmd[2048] = "";
     int * type = 0;
 
-    args *twoCmds = (args*)sntCmd;
+    G_Printf("cmd: %s\n", tinfo.sntCmd);
 
-    gentity_t *ent = twoCmds->ent;
+    gentity_t *ent = tinfo.ent;
 
-    sprintf(cmd, "%s", twoCmds->cmd);
+    sprintf(cmd, "%s", tinfo.sntCmd);
 
     if (strstr(cmd, "mysqlGetLeaders") != NULL) {
         type = 1;
@@ -232,16 +241,14 @@ void *linuxThread(void *sntCmd)
 }
 #endif
 
-char *parse_output(gentity_t *ent, char *cmd) {
-    char s[2048] = "";
-
+void parse_output(gentity_t *ent, char *cmd) {
 #ifdef _WIN32
     DWORD   threadID;
     G_Printf("ent: %i cmd: %s\n", ent-g_entities, cmd);
     args argys = { ent, cmd };
     HANDLE thread = 0;
     thread = CreateThread(NULL, 0, ThreadFunc, &argys, 0, &threadID);
-    //WaitForSingleObject(thread, INFINITE);
+
     if (thread == NULL) {
         G_Printf("ERROR: Thread Handle is null!");
     }
@@ -256,13 +263,14 @@ char *parse_output(gentity_t *ent, char *cmd) {
 
 #ifdef __linux__
     pthread_t tid;
-    pthread_create(&tid, NULL, &linuxThread, &cmd);
-    //if ((pthread_kill(tid, 0)) == 0)
-    //	pthread_join(tid, NULL);
+    G_Printf("ent: %i cmd: %s\n", ent-g_entities, cmd);
+    
+    tinfo.sntCmd = cmd;
+    tinfo.ent = ent;
+
+    pthread_create(&tid, NULL, &linuxThread, &tinfo);
     pthread_detach(&tid);
 #endif
-
-    return s;
 }
 
 /*
@@ -2628,7 +2636,7 @@ void G_Say( gentity_t *ent, gentity_t *target, int mode, const char *chatText ) 
             G_LogPrintf( "say: %s: %s\n", ent->client->pers.netname, chatText );
 
             if (!(ent->r.svFlags & SVF_BOT))
-                WebHook(ent, W_CHAT, va("%s: %s", ent->client->pers.netname, chatText));
+                WebHook(ent, W_CHAT, va("%s: %s", Q_CleanStr(ent->client->pers.netname), Q_CleanStr(chatText)));
 
             Com_sprintf (name, sizeof(name), "%s%c%c"EC": ", ent->client->pers.netname, Q_COLOR_ESCAPE, COLOR_WHITE );
             if (roar_allow_chatColors.integer == 1){
@@ -4590,7 +4598,7 @@ void Cmd_EngageDuel_f(gentity_t *ent, int dueltype)
                     challenged->client->ps.stats[STAT_HEALTH] = challenged->health = challenged->client->ps.stats[STAT_MAX_HEALTH];
                     challenged->client->ps.stats[STAT_ARMOR] = cm_duelshield.integer;
                     trap_SendServerCommand( -1, va("print \"%s ^7has become engaged in a ^1saber^7 duel with %s!\n\"", challenged->client->pers.netname, ent->client->pers.netname) );
-                    WebHook(ent, W_DUELS, va("%s has become engaged in a saber duel with %s!", challenged->client->pers.netname, ent->client->pers.netname));
+                    WebHook(ent, W_DUELS, va("%s has become engaged in a saber duel with %s!", Q_CleanStr(challenged->client->pers.netname), Q_CleanStr(ent->client->pers.netname)));
                     //if (g_gametype.integer != GT_RPG){ //RoAR mod NOTE: I don't think so.
                     ent->client->ps.weapon = WP_SABER;
                     challenged->client->ps.weapon = WP_SABER;
@@ -4614,7 +4622,7 @@ void Cmd_EngageDuel_f(gentity_t *ent, int dueltype)
                     ent->client->ps.stats[STAT_WEAPONS] |= (1 << WP_SABER);
                     challenged->client->ps.stats[STAT_WEAPONS] |= (1 << WP_SABER);
                     trap_SendServerCommand( -1, va("print \"%s ^7has become engaged in a ^5fullforce^7 duel with %s!\n\"", challenged->client->pers.netname, ent->client->pers.netname) );
-                    WebHook(ent, W_DUELS, va("%s has become engaged in a fullforce duel with %s!", challenged->client->pers.netname, ent->client->pers.netname));
+                    WebHook(ent, W_DUELS, va("%s has become engaged in a fullforce duel with %s!", Q_CleanStr(challenged->client->pers.netname), Q_CleanStr(ent->client->pers.netname)));
                     ent->client->ps.stats[STAT_WEAPONS] &= ~(1 << WP_MELEE);
                     challenged->client->ps.stats[STAT_WEAPONS] &= ~(1 << WP_MELEE);
                     break;
@@ -4653,7 +4661,7 @@ void Cmd_EngageDuel_f(gentity_t *ent, int dueltype)
                     ent->client->ps.stats[STAT_WEAPONS] |= (1 << WP_MELEE);
                     challenged->client->ps.stats[STAT_WEAPONS] |= (1 << WP_MELEE);
                     trap_SendServerCommand( -1, va("print \"%s ^7has become engaged in a ^3melee^7 duel with %s!\n\"", challenged->client->pers.netname, ent->client->pers.netname) );
-                    WebHook(ent, W_DUELS, va("%s has become engaged in a melee duel with %s!", challenged->client->pers.netname, ent->client->pers.netname));
+                    WebHook(ent, W_DUELS, va("%s has become engaged in a melee duel with %s!", Q_CleanStr(challenged->client->pers.netname), Q_CleanStr(ent->client->pers.netname)));
                     ent->client->ps.stats[STAT_WEAPONS] &= ~(1 << WP_SABER);
                     challenged->client->ps.stats[STAT_WEAPONS] &= ~(1 << WP_SABER);
                     break;

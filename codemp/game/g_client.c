@@ -3133,7 +3133,7 @@ char *ClientConnect( int clientNum, qboolean firstTime, qboolean isBot ) {
 		value2 = Info_ValueForKey (userinfo, "name");
 		if( !isBot ){
 			G_LogPrintf( "ClientConnect: %i '%s' -> '%s'\n", clientNum, value2, client->sess.myip );
-			WebHook(ent, W_JOINDISCO, va("Player %s joined the server!", client->pers.netname));
+			WebHook(ent, W_JOINDISCO, va("Player %s joined the server!", Q_CleanStr(client->pers.netname)));
 		}
 	}
 
@@ -5772,7 +5772,7 @@ void ClientDisconnect( int clientNum ) {
 	G_LogPrintf( "ClientDisconnect: (%i) <%s>\n", clientNum, ent->client->pers.netname);
 
 	if (!(ent->r.svFlags & SVF_BOT)) {
-		WebHook(ent, W_JOINDISCO, va("Player %s left the server.", ent->client->pers.netname));
+		WebHook(ent, W_JOINDISCO, va("Player %s left the server.", Q_CleanStr(ent->client->pers.netname)));
 	}
 
 	// if we are playing in tourney mode, give a win to the other player and clear his frags for this round

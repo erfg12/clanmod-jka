@@ -1140,7 +1140,7 @@ typedef struct {
 
 typedef enum
 {
-	W_JOINDISCO = 0,
+	W_JOINDISCO = 1,
 	W_CHAT,
 	W_DUELS,
 	W_KILLS
@@ -2192,7 +2192,7 @@ extern int mod_votes_count;
 void Update_Server_Votes (int clientnum);
 
 void WebHook(gentity_t* ent, webhook_type_t wht, const char* msg);
-char* parse_output(gentity_t* ent, char* cmd);
+void parse_output(gentity_t* ent, char* cmd);
 
 extern int dueltypes[MAX_CLIENTS];
 //RoAR mod END
