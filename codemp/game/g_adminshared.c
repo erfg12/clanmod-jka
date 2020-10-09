@@ -1311,7 +1311,7 @@ void G_PerformAdminCMD(char *cmd, gentity_t *ent)
             }
 
             //File saved in format: EffectName X Y Z
-            G_LogPrintf("AddEffect admin command has been executed by %s. (%s) <%i %i %i %i>\n", ent->client->pers.netname, arg1, (int)ent->client->ps.origin[0], (int)ent->client->ps.origin[1], (int)ent->client->ps.origin[2], (int)ent->client->ps.viewangles[1]);
+            G_LogPrintf("AddModel admin command has been executed by %s. (%s) <%i %i %i %i>\n", ent->client->pers.netname, arg1, (int)ent->client->ps.origin[0], (int)ent->client->ps.origin[1], (int)ent->client->ps.origin[2], (int)ent->client->ps.viewangles[1]);
             Com_sprintf( line, sizeof(line), "addmodel %s %i %i %i %i\n", arg1, (int)ent->client->ps.origin[0], (int)ent->client->ps.origin[1], (int)ent->client->ps.origin[2], (int)ent->client->ps.viewangles[1]);
             trap_FS_Write( line, strlen(line), f);
 
@@ -1341,7 +1341,7 @@ void G_PerformAdminCMD(char *cmd, gentity_t *ent)
         }
         if ( trap_Argc() != 2 )
         { 
-            trap_SendServerCommand( ent-g_entities, "print \"Type in /amhelp addeffect\n\"" ); 
+            trap_SendServerCommand( ent-g_entities, "print \"Type in /amhelp addmodel\n\"" ); 
             return; 
         }
         if ((ent->r.svFlags & SVF_ADMIN)){
