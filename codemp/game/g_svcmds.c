@@ -8,12 +8,15 @@
 #include "timestamp.h"
 #include <stdio.h>
 
-//threads
+//threads and sockets
 #ifdef _WIN32
 #include "windows.h"
+#include <winsock.h>
+#pragma comment(lib, "Ws2_32.lib")
 #endif
 #ifdef __linux__
 #include <pthread.h>
+#include <sys/socket.h>
 #endif
 
 /*
@@ -542,6 +545,33 @@ qboolean G_CheckMaxConnections( char *from )
 	return qfalse;
 }
 
+void SendUDP(char* msg, char* ip, int port) {
+	struct sockaddr_in     servaddr;
+	memset(&servaddr, 0, sizeof(servaddr));
+	int sockfd;
+
+	// Filling server information 
+	servaddr.sin_family = AF_INET;
+	servaddr.sin_port = htons(port);
+	servaddr.sin_addr.s_addr = inet_addr(ip);
+
+	if ((sockfd = socket(AF_INET, SOCK_DGRAM, 0)) < 0) {
+		G_Printf("socket creation failed\n");
+		return;
+	}
+
+	G_LogPrintf("sending \"%s\" to %s:%i\n", msg, ip, port);
+
+	int ret = sendto(sockfd, (const char*)msg, strlen(msg), 0, (const struct sockaddr*)&servaddr, sizeof(servaddr));
+	if (ret < 1)
+		G_Printf("ERROR: sendto function sent %i bytes\n", ret);
+#ifdef _WIN32
+	int ErrMsg = WSAGetLastError();
+	if (ErrMsg != ret && ErrMsg > 0)
+		G_Printf("Error code = %i\n", ret, ErrMsg);
+#endif
+}
+
 /*
 =================
 AddIP
@@ -766,6 +796,27 @@ void Svcmd_AddAdminIP_f (void)
 //RoAR mod BEGIN
 extern int G_ClientNumberFromArg( char *str);
 
+/// <summary>
+/// Send UDP message packet to IP/PORT
+/// </summary>
+void Svcmd_SendUDP(void) {
+	char		str[17]; // ip
+	char		str2[6]; // port
+	char		str3[MAX_TOKEN_CHARS]; // message
+	int			client_id = -1;
+
+	if (trap_Argc() != 4) {
+		G_Printf("Usage:  sendudp <ip> <port> <message>\n");
+		return;
+	}
+
+	trap_Argv(1, str, sizeof(str));
+	trap_Argv(2, str2, sizeof(str2));
+	trap_Argv(3, str3, sizeof(str3));
+
+	SendUDP(str3, str, atoi(str2));
+}
+
 void Svcmd_Ban_f (void)
 {
 	char		str[MAX_TOKEN_CHARS];
@@ -965,22 +1016,23 @@ gclient_t	*ClientForString( const char *s ) {
 
 extern void AddSpawnField(char *field, char *value);
 extern void SP_fx_runner( gentity_t *ent );
-void	Svcmd_AddEffect( void ) {
-gentity_t *fx_runner = G_Spawn();
-char   effect[MAX_STRING_CHARS];
-char origin_number[MAX_STRING_CHARS];
-char origin_number2[MAX_STRING_CHARS];
-char origin_number3[MAX_STRING_CHARS];
 
-trap_Argv( 1, effect, sizeof( effect ) );
-AddSpawnField("fxFile", effect);
-trap_Argv( 2, origin_number, 1024 );
-fx_runner->s.origin[0] = atoi(origin_number);
-trap_Argv( 3, origin_number2, 1024 );
-fx_runner->s.origin[1] = atoi(origin_number2);
-trap_Argv( 4, origin_number3, 1024 );
-fx_runner->s.origin[2] = atoi(origin_number3) - 5;
-SP_fx_runner(fx_runner);
+void	Svcmd_AddEffect( void ) {
+	gentity_t *fx_runner = G_Spawn();
+	char   effect[MAX_STRING_CHARS];
+	char origin_number[MAX_STRING_CHARS];
+	char origin_number2[MAX_STRING_CHARS];
+	char origin_number3[MAX_STRING_CHARS];
+
+	trap_Argv( 1, effect, sizeof( effect ) );
+	AddSpawnField("fxFile", effect);
+	trap_Argv( 2, origin_number, 1024 );
+	fx_runner->s.origin[0] = atoi(origin_number);
+	trap_Argv( 3, origin_number2, 1024 );
+	fx_runner->s.origin[1] = atoi(origin_number2);
+	trap_Argv( 4, origin_number3, 1024 );
+	fx_runner->s.origin[2] = atoi(origin_number3) - 5;
+	SP_fx_runner(fx_runner);
 }
 
 extern void G_RemoveWeather( void );
@@ -1043,44 +1095,45 @@ void Svcmd_Weather( void ) {
 
 extern void AddSpawnField(char *field, char *value);
 extern void SP_jakes_model( gentity_t *ent );
+
 void	Svcmd_AddModel( void ) {
-gentity_t *jakes_model = G_Spawn();
-char   model[MAX_STRING_CHARS];
-char origin_number[MAX_STRING_CHARS];
-char origin_number2[MAX_STRING_CHARS];
-char origin_number3[MAX_STRING_CHARS];
-char yaw_number[MAX_STRING_CHARS];
+	gentity_t *jakes_model = G_Spawn();
+	char   model[MAX_STRING_CHARS];
+	char origin_number[MAX_STRING_CHARS];
+	char origin_number2[MAX_STRING_CHARS];
+	char origin_number3[MAX_STRING_CHARS];
+	char yaw_number[MAX_STRING_CHARS];
 
-if ( trap_Argc() != 6 ) {
-	G_Printf("Usage: /addmodel (model) (x) (y) (z) (yaw)");
-		return;
-}
+	if ( trap_Argc() != 6 ) {
+		G_Printf("Usage: /addmodel (model) (x) (y) (z) (yaw)");
+			return;
+	}
 
-trap_Argv( 1, model, sizeof( model ) );
-AddSpawnField("model", model);
-trap_Argv( 2, origin_number, 1024 );
-jakes_model->s.origin[0] = atoi(origin_number);
-trap_Argv( 3, origin_number2, 1024 );
-jakes_model->s.origin[1] = atoi(origin_number2);
-trap_Argv( 4, origin_number3, 1024 );
-//#ifdef __linux__
-//jakes_model->s.origin[2] = atoi(origin_number3) - 55;
-//#else 
-jakes_model->s.origin[2] = atoi(origin_number3) - 60;
-//#endif
-trap_Argv( 5, yaw_number, 1024 );
-jakes_model->s.angles[1] = atoi(yaw_number);
-SP_jakes_model(jakes_model);
-G_Printf("Added model: %s at <%s %s %s %s>", model, origin_number, origin_number2, origin_number3, yaw_number);
+	trap_Argv( 1, model, sizeof( model ) );
+	AddSpawnField("model", model);
+	trap_Argv( 2, origin_number, 1024 );
+	jakes_model->s.origin[0] = atoi(origin_number);
+	trap_Argv( 3, origin_number2, 1024 );
+	jakes_model->s.origin[1] = atoi(origin_number2);
+	trap_Argv( 4, origin_number3, 1024 );
+	//#ifdef __linux__
+	//jakes_model->s.origin[2] = atoi(origin_number3) - 55;
+	//#else 
+	jakes_model->s.origin[2] = atoi(origin_number3) - 60;
+	//#endif
+	trap_Argv( 5, yaw_number, 1024 );
+	jakes_model->s.angles[1] = atoi(yaw_number);
+	SP_jakes_model(jakes_model);
+	G_Printf("Added model: %s at <%s %s %s %s>", model, origin_number, origin_number2, origin_number3, yaw_number);
 }
 
 void Svcmd_Sleep (void) {
-gentity_t * targetplayer;
-			int	i;
-			int client_id = -1; 
-			char   arg1[MAX_STRING_CHARS];
-			if ( trap_Argc() != 2 )
-			{
+	gentity_t * targetplayer;
+	int	i;
+	int client_id = -1; 
+	char   arg1[MAX_STRING_CHARS];
+	if ( trap_Argc() != 2 )
+	{
 				G_Printf ( "Usage: /sleep (client)\n" );
 				return;
 			}
@@ -1089,10 +1142,10 @@ gentity_t * targetplayer;
 			 g_gametype.integer == GT_CTY || g_gametype.integer == GT_SIEGE){
 				 G_Printf ( "Cannot use this admin command in this gametype.\n" );
 				 return;
-			 }
-			trap_Argv( 1, arg1, sizeof( arg1 ) );
-			 if( Q_stricmp( arg1, "+all" ) == 0 ){
-			 for( i = 0; i < level.maxclients; i++ )
+	}
+		trap_Argv( 1, arg1, sizeof( arg1 ) );
+		if( Q_stricmp( arg1, "+all" ) == 0 ){
+		for( i = 0; i < level.maxclients; i++ )
 		{
 			targetplayer = &g_entities[i];
 
@@ -1114,27 +1167,27 @@ gentity_t * targetplayer;
 			trap_SendServerCommand( -1, va("print \"^7%s\n\"", roar_sleep_on_ALL_saying.string ) );
 		}
 			 }
-		 if( Q_stricmp( arg1, "-all" ) == 0 ){
-			 for( i = 0; i < level.maxclients; i++ )
-		{
-			targetplayer = &g_entities[i];
+		if( Q_stricmp( arg1, "-all" ) == 0 ){
+			for( i = 0; i < level.maxclients; i++ )
+			{
+				targetplayer = &g_entities[i];
 
-			if( targetplayer->client && targetplayer->client->pers.connected ){
-			targetplayer->client->pers.amsleep = 0;
-			targetplayer->takedamage = qtrue;
-			targetplayer->flags &= ~FL_GODMODE;
-			targetplayer->client->ps.forceHandExtendTime = 0;
+				if( targetplayer->client && targetplayer->client->pers.connected ){
+					targetplayer->client->pers.amsleep = 0;
+					targetplayer->takedamage = qtrue;
+					targetplayer->flags &= ~FL_GODMODE;
+					targetplayer->client->ps.forceHandExtendTime = 0;
+				}
 			}
-		}
-		G_LogPrintf("Sleep admin command executed by SERVER on ALL clients. (removing)\n");
-		if (roar_sayings_display.integer == 0){
-			trap_SendServerCommand( -1, va("cp \"^7%s\n\"", roar_sleep_off_ALL_saying.string ) );
-		} else if (roar_sayings_display.integer == 1){
-			trap_SendServerCommand( -1, va("print \"^7%s\n\"", roar_sleep_off_ALL_saying.string ) );
-		} else if (roar_sayings_display.integer >= 2){
-			trap_SendServerCommand( -1, va("cp \"^7%s\n\"", roar_sleep_off_ALL_saying.string ) );
-			trap_SendServerCommand( -1, va("print \"^7%s\n\"", roar_sleep_off_ALL_saying.string ) );
-		}
+			G_LogPrintf("Sleep admin command executed by SERVER on ALL clients. (removing)\n");
+			if (roar_sayings_display.integer == 0){
+				trap_SendServerCommand( -1, va("cp \"^7%s\n\"", roar_sleep_off_ALL_saying.string ) );
+			} else if (roar_sayings_display.integer == 1){
+				trap_SendServerCommand( -1, va("print \"^7%s\n\"", roar_sleep_off_ALL_saying.string ) );
+			} else if (roar_sayings_display.integer >= 2){
+				trap_SendServerCommand( -1, va("cp \"^7%s\n\"", roar_sleep_off_ALL_saying.string ) );
+				trap_SendServerCommand( -1, va("print \"^7%s\n\"", roar_sleep_off_ALL_saying.string ) );
+			}
 		 }
 		 else {
 			client_id = G_ClientNumberFromArg(  arg1 );
@@ -3218,6 +3271,11 @@ qboolean	ConsoleCommand( void ) {
 */
 	if (Q_stricmp (cmd, "addip") == 0) {
 		Svcmd_AddIP_f();
+		return qtrue;
+	}
+
+	if (Q_stricmp(cmd, "sendudp") == 0) {
+		Svcmd_SendUDP();
 		return qtrue;
 	}
 
