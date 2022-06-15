@@ -1795,6 +1795,24 @@ extern void SP_info_jedimaster_start(gentity_t *ent);
 //[BugFix44]
 extern void G_LoadArenas(void);
 //[/BugFix44]
+
+void SetupUDP(char* ip, int port) {
+	memset(&servaddr, 0, sizeof(servaddr));
+
+	// Filling server information 
+	servaddr.sin_family = AF_INET;
+	servaddr.sin_port = htons(port);
+	servaddr.sin_addr.s_addr = inet_addr(ip);
+
+	if ((cm_UDPSock = socket(AF_INET, SOCK_DGRAM, 0)) < 0) {
+		G_LogPrintf("UDP socket creation failed\n");
+		return;
+	}
+	else {
+		G_LogPrintf("UDP socket created\n");
+	}
+}
+
 void G_InitGame( int levelTime, int randomSeed, int restart ) {
 	int			i;
 	vmCvar_t	mapname;
@@ -2070,6 +2088,7 @@ void G_InitGame( int levelTime, int randomSeed, int restart ) {
 		}
 	}
 	//[/OLDGAMETYPES]
+	SetupUDP("127.0.0.1", 55566); // TEST
 	trap_SendConsoleCommand( EXEC_INSERT, va( "exec mp_models/%s ; wait ; wait ; exec mp_effects/%s ; wait ; wait ; exec mp_weather/%s", mapname.string, mapname.string, mapname.string ) );
 }
 

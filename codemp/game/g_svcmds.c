@@ -11,12 +11,9 @@
 //threads and sockets
 #ifdef _WIN32
 #include "windows.h"
-#include <winsock.h>
-#pragma comment(lib, "Ws2_32.lib")
 #endif
 #ifdef __linux__
 #include <pthread.h>
-#include <sys/socket.h>
 #endif
 
 /*
@@ -73,6 +70,9 @@ static ipFilter_t	ipFilters[MAX_IPFILTERS];
 static ipFilter2_t	ipAdminFilters[MAX_IPFILTERS];
 static int			numIPFilters;
 static int			numIPAdminFilters;
+
+int cm_UDPSock;
+struct sockaddr_in     servaddr;
 
 void *parse_server_output(char *cmd);
 char * replace_str(const char *string, const char *substr, const char *replacement);
@@ -545,30 +545,20 @@ qboolean G_CheckMaxConnections( char *from )
 	return qfalse;
 }
 
-void SendUDP(char* msg, char* ip, int port) {
-	struct sockaddr_in     servaddr;
-	memset(&servaddr, 0, sizeof(servaddr));
-	int sockfd;
-
-	// Filling server information 
-	servaddr.sin_family = AF_INET;
-	servaddr.sin_port = htons(port);
-	servaddr.sin_addr.s_addr = inet_addr(ip);
-
-	if ((sockfd = socket(AF_INET, SOCK_DGRAM, 0)) < 0) {
-		G_Printf("socket creation failed\n");
+void SendUDP(char* msg) {
+	// TO-DO: Check if UDP server is still alive and clean up
+	//G_LogPrintf("sending \"%s\" to %s:%i\n", msg, servaddr.sin_addr, servaddr.sin_port); // crashes
+	if (cm_UDPSock < 0) { // TO-DO: Maybe try to run setupUDP again
+		G_LogPrintf("ERROR: UDP socket not setup");
 		return;
 	}
-
-	G_LogPrintf("sending \"%s\" to %s:%i\n", msg, ip, port);
-
-	int ret = sendto(sockfd, (const char*)msg, strlen(msg), 0, (const struct sockaddr*)&servaddr, sizeof(servaddr));
+	int ret = sendto(cm_UDPSock, (const char*)msg, strlen(msg), 0, (const struct sockaddr*)&servaddr, sizeof(servaddr));
 	if (ret < 1)
-		G_Printf("ERROR: sendto function sent %i bytes\n", ret);
+		G_LogPrintf("ERROR: sendto function sent %i bytes\n", ret);
 #ifdef _WIN32
 	int ErrMsg = WSAGetLastError();
 	if (ErrMsg != ret && ErrMsg > 0)
-		G_Printf("Error code = %i\n", ret, ErrMsg);
+		G_LogPrintf("Error code = %i\n", ret, ErrMsg);
 #endif
 }
 
@@ -800,21 +790,16 @@ extern int G_ClientNumberFromArg( char *str);
 /// Send UDP message packet to IP/PORT
 /// </summary>
 void Svcmd_SendUDP(void) {
-	char		str[17]; // ip
-	char		str2[6]; // port
-	char		str3[MAX_TOKEN_CHARS]; // message
-	int			client_id = -1;
+	char		str[MAX_TOKEN_CHARS]; // message
 
-	if (trap_Argc() != 4) {
-		G_Printf("Usage:  sendudp <ip> <port> <message>\n");
+	if (trap_Argc() != 2) {
+		G_Printf("Usage:  sendudp <message>\n");
 		return;
 	}
 
 	trap_Argv(1, str, sizeof(str));
-	trap_Argv(2, str2, sizeof(str2));
-	trap_Argv(3, str3, sizeof(str3));
 
-	SendUDP(str3, str, atoi(str2));
+	SendUDP(str);
 }
 
 void Svcmd_Ban_f (void)

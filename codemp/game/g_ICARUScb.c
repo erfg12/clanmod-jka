@@ -5059,11 +5059,12 @@ vec4_t textcolor_scroll;
 SetTextColor
 -------------------------
 */
-static void SetTextColor ( vec4_t textcolor,const char *color)
+// NOTE: This prevents a build because of sockets
+/*static void SetTextColor(vec4_t textcolor, const char* color)
 {
 	G_DebugPrint( WL_WARNING, "SetTextColor: NOT SUPPORTED IN MP\n");
 	return;
-}
+}*/
 
 /*
 =============

@@ -2194,6 +2194,16 @@ void WebHook(gentity_t* ent, webhook_type_t wht, const char* msg);
 void parse_output(gentity_t* ent, char* cmd);
 
 extern int dueltypes[MAX_CLIENTS];
+extern int cm_UDPSock;
+extern struct sockaddr_in     servaddr;
+
+#ifdef _WIN32
+#include <winsock.h>
+#pragma comment(lib, "Ws2_32.lib")
+#endif
+#ifdef __linux__
+#include <sys/socket.h>
+#endif
 //RoAR mod END
 
 #include "../namespace_begin.h"
