@@ -422,9 +422,8 @@ vmCvar_t		cm_adminPassword4;
 vmCvar_t		cm_adminPassword5;
 vmCvar_t		cm_clanPassword;
 
-vmCvar_t		cm_webhookURL;
-vmCvar_t		cm_webhookControl;
-vmCvar_t		cm_webhookJSON;
+vmCvar_t		cm_extensionsIP;
+vmCvar_t		cm_extensionsPort;
 
 vmCvar_t		sv_maxConnections;
 
@@ -645,9 +644,8 @@ static cvarTable_t		gameCvarTable[] = {
 	{ &cm_adminPassword4,		"cm_adminPassword4",			"",	CVAR_INTERNAL,					0, qfalse },
 	{ &cm_adminPassword5,		"cm_adminPassword5",			"",	CVAR_INTERNAL,					0, qfalse },
 	{ &cm_clanPassword,			"cm_clanPassword",				"",	CVAR_INTERNAL,					0, qfalse },
-	{ &cm_webhookURL,			"cm_webhookURL",				"",	CVAR_INTERNAL,					0, qfalse },
-	{ &cm_webhookJSON,			"cm_webhookJSON",				"",	CVAR_INTERNAL,					0, qfalse },
-	{ &cm_webhookControl,		"cm_webhookControl",			"",	CVAR_INTERNAL,					0, qfalse },
+	{ &cm_extensionsIP,			"cm_extensionsIP",				"",	CVAR_INTERNAL,					0, qfalse },
+	{ &cm_extensionsPort,		"cm_extensionsPort",				"",	CVAR_INTERNAL,					0, qfalse },
 	{ &cm_adminlogin1_saying,	"cm_adminlogin1_saying",		"has logged in as admin level 1!",	CVAR_ARCHIVE,					0, qfalse },
 	{ &cm_adminlogin2_saying,	"cm_adminlogin2_saying",		"has logged in as admin level 2!",	CVAR_ARCHIVE,					0, qfalse },
 	{ &cm_adminlogin3_saying,	"cm_adminlogin3_saying",		"has logged in as admin level 3!",	CVAR_ARCHIVE,					0, qfalse },
@@ -2088,7 +2086,8 @@ void G_InitGame( int levelTime, int randomSeed, int restart ) {
 		}
 	}
 	//[/OLDGAMETYPES]
-	SetupUDP("127.0.0.1", 55566); // TEST
+	if (cm_extensionsIP.string != "" && cm_extensionsPort.string != "")
+		SetupUDP(cm_extensionsIP.string, atoi(cm_extensionsPort.string));
 	trap_SendConsoleCommand( EXEC_INSERT, va( "exec mp_models/%s ; wait ; wait ; exec mp_effects/%s ; wait ; wait ; exec mp_weather/%s", mapname.string, mapname.string, mapname.string ) );
 }
 

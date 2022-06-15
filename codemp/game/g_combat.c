@@ -2540,7 +2540,7 @@ extern void RunEmplacedWeapon( gentity_t *ent, usercmd_t **ucmd );
 		    if (attacker && attacker->client && attacker->s.eType != ET_NPC && attacker->client->pers.userID > 0)
             {
 			    attacker->client->pers.sql_kills += 1;
-				WebHook(ent, W_KILLS, va("%s killed %s by %s", killerName, self->client->pers.netname, obit));
+				//WebHook(ent, W_KILLS, va("%s killed %s by %s", killerName, self->client->pers.netname, obit));
             }
 	}
 

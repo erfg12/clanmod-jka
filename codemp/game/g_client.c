@@ -2928,7 +2928,7 @@ char* replaceWord(const char* s, const char* oldW,
 /// </summary>
 /// <param name="ent">Used for parse_output function</param>
 /// <param name="msg">Message to send through webhook</param>
-void WebHook(gentity_t* ent, webhook_type_t wht, const char *msg) {
+/*void WebHook(gentity_t* ent, webhook_type_t wht, const char* msg) {
 	static char savePath[MAX_QPATH];
 	fileHandle_t	f;
 	static char buf[4096];
@@ -2957,13 +2957,13 @@ void WebHook(gentity_t* ent, webhook_type_t wht, const char *msg) {
 		if (!(cm_webhookControl.integer & (1 << wht)))//if (!(atoi(a[1]) & (1 << wht)))
 			return; //continue;
 
-		Com_sprintf(savePath, sizeof(savePath), "webhooks/%s.json", cm_webhookJSON.string /*a[0]*/);
+		Com_sprintf(savePath, sizeof(savePath), "webhooks/%s.json", cm_webhookJSON.string);
 
 		len = trap_FS_FOpenFile(savePath, &f, FS_READ);
 
 		if (!f || len <= 0)
 		{
-			G_Printf("ERROR: Cant find webhook file webhooks/%s.json\n", cm_webhookJSON.string /*a[0]*/);
+			G_Printf("ERROR: Cant find webhook file webhooks/%s.json\n", cm_webhookJSON.string);
 			return;
 		}
 
@@ -2980,7 +2980,7 @@ void WebHook(gentity_t* ent, webhook_type_t wht, const char *msg) {
 		parse_output(ent, va("curl -X POST -H \"Content-Type: application/json\" -d \"%s\" \"%s\"", result, cm_webhookURL.string));
 	//}
 	//free(str);
-}
+}*/
 
 /*
 ===========
@@ -3133,7 +3133,7 @@ char *ClientConnect( int clientNum, qboolean firstTime, qboolean isBot ) {
 		value2 = Info_ValueForKey (userinfo, "name");
 		if( !isBot ){
 			G_LogPrintf( "ClientConnect: %i '%s' -> '%s'\n", clientNum, value2, client->sess.myip );
-			WebHook(ent, W_JOINDISCO, va("Player %s joined the server!", Q_CleanStr(client->pers.netname)));
+			//WebHook(ent, W_JOINDISCO, va("Player %s joined the server!", Q_CleanStr(client->pers.netname)));
 		}
 	}
 
@@ -5693,9 +5693,9 @@ void ClientDisconnect( int clientNum ) {
 	gentity_t	*tent;
 	int			i;
 
-	if (!(ent->r.svFlags & SVF_BOT)) {
+	/*if (!(ent->r.svFlags & SVF_BOT)) {
 		WebHook(ent, W_JOINDISCO, va("Player %s left the server.", Q_CleanStr(ent->client->pers.netname)));
-	}
+	}*/
 
 	// cleanup if we are kicking a bot that
 	// hasn't spawned yet
