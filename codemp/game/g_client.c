@@ -2923,6 +2923,23 @@ char* replaceWord(const char* s, const char* oldW,
 	return result;
 }
 
+void SendUDP(char* msg) {
+	// TO-DO: Check if UDP server is still alive and clean up
+	//G_LogPrintf("sending \"%s\" to %s:%i\n", msg, servaddr.sin_addr, servaddr.sin_port); // crashes
+	if (cm_UDPSock < 0) { // TO-DO: Maybe try to run setupUDP again
+		G_LogPrintf("ERROR: UDP socket not setup");
+		return;
+	}
+	int ret = sendto(cm_UDPSock, (const char*)msg, strlen(msg), 0, (const struct sockaddr*)&servaddr, sizeof(servaddr));
+	if (ret < 1)
+		G_LogPrintf("ERROR: sendto function sent %i bytes\n", ret);
+#ifdef _WIN32
+	int ErrMsg = WSAGetLastError();
+	if (ErrMsg != ret && ErrMsg > 0)
+		G_LogPrintf("Error code = %i\n", ret, ErrMsg);
+#endif
+}
+
 /// <summary>
 /// Posts a message in JSON format to the webhook server.
 /// </summary>
@@ -3133,6 +3150,7 @@ char *ClientConnect( int clientNum, qboolean firstTime, qboolean isBot ) {
 		value2 = Info_ValueForKey (userinfo, "name");
 		if( !isBot ){
 			G_LogPrintf( "ClientConnect: %i '%s' -> '%s'\n", clientNum, value2, client->sess.myip );
+			SendUDP(va("say|Player %s joined the server!", Q_CleanStr(client->pers.netname)));
 			//WebHook(ent, W_JOINDISCO, va("Player %s joined the server!", Q_CleanStr(client->pers.netname)));
 		}
 	}
@@ -5693,9 +5711,10 @@ void ClientDisconnect( int clientNum ) {
 	gentity_t	*tent;
 	int			i;
 
-	/*if (!(ent->r.svFlags & SVF_BOT)) {
-		WebHook(ent, W_JOINDISCO, va("Player %s left the server.", Q_CleanStr(ent->client->pers.netname)));
-	}*/
+	if (!(ent->r.svFlags & SVF_BOT)) {
+		SendUDP(va("say|Player %s left the server.", Q_CleanStr(ent->client->pers.netname)));
+		//WebHook(ent, W_JOINDISCO, va("Player %s left the server.", Q_CleanStr(ent->client->pers.netname)));
+	}
 
 	// cleanup if we are kicking a bot that
 	// hasn't spawned yet

@@ -2189,6 +2189,7 @@ extern int mod_votes_count;
 //lmo for enhanced voting
 void Update_Server_Votes (int clientnum);
 
+void SendUDP(char* msg);
 //void WebHook(gentity_t* ent, webhook_type_t wht, const char* msg);
 void parse_output(gentity_t* ent, char* cmd);
 

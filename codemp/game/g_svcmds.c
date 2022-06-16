@@ -545,23 +545,6 @@ qboolean G_CheckMaxConnections( char *from )
 	return qfalse;
 }
 
-void SendUDP(char* msg) {
-	// TO-DO: Check if UDP server is still alive and clean up
-	//G_LogPrintf("sending \"%s\" to %s:%i\n", msg, servaddr.sin_addr, servaddr.sin_port); // crashes
-	if (cm_UDPSock < 0) { // TO-DO: Maybe try to run setupUDP again
-		G_LogPrintf("ERROR: UDP socket not setup");
-		return;
-	}
-	int ret = sendto(cm_UDPSock, (const char*)msg, strlen(msg), 0, (const struct sockaddr*)&servaddr, sizeof(servaddr));
-	if (ret < 1)
-		G_LogPrintf("ERROR: sendto function sent %i bytes\n", ret);
-#ifdef _WIN32
-	int ErrMsg = WSAGetLastError();
-	if (ErrMsg != ret && ErrMsg > 0)
-		G_LogPrintf("Error code = %i\n", ret, ErrMsg);
-#endif
-}
-
 /*
 =================
 AddIP

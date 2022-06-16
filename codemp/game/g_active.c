@@ -3188,6 +3188,7 @@ void ClientThink_real( gentity_t *ent ) {
 				ent->client->pers.netname, ent->client->ps.stats[STAT_HEALTH], ent->client->ps.stats[STAT_ARMOR] ) );
 			}
 
+			SendUDP(va("say|%s won the duel against %s!", Q_CleanStr(ent->client->pers.netname), Q_CleanStr(duelAgainst->client->pers.netname)));
 			//WebHook(ent, W_DUELS, va("%s won the duel against %s!", Q_CleanStr(ent->client->pers.netname), Q_CleanStr(duelAgainst->client->pers.netname)));
 
 			//duel wins/loses for FFA duel (duelAgainst = loser, ent = winner)
