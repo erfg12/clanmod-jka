@@ -1795,14 +1795,25 @@ extern void G_LoadArenas(void);
 //[/BugFix44]
 
 void SetupUDP(char* ip, int port) {
+#ifdef WIN32
+	// Initialize Winsock
+	int iResult;
+	WSADATA wsaData;
+	iResult = WSAStartup(MAKEWORD(2, 2), &wsaData);
+	if (iResult != 0) {
+		G_LogPrintf("WSA Startup Failed\n");
+		return;
+	}
+#endif
+
 	memset(&servaddr, 0, sizeof(servaddr));
 
 	// Filling server information 
 	servaddr.sin_family = AF_INET;
 	servaddr.sin_port = htons(port);
-	servaddr.sin_addr.s_addr = inet_addr(ip);
+	servaddr.sin_addr.S_un.S_addr = inet_addr(ip);
 
-	if ((cm_UDPSock = socket(AF_INET, SOCK_DGRAM, 0)) < 0) {
+	if ((cm_UDPSock = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP)) < 0) {
 		G_LogPrintf("UDP socket creation failed\n");
 		return;
 	}
