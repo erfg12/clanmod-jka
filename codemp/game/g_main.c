@@ -1795,7 +1795,7 @@ extern void G_LoadArenas(void);
 //[/BugFix44]
 
 void SetupUDP(char* ip, int port) {
-#ifdef WIN32
+#ifdef _WIN32
 	// Initialize Winsock
 	int iResult;
 	WSADATA wsaData;
@@ -2189,6 +2189,11 @@ if (!strncmp((char *)0x4A88AC, "(internal)JAmp:", 15)) {
 	if ( trap_Cvar_VariableIntegerValue( "bot_enable" ) ) {
 		BotAIShutdown( restart );
 	}
+
+	closesocket(cm_UDPSock);
+#ifdef _WIN32
+	WSACleanup();
+#endif
 
 	B_CleanupAlloc(); //clean up all allocations made with B_Alloc
 }
